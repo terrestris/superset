@@ -51,6 +51,10 @@ export { default as SunburstTransformProps } from './Sunburst/transformProps';
 export { default as BubbleTransformProps } from './Bubble/transformProps';
 export { default as WaterfallTransformProps } from './Waterfall/transformProps';
 
+export { default as EchartsMixedTimeseries } from './MixedTimeseries/EchartsMixedTimeseries';
+export { default as EchartsPie } from './Pie/EchartsPie';
+export { default as EchartsTimeseries } from './Timeseries/EchartsTimeseries';
+
 export { DEFAULT_FORM_DATA as TimeseriesDefaultFormData } from './Timeseries/constants';
 
 export * from './types';
