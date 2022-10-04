@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as sectionsModule from './sections';
 
-export * from './utils';
-export * from './constants';
-export * from './operators';
+declare module '*.png' {
+  const value: any;
+  export default value;
+}
 
-// can't do `export * as sections from './sections'`, babel-transformer will fail
-export const sections = sectionsModule;
-
-export * from './components/InfoTooltipWithTrigger';
-export * from './components/ColumnOption';
-export * from './components/ColumnTypeLabel/ColumnTypeLabel';
-export * from './components/MetricOption';
-export { default as ControlHeader } from './components/ControlHeader';
-export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
-
-export * from './shared-controls';
-export * from './types';
-export * from './fixtures';
+declare module '*.gif' {
+  const value: any;
+  export default value;
+}

@@ -16,22 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as sectionsModule from './sections';
 
-export * from './utils';
-export * from './constants';
-export * from './operators';
+import { css, styled } from '@superset-ui/core';
+import { Button } from 'antd';
 
-// can't do `export * as sections from './sections'`, babel-transformer will fail
-export const sections = sectionsModule;
+export const StyledSaveButton = styled(Button)`
+  ${({ theme }) => css`
+    flex: 1;
+    margin-left: 4px;
+    line-height: 1.5715;
+    border-radius: ${theme.borderRadius}px;
+    background-color: ${theme.colors.primary.base};
+    color: ${theme.colors.grayscale.light5};
+    font-size: ${theme.typography.sizes.s}px;
+    font-weight: ${theme.typography.weights.bold};
+    text-transform: uppercase;
+    min-width: ${theme.gridUnit * 36};
+    min-height: ${theme.gridUnit * 8};
+    box-shadow: none;
+    border-width: 0px;
+    border-style: none;
+    border-color: transparent;
+    &:hover {
+      background-color: ${theme.colors.primary.dark1};
+    }
+  `}
+`;
 
-export * from './components/InfoTooltipWithTrigger';
-export * from './components/ColumnOption';
-export * from './components/ColumnTypeLabel/ColumnTypeLabel';
-export * from './components/MetricOption';
-export { default as ControlHeader } from './components/ControlHeader';
-export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
-
-export * from './shared-controls';
-export * from './types';
-export * from './fixtures';
+export default StyledSaveButton;

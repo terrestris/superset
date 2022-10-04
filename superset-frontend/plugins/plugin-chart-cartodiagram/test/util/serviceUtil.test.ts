@@ -16,22 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as sectionsModule from './sections';
 
-export * from './utils';
-export * from './constants';
-export * from './operators';
+import { isVersionBelow } from '../../src/util/serviceUtil';
 
-// can't do `export * as sections from './sections'`, babel-transformer will fail
-export const sections = sectionsModule;
+describe('isVersionBelow', () => {
+  describe('WMS', () => {
+    it('recognizes the higher version', () => {
+      const result = isVersionBelow('1.3.0', '1.1.0', 'WMS');
+      expect(result).toEqual(false);
+    });
+    it('recognizes the lower version', () => {
+      const result = isVersionBelow('1.1.1', '1.3.0', 'WMS');
+      expect(result).toEqual(true);
+    });
+  });
 
-export * from './components/InfoTooltipWithTrigger';
-export * from './components/ColumnOption';
-export * from './components/ColumnTypeLabel/ColumnTypeLabel';
-export * from './components/MetricOption';
-export { default as ControlHeader } from './components/ControlHeader';
-export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
-
-export * from './shared-controls';
-export * from './types';
-export * from './fixtures';
+  describe('WFS', () => {
+    it('recognizes the higher version', () => {
+      const result = isVersionBelow('2.0.2', '2.0', 'WFS');
+      expect(result).toEqual(false);
+    });
+    it('recognizes the lower version', () => {
+      const result = isVersionBelow('1.1.0', '2.0', 'WFS');
+      expect(result).toEqual(true);
+    });
+  });
+});

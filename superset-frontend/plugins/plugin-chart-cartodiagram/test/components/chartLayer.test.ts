@@ -16,22 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as sectionsModule from './sections';
 
-export * from './utils';
-export * from './constants';
-export * from './operators';
+import { ChartLayer } from '../../src/components/ChartLayer';
+import { ChartLayerOptions } from '../../src/types';
 
-// can't do `export * as sections from './sections'`, babel-transformer will fail
-export const sections = sectionsModule;
+describe('ChartLayer', () => {
+  it('creates div and loading mask', () => {
+    const options: ChartLayerOptions = {
+      chartVizType: 'pie',
+    };
+    const chartLayer = new ChartLayer(options);
 
-export * from './components/InfoTooltipWithTrigger';
-export * from './components/ColumnOption';
-export * from './components/ColumnTypeLabel/ColumnTypeLabel';
-export * from './components/MetricOption';
-export { default as ControlHeader } from './components/ControlHeader';
-export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
+    expect(chartLayer.loadingMask).toBeDefined();
+    expect(chartLayer.div).toBeDefined();
+  });
 
-export * from './shared-controls';
-export * from './types';
-export * from './fixtures';
+  it('can remove chart elements', () => {
+    const options: ChartLayerOptions = {
+      chartVizType: 'pie',
+    };
+    const chartLayer = new ChartLayer(options);
+    chartLayer.charts = [
+      {
+        htmlElement: document.createElement('div'),
+      },
+    ];
+
+    chartLayer.removeAllChartElements();
+    expect(chartLayer.charts).toEqual([]);
+  });
+});

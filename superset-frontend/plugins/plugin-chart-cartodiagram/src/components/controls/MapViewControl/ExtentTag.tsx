@@ -16,22 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as sectionsModule from './sections';
 
-export * from './utils';
-export * from './constants';
-export * from './operators';
+import { t } from '@superset-ui/core';
+import { Tag } from 'antd';
+import React from 'react';
+import { ExtentTagProps } from '../../../types';
 
-// can't do `export * as sections from './sections'`, babel-transformer will fail
-export const sections = sectionsModule;
+export const ExtentTag: React.FC<ExtentTagProps> = ({
+  value,
+  onClick,
+  className,
+}) => {
+  const unsetName = t('unset');
+  const zoomName = t('Zoom');
+  const latName = t('Lat');
+  const lonName = t('Lon');
 
-export * from './components/InfoTooltipWithTrigger';
-export * from './components/ColumnOption';
-export * from './components/ColumnTypeLabel/ColumnTypeLabel';
-export * from './components/MetricOption';
-export { default as ControlHeader } from './components/ControlHeader';
-export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
+  return (
+    <Tag onClick={onClick} className={className}>
+      {zoomName}: {value.fixedZoom ? Math.round(value.fixedZoom) : unsetName}
+      {' | '}
+      {latName}:{' '}
+      {value.fixedLatitude ? value.fixedLatitude.toFixed(6) : unsetName}
+      {' | '}
+      {lonName}:{' '}
+      {value.fixedLongitude ? value.fixedLongitude.toFixed(6) : unsetName}
+    </Tag>
+  );
+};
 
-export * from './shared-controls';
-export * from './types';
-export * from './fixtures';
+export default ExtentTag;
