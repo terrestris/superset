@@ -29,6 +29,7 @@ module.exports = {
     // mapping plugins of superset-ui to souce code
     '@superset-ui/(.*)$': '<rootDir>/node_modules/@superset-ui/$1/src',
   },
+  transformIgnorePatterns: ['node_modules/(?!(ol))'],
   testEnvironment: 'jsdom',
   modulePathIgnorePatterns: ['<rootDir>/packages/generator-superset'],
   setupFilesAfterEnv: ['<rootDir>/spec/helpers/setup.ts'],
