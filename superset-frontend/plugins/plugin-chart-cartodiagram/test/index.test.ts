@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { SupersetOlPlugin } from '../src';
+import { CartodiagramPlugin } from '../src';
 
 /**
  * The example tests in this file act as a starting point, and
@@ -26,8 +26,8 @@ import { SupersetOlPlugin } from '../src';
  * treated correctly (e.g. formData from plugin controls
  * properly transform the data and/or any resulting props).
  */
-describe('superset-ol-plugin', () => {
+describe('CartodiagramPlugin', () => {
   it('exists', () => {
-    expect(SupersetOlPlugin).toBeDefined();
+    expect(CartodiagramPlugin).toBeDefined();
   });
 });

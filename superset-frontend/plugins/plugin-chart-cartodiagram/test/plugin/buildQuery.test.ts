@@ -18,7 +18,7 @@
  */
 import buildQuery from '../../src/plugin/buildQuery';
 
-describe('SupersetOlPlugin buildQuery', () => {
+describe('CartodiagramPlugin buildQuery', () => {
   const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',

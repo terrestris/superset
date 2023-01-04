@@ -1,4 +1,4 @@
-# superset-ol-plugin
+# plugin-chart-cartodiagram
 
 An OpenLayers map that displays charts for single features. Superset Chart Plugin.
 

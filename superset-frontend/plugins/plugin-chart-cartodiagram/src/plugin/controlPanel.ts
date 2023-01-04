@@ -131,7 +131,7 @@ const config: ControlPanelConfig = {
                       },
                       { col: 'viz_type', opr: 'neq', value: 'tree_chart' },
                       { col: 'viz_type', opr: 'neq', value: 'handlebars' },
-                      { col: 'viz_type', opr: 'neq', value: 'ext-openlayers' },
+                      { col: 'viz_type', opr: 'neq', value: 'cartodiagram' },
                       { col: 'viz_type', opr: 'neq', value: 'filter_groupby' },
                       { col: 'viz_type', opr: 'neq', value: 'deck_arc' },
                       { col: 'viz_type', opr: 'neq', value: 'deck_geojson' },
