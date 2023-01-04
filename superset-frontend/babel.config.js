@@ -22,6 +22,12 @@ module.exports = {
   sourceMaps: true,
   sourceType: 'module',
   retainLines: true,
+  // After adding transformIgnorePatterns to jest.config.js
+  // the tests failed. Following line fixed the problem. See also
+  // https://github.com/babel/babel/issues/8731#issuecomment-423845498
+  // core-js seems to be packaged as commonjs modules, so it should
+  // be (more or less) save to ignore them with babel.
+  ignore: [/^core-js$/],
   presets: [
     [
       '@babel/preset-env',

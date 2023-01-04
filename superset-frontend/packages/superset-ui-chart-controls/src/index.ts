@@ -29,6 +29,8 @@ export * from './components/InfoTooltipWithTrigger';
 export * from './components/ColumnOption';
 export * from './components/ColumnTypeLabel/ColumnTypeLabel';
 export * from './components/MetricOption';
+export { default as ControlHeader } from './components/ControlHeader';
+export { default as ControlFormItem } from './components/ControlForm/ControlFormItem';
 
 export * from './shared-controls';
 export * from './types';
