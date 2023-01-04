@@ -23,7 +23,7 @@ import {
   EchartsPie,
   EchartsTimeseries,
 } from '@superset-ui/plugin-chart-echarts';
-import { ChartConfig } from '../types';
+import { ChartConfigFeature } from '../types';
 
 /**
  * Create a chart component for a location.
@@ -36,24 +36,25 @@ import { ChartConfig } from '../types';
  * @returns The chart as React component
  */
 export const createChartComponent = (
-  loc: string,
   chartVizType: string,
-  chartConfigs: ChartConfig,
+  chartConfig: ChartConfigFeature,
   chartWidth: number,
   chartHeight: number,
 ) => {
   let chartComponent;
 
-  const config = chartConfigs[loc].echartOptions;
-  const { setDataMask } = chartConfigs[loc];
-  const { labelMap } = chartConfigs[loc];
-  const { labelMapB } = chartConfigs[loc];
-  const { groupby } = chartConfigs[loc];
-  const { selectedValues } = chartConfigs[loc];
-  const { formData } = chartConfigs[loc];
-  const { groupbyB } = chartConfigs[loc];
-  const { seriesBreakdown } = chartConfigs[loc];
-  const { legendData } = chartConfigs[loc];
+  const {
+    setDataMask,
+    labelMap,
+    labelMapB,
+    groupby,
+    selectedValues,
+    formData,
+    groupbyB,
+    seriesBreakdown,
+    legendData,
+    echartOptions,
+  } = chartConfig.properties;
 
   switch (chartVizType) {
     case 'pie':
@@ -63,7 +64,7 @@ export const createChartComponent = (
         <EchartsPie
           height={chartHeight}
           width={chartWidth}
-          echartOptions={config}
+          echartOptions={echartOptions}
           setDataMask={setDataMask}
           labelMap={labelMap}
           // TODO probably remove geom grouping
@@ -80,7 +81,7 @@ export const createChartComponent = (
         <EchartsMixedTimeseries
           height={chartHeight}
           width={chartWidth}
-          echartOptions={config}
+          echartOptions={echartOptions}
           setDataMask={setDataMask}
           labelMap={labelMap}
           labelMapB={labelMapB}
@@ -101,7 +102,7 @@ export const createChartComponent = (
         <EchartsTimeseries
           height={chartHeight}
           width={chartWidth}
-          echartOptions={config}
+          echartOptions={echartOptions}
           setDataMask={setDataMask}
           labelMap={labelMap}
           // TODO probably remove geom grouping

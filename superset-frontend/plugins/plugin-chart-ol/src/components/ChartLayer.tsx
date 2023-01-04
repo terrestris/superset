@@ -10,7 +10,7 @@ import {
   SupportedVizTypes,
 } from '../types';
 import { createChartComponent } from '../util/chartUtil';
-import { getCoordinateFromLocation } from '../util/geometryUtil';
+import { getCoordinateFromGeometry } from '../util/geometryUtil';
 
 /**
  * Custom OpenLayers layer that displays a number of charts
@@ -19,7 +19,10 @@ import { getCoordinateFromLocation } from '../util/geometryUtil';
 export class ChartLayer extends Layer {
   chartsPerZoom: ChartsPerZoom = {};
 
-  chartConfigs: ChartConfig = {};
+  chartConfigs: ChartConfig = {
+    type: 'FeatureCollection',
+    features: [],
+  };
 
   chartSizeValues: ChartSizeValues = {};
 
@@ -187,8 +190,7 @@ export class ChartLayer extends Layer {
    * @param zoom The zoom level.
    */
   createChartsPerZoom(zoom: number) {
-    const locations = Object.keys(this.chartConfigs);
-    const charts = locations.map(loc => {
+    const charts = this.chartConfigs.features.map(feature => {
       const container = document.createElement('div');
 
       let chartWidth = 0;
@@ -200,9 +202,8 @@ export class ChartLayer extends Layer {
 
       // add location to container
       const chartComponent = createChartComponent(
-        loc,
         this.chartVizType,
-        this.chartConfigs,
+        feature,
         chartWidth,
         chartHeight,
       );
@@ -210,7 +211,7 @@ export class ChartLayer extends Layer {
 
       return {
         htmlElement: container,
-        coordinate: getCoordinateFromLocation(loc),
+        coordinate: getCoordinateFromGeometry(feature.geometry),
         width: chartWidth,
         height: chartHeight,
       };
