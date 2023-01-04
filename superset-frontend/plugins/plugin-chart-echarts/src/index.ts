@@ -45,6 +45,10 @@ export { default as TimeseriesTransformProps } from './Timeseries/transformProps
 export { default as TreeTransformProps } from './Tree/transformProps';
 export { default as TreemapTransformProps } from './Treemap/transformProps';
 
+export { default as EchartsMixedTimeseries } from './MixedTimeseries/EchartsMixedTimeseries';
+export { default as EchartsPie } from './Pie/EchartsPie';
+export { default as EchartsTimeseries } from './Timeseries/EchartsTimeseries';
+
 export { DEFAULT_FORM_DATA as TimeseriesDefaultFormData } from './Timeseries/constants';
 
 export * from './types';
