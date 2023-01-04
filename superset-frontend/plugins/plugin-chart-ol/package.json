@@ -1,0 +1,60 @@
+{
+  "name": "@superset-ui/plugin-chart-ol",
+  "version": "0.0.1",
+  "description": "An OpenLayers map that displays charts for single features.",
+  "sideEffects": false,
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "files": [
+    "esm",
+    "lib"
+  ],
+  "private": false,
+  "scripts": {
+    "build": "npm run build-cjs && npm run build-esm && npm run ts-types",
+    "build-cjs": "babel src --extensions \".ts,.tsx,.js,.jsx\" --copy-files --out-dir lib",
+    "build-clean": "npm run clean && npm run build",
+    "build-esm": "BABEL_OUTPUT=esm babel src --extensions \".ts,.tsx,.js,.jsx\" --copy-files --out-dir esm",
+    "dev": "BABEL_OUTPUT=esm babel src --extensions \".ts,.tsx,.js,.jsx\" --watch --copy-files --out-dir esm",
+    "prebuild": "rimraf {lib,esm,tsconfig.tsbuildinfo}",
+    "postbuild": "npm run test",
+    "ts-types": "tsc --build",
+    "test": "jest"
+  },
+  "contributors": [
+    "terrestris GmbH & Co. KG <info@terrestris.de> (https://www.terrestris.de)",
+    "meggsimum - Büro für Geoinformatik <info@meggsimum.de> (https://meggsimum.de)"
+  ],
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "geostyler": "^11.0.0",
+    "geostyler-data": "^1.0.0",
+    "geostyler-openlayers-parser": "^4.0.0",
+    "geostyler-style": "^7.2.0",
+    "geostyler-wfs-parser": "^2.0.0",
+    "lodash": "^4.17.21",
+    "ol": "^7.1.0"
+  },
+  "peerDependencies": {
+    "@ant-design/icons": "^4.2.2",
+    "@superset-ui/chart-controls": "*",
+    "@superset-ui/core": "*",
+    "@superset-ui/plugin-chart-echarts": "*",
+    "antd": "^4.9.4",
+    "echarts": "^5.3.2",
+    "polished": "^3.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@airbnb/config-babel": "^2.0.1",
+    "@babel/cli": "^7.16.0",
+    "@types/jest": "^26.0.4",
+    "jest": "^26.6.3",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.1.2"
+  }
+}

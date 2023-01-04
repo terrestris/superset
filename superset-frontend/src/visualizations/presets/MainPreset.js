@@ -168,12 +168,15 @@ export default class MainPreset extends Preset {
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
         new SupersetOlPlugin({
-          defaultLayers: [{
-            type: 'XYZ',
-            url: 'https://osm.bfs.de/tiles/topplusopen/{z}/{x}/{y}.png',
-            title: 'TopPlusOpen Graustufen',
-            attribution: '<a href="https://www.imis.bfs.de/geoportal/resources/sitepolicy.html" target="_blank">© Bundesamt für Strahlenschutz</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="https://www.openstreetmap.org/copyright/en" target="_blank">OpenStreetMap</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="http://www.geodatenzentrum.de/geodaten/gdz?l=down_opendata" target="_blank">BKG</a>',
-          }],
+          defaultLayers: [
+            {
+              type: 'XYZ',
+              url: 'https://osm.bfs.de/tiles/topplusopen/{z}/{x}/{y}.png',
+              title: 'TopPlusOpen Graustufen',
+              attribution:
+                '<a href="https://www.imis.bfs.de/geoportal/resources/sitepolicy.html" target="_blank">© Bundesamt für Strahlenschutz</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="https://www.openstreetmap.org/copyright/en" target="_blank">OpenStreetMap</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="http://www.geodatenzentrum.de/geodaten/gdz?l=down_opendata" target="_blank">BKG</a>',
+            },
+          ],
         }).configure({ key: 'ext-openlayers' }),
         ...experimentalplugins,
       ],
