@@ -2,7 +2,7 @@
 
 An OpenLayers map that displays charts for single features. Superset Chart Plugin.
 
-### Usage
+## Usage
 
 To build the plugin, run the following commands:
 
