@@ -17,7 +17,6 @@
  * under the License.
  */
 
-// import ControlFormItem from '@superset-ui/chart-controls/components/ControlForm/ControlFormItem';
 import { ControlFormItem } from '@superset-ui/chart-controls';
 import { css, styled } from '@superset-ui/core';
 
