@@ -170,6 +170,7 @@ export default class MainPreset extends Preset {
         new SupersetOlPlugin({
           defaultLayers: [
             {
+              // TODO use other default layer here
               type: 'XYZ',
               url: 'https://osm.bfs.de/tiles/topplusopen/{z}/{x}/{y}.png',
               title: 'TopPlusOpen Graustufen',
