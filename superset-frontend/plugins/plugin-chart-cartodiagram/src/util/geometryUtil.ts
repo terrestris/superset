@@ -30,14 +30,14 @@ import { Point as GeoJsonPoint } from 'geojson';
 /**
  * Extracts the coordinate from a Point GeoJSON in the current map projection.
  *
- * @param location The location string
+ * @param geoJsonPoint The GeoJSON string for the point
  *
  * @returns The coordinate
  */
 export const getProjectedCoordinateFromPointGeoJson = (
-  pointGeoJson: GeoJsonPoint,
+  geoJsonPoint: GeoJsonPoint,
 ) => {
-  const geom: OlPoint = new GeoJSON().readGeometry(pointGeoJson, {
+  const geom: OlPoint = new GeoJSON().readGeometry(geoJsonPoint, {
     // TODO: adapt to map projection
     featureProjection: 'EPSG:3857',
   }) as OlPoint;
