@@ -14,8 +14,7 @@ import { getCoordinateFromGeometry } from '../util/geometryUtil';
 import Loader from '../images/loading.gif';
 
 /**
- * Custom OpenLayers layer that displays charts
- * on given locations.
+ * Custom OpenLayers layer that displays charts on given locations.
  */
 export class ChartLayer extends Layer {
   charts: any[] = [];
@@ -71,9 +70,6 @@ export class ChartLayer extends Layer {
       this.chartBackgroundBorderRadius = options.chartBackgroundBorderRadius;
     }
 
-    this.loadingMask = document.createElement('div');
-    this.loadingMask.style.position = 'relative';
-    this.loadingMask.style.height = '100%';
     const spinner = document.createElement('img');
     spinner.src = Loader;
     spinner.style.position = 'relative';
@@ -81,6 +77,10 @@ export class ChartLayer extends Layer {
     spinner.style.top = '50%';
     spinner.style.left = '50%';
     spinner.style.transform = 'translate(-50%, -50%)';
+    
+    this.loadingMask = document.createElement('div');
+    this.loadingMask.style.position = 'relative';
+    this.loadingMask.style.height = '100%';
     this.loadingMask.appendChild(spinner);
 
     this.div = document.createElement('div');
