@@ -217,7 +217,7 @@ export class ChartLayer extends Layer {
     // nextResolution is only defined while an animation
     // is in action. For this time we show a loading mask
     // to keep the amount of chart rerenderings as low as possible.
-    if (viewState.nextResolution !== undefined) {
+    if (viewState.nextResolution) {
       return this.loadingMask;
     }
 
