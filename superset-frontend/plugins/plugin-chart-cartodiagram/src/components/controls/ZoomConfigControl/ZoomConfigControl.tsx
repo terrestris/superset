@@ -186,8 +186,10 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseWidthDescription}
           value={baseWidth}
           name="baseWidth"
-          onChange={onBaseWidthChange}
-          debounceDelay={200}
+          // TODO properly create this form with ControlForm
+          //      and replace onAfterChange with onChange and debounceDelay.
+          // @ts-ignore
+          onAfterChange={onBaseWidthChange}
           step={1}
           min={0}
           max={500}
@@ -198,8 +200,10 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseHeightDescription}
           value={baseHeight}
           name="baseHeight"
-          onChange={onBaseHeightChange}
-          debounceDelay={200}
+          // TODO properly create this form with ControlForm
+          //      and replace onAfterChange with onChange and debounceDelay.
+          // @ts-ignore
+          onAfterChange={onBaseHeightChange}
           step={1}
           min={0}
           max={500}
@@ -210,8 +214,10 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseSlopeDescription}
           value={baseSlope}
           name="slope"
-          onChange={onBaseSlopeChange}
-          debounceDelay={200}
+          // TODO properly create this form with ControlForm
+          //      and replace onAfterChange with onChange and debounceDelay.
+          // @ts-ignore
+          onAfterChange={onBaseSlopeChange}
           disabled={!!(value && !isZoomConfigsLinear(value))}
           step={1}
           min={0}
@@ -223,8 +229,10 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseExponentDescription}
           value={baseExponent}
           name="exponent"
-          onChange={onBaseExponentChange}
-          debounceDelay={200}
+          // TODO properly create this form with ControlForm
+          //      and replace onAfterChange with onChange and debounceDelay.
+          // @ts-ignore
+          onAfterChange={onBaseExponentChange}
           disabled={!!(value && !isZoomConfigsExp(value))}
           step={0.2}
           min={0}
