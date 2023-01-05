@@ -69,7 +69,6 @@ interface CartodiagramPluginCustomizeProps {
   selectedChart: string;
   chartConfigs: ChartConfig;
   chartSize: ZoomConfigs;
-  prerenderedZoomLevels: number[];
   chartVizType: SupportedVizTypes;
   layerConfigs: LayerConf[];
   mapView: MapViewConfigs;
@@ -235,16 +234,10 @@ export type ChartHtmlElement = {
   height: number;
 };
 
-export type ChartsPerZoom = {
-  [index: number]: ChartHtmlElement[];
-};
-
 export type ChartLayerOptions = {
   chartSizeValues?: ChartSizeValues;
-  chartsPerZoom?: ChartsPerZoom;
   chartConfigs?: ChartConfig;
   chartVizType: SupportedVizTypes;
-  prerenderedZoomLevels?: number[];
   onMouseOver: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
   onMouseOut: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
   [key: string]: any; // allow custom types like 'name'
