@@ -20,13 +20,25 @@
 import { isVersionBelow } from '../../src/util/serviceUtil';
 
 describe('isVersionBelow', () => {
-  it('returns correct results', () => {
-    // WMS
-    expect(isVersionBelow('1.3.0', '1.1.0', 'WMS')).toEqual(false);
-    expect(isVersionBelow('1.1.1', '1.3.0', 'WMS')).toEqual(true);
+  describe('WMS', () => {
+    it('recognizes the higher version', () => {
+      const result = isVersionBelow('1.3.0', '1.1.0', 'WMS');
+      expect(result).toEqual(false);
+    });
+    it('recognizes the lower version', () => {
+      const result = isVersionBelow('1.1.1', '1.3.0', 'WMS');
+      expect(result).toEqual(true);
+    });
+  });
 
-    // WFS
-    expect(isVersionBelow('2.0.2', '2.0', 'WFS')).toEqual(false);
-    expect(isVersionBelow('1.1.0', '2.0', 'WFS')).toEqual(true);
+  describe('WFS', () => {
+    it('recognizes the higher version', () => {
+      const result = isVersionBelow('2.0.2', '2.0', 'WFS');
+      expect(result).toEqual(false);
+    });
+    it('recognizes the lower version', () => {
+      const result = isVersionBelow('1.1.0', '2.0', 'WFS');
+      expect(result).toEqual(true);
+    });
   });
 });
