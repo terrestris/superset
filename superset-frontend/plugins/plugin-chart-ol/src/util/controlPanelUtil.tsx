@@ -20,7 +20,6 @@ import React from 'react';
 import { t } from '@superset-ui/core';
 import { SelectValue } from 'antd/lib/select';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
-import { ChartConfig } from '../types';
 
 /**
  * Get the layer configuration object from the control panel.
@@ -77,7 +76,7 @@ export const selectedChartMutator = (
   if (value && typeof value === 'string') {
     const parsedValue = JSON.parse(value);
     let itemFound = false;
-    response.result.forEach((config: ChartConfig) => {
+    response.result.forEach((config: any) => {
       const configString = JSON.stringify(config);
       const sameId = config.id === parsedValue.id;
       const isUpdated = configString !== value;
@@ -115,7 +114,7 @@ export const selectedChartMutator = (
       });
     }
   } else {
-    response.result.forEach((config: ChartConfig) => {
+    response.result.forEach((config: any) => {
       const configString = JSON.stringify(config);
       const label = config.slice_name;
 

@@ -26,6 +26,7 @@ import Source from 'ol/source/Source';
 import { Coordinate } from 'ol/coordinate';
 import { DataNode, TreeProps } from 'antd/lib/tree';
 import { Map } from 'ol';
+import { Feature, FeatureCollection, Point } from 'geojson';
 
 export interface SupersetOlPluginStylesProps {
   height: number;
@@ -42,10 +43,25 @@ export type SupportedVizTypes =
   | 'echarts_timeseries_scatter'
   | 'echarts_timeseries_step';
 
-// TODO check if we can import an existing typing, instead
-export type ChartConfig = {
-  [key: string]: any;
+// TODO find a way to reference props from plugin-chart-echarts
+export type ChartConfigProperties = {
+  setDataMask: any;
+  labelMap: any;
+  labelMapB: any;
+  groupby: any;
+  selectedValues: any;
+  formData: any;
+  groupbyB: any;
+  seriesBreakdown: any;
+  legendData: any;
+  echartOptions: any;
 };
+
+export type ChartConfigFeature = Feature<Point, ChartConfigProperties>;
+export type ChartConfig = FeatureCollection<
+  ChartConfigFeature['geometry'],
+  ChartConfigFeature['properties']
+>;
 
 interface SupersetOlPluginCustomizeProps {
   headerText: string;

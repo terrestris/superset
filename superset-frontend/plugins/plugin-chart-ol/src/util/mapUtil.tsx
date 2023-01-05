@@ -18,11 +18,9 @@
  */
 
 import { Map } from 'ol';
+import GeoJSON from 'ol/format/GeoJSON';
 import { ChartConfig } from '../types';
-import {
-  convertLocationsToFeatures,
-  getExtendFromFeatures,
-} from './geometryUtil';
+import { getExtentFromFeatures } from './geometryUtil';
 
 // default map extent of world if no features are found
 // TODO: move to generic config file or plugin configuration
@@ -35,10 +33,12 @@ const defaultExtent = [-16000000, -7279000, 20500000, 11000000];
 
 export const fitMapToCharts = (olMap: Map, chartConfigs: ChartConfig) => {
   const view = olMap.getView();
+  const features = new GeoJSON().readFeatures(chartConfigs, {
+    // TODO: adapt to map projection
+    featureProjection: 'EPSG:3857',
+  });
 
-  const locations = Object.keys(chartConfigs).map(c => JSON.parse(c));
-  const features = convertLocationsToFeatures(locations);
-  const extent = getExtendFromFeatures(features) || defaultExtent;
+  const extent = getExtentFromFeatures(features) || defaultExtent;
 
   view.fit(extent, {
     // tested for a desktop size monitor

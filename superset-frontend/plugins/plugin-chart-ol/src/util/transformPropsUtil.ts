@@ -26,6 +26,7 @@ import {
   LocationConfigMapping,
   SelectedChartConfig,
   ChartConfig,
+  ChartConfigFeature,
 } from '../types';
 
 /**
@@ -167,7 +168,10 @@ export const getEchartConfigs = (
       break;
   }
 
-  const chartConfigs: ChartConfig = {};
+  const chartConfigs: ChartConfig = {
+    type: 'FeatureCollection',
+    features: [],
+  };
 
   Object.keys(dataByLocation).forEach(location => {
     const { queriesData } = chartProps;
@@ -192,10 +196,13 @@ export const getEchartConfigs = (
     // TODO create proper clone of argument
     const transformedProps = chartTransformer(config);
 
-    if (!Object.keys(chartConfigs).includes(location)) {
-      chartConfigs[location] = {};
-    }
-    chartConfigs[location] = transformedProps;
+    const feature: ChartConfigFeature = {
+      type: 'Feature',
+      geometry: JSON.parse(location),
+      properties: transformedProps,
+    };
+
+    chartConfigs.features.push(feature);
   });
   return chartConfigs;
 };

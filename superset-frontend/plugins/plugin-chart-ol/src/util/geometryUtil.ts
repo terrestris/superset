@@ -25,28 +25,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
 import { Point } from 'ol/geom';
 import VectorSource from 'ol/source/Vector';
-
-/**
- * Converts locations to OpenLayers features.
- *
- * @param locations The incoming data
- *
- * @returns An array of OpenLayers features
- */
-export const convertLocationsToFeatures = (locations: Array<String>) => {
-  const features = locations.map((geoJsonString: String) => {
-    const geom3857 = new GeoJSON().readGeometry(geoJsonString, {
-      // TODO: adapt to map projection
-      featureProjection: 'EPSG:3857',
-    });
-
-    return new Feature({
-      geometry: geom3857,
-    });
-  });
-
-  return features;
-};
+import { Geometry } from 'geojson';
 
 /**
  * Converts a location string to a coordinate.
@@ -55,8 +34,8 @@ export const convertLocationsToFeatures = (locations: Array<String>) => {
  *
  * @returns The coordinate
  */
-export const getCoordinateFromLocation = (location: string) => {
-  const geom: Point = new GeoJSON().readGeometry(location, {
+export const getCoordinateFromGeometry = (geometry: Geometry) => {
+  const geom: Point = new GeoJSON().readGeometry(geometry, {
     // TODO: adapt to map projection
     featureProjection: 'EPSG:3857',
   }) as Point;
@@ -69,7 +48,7 @@ export const getCoordinateFromLocation = (location: string) => {
  * @param features An Array of OpenLayers features
  * @returns The OpenLayers extent or undefined
  */
-export const getExtendFromFeatures = (features: Feature[]) => {
+export const getExtentFromFeatures = (features: Feature[]) => {
   if (features.length === 0) {
     return undefined;
   }
