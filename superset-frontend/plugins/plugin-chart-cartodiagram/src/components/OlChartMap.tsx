@@ -46,7 +46,6 @@ export const OlChartMap = (props: OlChartMapProps) => {
     chartConfigs,
     chartSize,
     chartVizType,
-    prerenderedZoomLevels = [],
     layerConfigs,
     mapView,
     chartBackgroundColor,
@@ -331,13 +330,10 @@ export const OlChartMap = (props: OlChartMapProps) => {
         });
       };
 
-      // TODO add this to the useEffect of chartConfigs but
-      // only add new layer, if no other exists yet.
       const newChartLayer = new ChartLayer({
         name: CHART_LAYER_NAME,
         chartConfigs: currentChartConfigs,
         chartVizType,
-        prerenderedZoomLevels,
         onMouseOver: deactivateInteractions,
         onMouseOut: activateInteractions,
       });

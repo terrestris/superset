@@ -276,16 +276,6 @@ const config: ControlPanelConfig = {
               description: t('Configure the chart size for each zoom level'),
             },
           },
-          {
-            name: 'prerendered_zoom_levels',
-            config: {
-              type: 'HiddenControl',
-              renderTrigger: true,
-              label: '',
-              hidden: true,
-              default: [6, 7, 8, 9, 10, 11, 12, 13, 14],
-            },
-          },
         ],
       ],
     },
