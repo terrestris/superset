@@ -58,9 +58,6 @@ export default function transformProps(chartProps: ChartProps) {
    */
   const { width, height, formData, queriesData, hooks } = chartProps;
   const {
-    boldText,
-    headerFontSize,
-    headerText,
     geomColumn,
     selectedChart: selectedChartString,
     chartSize,
@@ -98,9 +95,6 @@ export default function transformProps(chartProps: ChartProps) {
       __timestamp: new Date(item.__timestamp as number),
     })),
     // and now your control data, manipulated as needed, and passed through as props!
-    boldText,
-    headerFontSize,
-    headerText,
     geomColumn,
     selectedChart,
     chartConfigs,

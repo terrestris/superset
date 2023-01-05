@@ -110,6 +110,7 @@ export const createChartComponent = (
           selectedValues={selectedValues}
           formData={formData}
           legendData={legendData}
+          refs={{}}
         />
       );
       break;

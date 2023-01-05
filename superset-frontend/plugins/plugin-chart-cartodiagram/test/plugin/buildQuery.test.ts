@@ -16,21 +16,82 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { getChartBuildQueryRegistry } from '@superset-ui/core';
 import buildQuery from '../../src/plugin/buildQuery';
 
 describe('CartodiagramPlugin buildQuery', () => {
+  const selectedChartParams = {
+    groupby: [],
+    // groupby_b (optional)
+  };
+
+  const selectedChart = {
+    viz_type: 'pie',
+    params: JSON.stringify(selectedChartParams),
+  };
+
   const formData = {
     datasource: '5__table',
     granularity_sqla: 'ds',
     series: 'foo',
     viz_type: 'my_chart',
+    selected_chart: JSON.stringify(selectedChart),
+    geom_column: 'geom',
   };
 
-  it('should build groupby with series in form data', () => {
-    // TODO fix tests
-    const queryContext = buildQuery(formData);
-    const [query] = queryContext.queries;
-    expect(query.columns).toEqual(['foo']);
-    // expect(true).toBe(true);
+  const selectedChartParamsB = {
+    groupby: [],
+    groupby_b: [],
+  };
+
+  const selectedChartB = {
+    viz_type: 'pie',
+    params: JSON.stringify(selectedChartParamsB),
+  };
+
+  const formDataB = {
+    datasource: '5__table',
+    granularity_sqla: 'ds',
+    series: 'foo',
+    viz_type: 'my_chart',
+    selected_chart: JSON.stringify(selectedChartB),
+    geom_column: 'geom',
+  };
+
+  let chartQueryBuilderMock: jest.MockedFunction<any>;
+  beforeEach(() => {
+    chartQueryBuilderMock = jest.fn();
+
+    const registry = getChartBuildQueryRegistry();
+    registry.registerValue('pie', chartQueryBuilderMock);
+  });
+
+  afterEach(() => {
+    // remove registered buildQuery
+    const registry = getChartBuildQueryRegistry();
+    registry.clear();
+  });
+
+  it('should call the buildQuery function of the referenced chart', () => {
+    buildQuery(formData);
+    expect(chartQueryBuilderMock.mock.calls).toHaveLength(1);
+  });
+
+  it('should build groupby with geom in form data', () => {
+    const expectedParams = { ...selectedChartParams, groupby: ['geom'] };
+
+    buildQuery(formData);
+    expect(chartQueryBuilderMock.mock.calls[0][0]).toEqual(expectedParams);
+  });
+
+  it('should build groupby_b with geom in form data', () => {
+    const expectedParams = {
+      ...selectedChartParams,
+      groupby: ['geom'],
+      groupby_b: ['geom'],
+    };
+
+    buildQuery(formDataB);
+    expect(chartQueryBuilderMock.mock.calls[0][0]).toEqual(expectedParams);
   });
 });
