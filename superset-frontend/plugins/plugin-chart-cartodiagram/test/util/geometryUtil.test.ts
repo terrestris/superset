@@ -30,7 +30,7 @@ describe('getCoordinateFromGeometry', () => {
 });
 
 describe('getExtentFromFeatures', () => {
-  it('computes correct extent', () => {
+  it('computes correct extent with valid input', () => {
     const expectedExtent = [1, 2, 3, 4];
 
     const chartConfig: ChartConfig = {
@@ -77,12 +77,12 @@ describe('getExtentFromFeatures', () => {
       ],
     };
 
-    // with valid input
     const features = new GeoJSON().readFeatures(chartConfig);
     const extent = getExtentFromFeatures(features);
     expect(extent).toEqual(expectedExtent);
+  });
 
-    // with empty input
+  it('returns undefined on invalid input', () => {
     const emptyExtent = getExtentFromFeatures([]);
     expect(emptyExtent).toBeUndefined();
   });
