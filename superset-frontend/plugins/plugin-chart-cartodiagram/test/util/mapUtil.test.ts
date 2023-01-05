@@ -21,7 +21,7 @@ import Map from 'ol/Map.js';
 import OSM from 'ol/source/OSM.js';
 import TileLayer from 'ol/layer/Tile.js';
 import View from 'ol/View.js';
-import { ChartConfig } from 'plugins/plugin-chart-cartodiagram/src/types';
+import { ChartConfig } from '../../src/types';
 import { fitMapToCharts } from '../../src/util/mapUtil';
 
 describe('fitMapToCharts', () => {
