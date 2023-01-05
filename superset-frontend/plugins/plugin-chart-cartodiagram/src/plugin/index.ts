@@ -21,10 +21,10 @@ import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from '../images/thumbnail.png';
-import { SupersetOlPluginConstructorOpts } from '../types';
+import { CartodiagramPluginConstructorOpts } from '../types';
 import { getLayerConfig } from '../util/controlPanelUtil';
 
-export default class SupersetOlPlugin extends ChartPlugin {
+export default class CartodiagramPlugin extends ChartPlugin {
   /**
    * The constructor is used to pass relevant metadata and callbacks that get
    * registered in respective registries that are used throughout the library
@@ -35,11 +35,10 @@ export default class SupersetOlPlugin extends ChartPlugin {
    * advanced visualizations that require either post processing operations
    * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
    */
-  constructor(opts: SupersetOlPluginConstructorOpts) {
+  constructor(opts: CartodiagramPluginConstructorOpts) {
     const metadata = new ChartMetadata({
-      description:
-        'An OpenLayers map that displays charts for single features.',
-      name: t('OpenLayers'),
+      description: 'Display multiple charts on an OpenLayers map.',
+      name: t('Cartodiagram'),
       thumbnail,
       tags: [t('ECharts'), t('Popular'), t('Geo'), t('2D')],
       category: t('Map'),
@@ -61,7 +60,7 @@ export default class SupersetOlPlugin extends ChartPlugin {
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../SupersetOlPlugin'),
+      loadChart: () => import('../CartodiagramPlugin'),
       metadata,
       transformProps,
     });

@@ -49,6 +49,7 @@ import {
   TimePivotChartPlugin,
 } from '@superset-ui/legacy-preset-chart-nvd3';
 import { DeckGLChartPreset } from '@superset-ui/legacy-preset-chart-deckgl';
+import { CartodiagramPlugin } from '@superset-ui/plugin-chart-cartodiagram';
 import {
   BigNumberChartPlugin,
   BigNumberTotalChartPlugin,
@@ -69,7 +70,6 @@ import {
   EchartsMixedTimeseriesChartPlugin,
   EchartsTreeChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
-import { SupersetOlPlugin } from '@superset-ui/plugin-chart-ol';
 import {
   SelectFilterPlugin,
   RangeFilterPlugin,
@@ -167,7 +167,7 @@ export default class MainPreset extends Preset {
         new TimeGrainFilterPlugin().configure({ key: 'filter_timegrain' }),
         new EchartsTreeChartPlugin().configure({ key: 'tree_chart' }),
         new HandlebarsChartPlugin().configure({ key: 'handlebars' }),
-        new SupersetOlPlugin({
+        new CartodiagramPlugin({
           defaultLayers: [
             {
               // TODO use other default layer here
@@ -178,7 +178,7 @@ export default class MainPreset extends Preset {
                 '<a href="https://www.imis.bfs.de/geoportal/resources/sitepolicy.html" target="_blank">© Bundesamt für Strahlenschutz</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="https://www.openstreetmap.org/copyright/en" target="_blank">OpenStreetMap</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="http://www.geodatenzentrum.de/geodaten/gdz?l=down_opendata" target="_blank">BKG</a>',
             },
           ],
-        }).configure({ key: 'ext-openlayers' }),
+        }).configure({ key: 'cartodiagram' }),
         ...experimentalplugins,
       ],
     });

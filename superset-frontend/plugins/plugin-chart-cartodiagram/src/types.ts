@@ -28,7 +28,7 @@ import { DataNode, TreeProps } from 'antd/lib/tree';
 import { Map } from 'ol';
 import { Feature, FeatureCollection, Point } from 'geojson';
 
-export interface SupersetOlPluginStylesProps {
+export interface CartodiagramPluginStylesProps {
   height: number;
   width: number;
 }
@@ -63,7 +63,7 @@ export type ChartConfig = FeatureCollection<
   ChartConfigFeature['properties']
 >;
 
-interface SupersetOlPluginCustomizeProps {
+interface CartodiagramPluginCustomizeProps {
   headerText: string;
   geomColumn: string;
   selectedChart: string;
@@ -83,16 +83,16 @@ interface SupersetOlPluginCustomizeProps {
   setControlValue: Function;
 }
 
-export type SupersetOlPluginQueryFormData = QueryFormData &
-  SupersetOlPluginStylesProps &
-  SupersetOlPluginCustomizeProps;
+export type CartodiagramPluginQueryFormData = QueryFormData &
+  CartodiagramPluginStylesProps &
+  CartodiagramPluginCustomizeProps;
 
-export type SupersetOlPluginProps = SupersetOlPluginStylesProps &
-  SupersetOlPluginCustomizeProps & {
+export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
+  CartodiagramPluginCustomizeProps & {
     data: TimeseriesDataRecord[];
   };
 
-export interface OlChartMapProps extends SupersetOlPluginProps {
+export interface OlChartMapProps extends CartodiagramPluginProps {
   mapId: string;
   olMap: Map;
 }
@@ -332,6 +332,6 @@ export interface MapViewPopoverContentProps {
   mapViewConf: MapViewConfigs;
 }
 
-export type SupersetOlPluginConstructorOpts = {
+export type CartodiagramPluginConstructorOpts = {
   defaultLayers?: LayerConf[];
 };

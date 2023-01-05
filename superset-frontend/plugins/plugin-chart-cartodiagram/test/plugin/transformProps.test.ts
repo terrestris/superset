@@ -19,7 +19,7 @@
 // import { ChartProps } from '@superset-ui/core';
 // import transformProps from '../../src/plugin/transformProps';
 
-describe('SupersetOlPlugin transformProps', () => {
+describe('CartodiagramPlugin transformProps', () => {
   // const formData = {
   //   colorScheme: 'bnbColors',
   //   datasource: '3__table',

@@ -17,4 +17,4 @@
  * under the License.
  */
 // eslint-disable-next-line import/prefer-default-export
-export { default as SupersetOlPlugin } from './plugin';
+export { default as CartodiagramPlugin } from './plugin';

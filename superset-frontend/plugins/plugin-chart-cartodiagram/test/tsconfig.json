@@ -19,7 +19,7 @@
       "path": "../../../packages/superset-ui-core"
     },
     {
-      "path": "../plugin-chart-echarts"
+      "path": "../../plugin-chart-echarts"
     },
   ]
 }

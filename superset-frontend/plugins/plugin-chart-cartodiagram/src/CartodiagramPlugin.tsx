@@ -19,7 +19,10 @@
 import React, { createRef, useState } from 'react';
 import { styled } from '@superset-ui/core';
 import OlMap from 'ol/Map';
-import { SupersetOlPluginProps, SupersetOlPluginStylesProps } from './types';
+import {
+  CartodiagramPluginProps,
+  CartodiagramPluginStylesProps,
+} from './types';
 
 import OlChartMap from './components/OlChartMap';
 
@@ -32,17 +35,19 @@ import 'ol/ol.css';
 // imported from @superset-ui/core. For variables available, please visit
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-core/src/style/index.ts
 
-const Styles = styled.div<SupersetOlPluginStylesProps>`
+const Styles = styled.div<CartodiagramPluginStylesProps>`
   height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;
 `;
 
-export default function SupersetOlPlugin(props: SupersetOlPluginProps) {
+export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   const { height, width } = props;
 
   const rootElem = createRef<HTMLDivElement>();
 
-  const [mapId] = useState(`ol-plugin-${Math.floor(Math.random() * 1000)}`);
+  const [mapId] = useState(
+    `cartodiagram-plugin-${Math.floor(Math.random() * 1000)}`,
+  );
   const [olMap] = useState(new OlMap({}));
 
   return (
