@@ -17,15 +17,26 @@
  * under the License.
  */
 import GeoJSON from 'ol/format/GeoJSON';
+import { Point } from 'geojson';
 import {
   getExtentFromFeatures,
-  getCoordinateFromGeometry,
+  getProjectedCoordinateFromPointGeoJson,
 } from '../../src/util/geometryUtil';
 import { ChartConfig } from '../../src/types';
 
-describe('getCoordinateFromGeometry', () => {
-  it('exists', () => {
-    expect(getCoordinateFromGeometry).toBeDefined();
+describe('getProjectedCoordinateFromPointGeoJson', () => {
+  it('returns a plausible result', () => {
+    const pointGeoJson: Point = {
+      type: 'Point',
+      coordinates: [6.6555, 49.74283],
+    };
+    const result = getProjectedCoordinateFromPointGeoJson(pointGeoJson);
+
+    expect(result.length).toEqual(2);
+
+    const valuesAreNumbers =
+      !Number.isNaN(result[0]) && !Number.isNaN(result[1]);
+    expect(valuesAreNumbers).toEqual(true);
   });
 });
 
