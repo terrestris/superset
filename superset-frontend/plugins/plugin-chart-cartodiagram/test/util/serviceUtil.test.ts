@@ -20,7 +20,7 @@
 import { isVersionBelow } from '../../src/util/serviceUtil';
 
 describe('isVersionBelow', () => {
-  it('return correct results', () => {
+  it('returns correct results', () => {
     // WMS
     expect(isVersionBelow('1.3.0', '1.1.0', 'WMS')).toEqual(false);
     expect(isVersionBelow('1.1.1', '1.3.0', 'WMS')).toEqual(true);
