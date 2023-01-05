@@ -35,7 +35,6 @@ import { Geometry } from 'geojson';
  * @returns The coordinate
  */
 export const getCoordinateFromGeometry = (geometry: Geometry) => {
-  // TODO change signature so the we already get a coordinate array
   const geom: Point = new GeoJSON().readGeometry(geometry, {
     // TODO: adapt to map projection
     featureProjection: 'EPSG:3857',
