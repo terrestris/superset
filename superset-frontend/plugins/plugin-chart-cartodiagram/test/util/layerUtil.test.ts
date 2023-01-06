@@ -33,10 +33,6 @@ describe('createWmsLayer', () => {
 });
 
 describe('createWfsLayer', () => {
-  it('exists', () => {
-    expect(createWfsLayer).toBeDefined();
-  });
-
   it('properly applies style', async () => {
     const colorToExpect = '#123456';
 

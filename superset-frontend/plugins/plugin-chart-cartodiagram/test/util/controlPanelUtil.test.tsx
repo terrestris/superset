@@ -27,7 +27,7 @@ import {
 } from '../../src/util/controlPanelUtil';
 
 describe('getLayerConfig', () => {
-  it('exists', () => {
+  it('return the correct layer config', () => {
     const layerConfigs: CustomControlItem = {
       name: 'layer_configs',
       config: {
@@ -129,6 +129,7 @@ describe('selectedChartMutator', () => {
     expect(result[0].label).toEqual(sliceName1);
     expect(result[1].label).toEqual(sliceName2);
   });
+
   it('returns correct result if both value and response are provided', () => {
     // TODO
     expect(selectedChartMutator).toBeDefined();
