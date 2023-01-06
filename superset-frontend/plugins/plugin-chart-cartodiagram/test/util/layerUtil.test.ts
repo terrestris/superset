@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WfsLayerConf } from 'plugins/plugin-chart-cartodiagram/src/types';
+import { WfsLayerConf } from '../../src/types';
 import {
   createLayer,
   createWfsLayer,
