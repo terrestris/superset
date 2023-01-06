@@ -131,7 +131,7 @@ describe('selectedChartMutator', () => {
   });
 
   it('returns correct result if both value and response are provided', () => {
-    // TODO
-    expect(selectedChartMutator).toBeDefined();
+    // TODO:
+    expect(false).toEqual(true);
   });
 });
