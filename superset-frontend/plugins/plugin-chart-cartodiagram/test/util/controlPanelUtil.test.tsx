@@ -18,13 +18,65 @@
  */
 
 import {
+  ControlPanelConfig,
+  CustomControlItem,
+} from '@superset-ui/chart-controls';
+import {
   getLayerConfig,
   selectedChartMutator,
 } from '../../src/util/controlPanelUtil';
 
 describe('getLayerConfig', () => {
   it('exists', () => {
-    expect(getLayerConfig).toBeDefined();
+    const layerConfigs: CustomControlItem = {
+      name: 'layer_configs',
+      config: {
+        type: 'dummy',
+        renderTrigger: true,
+        label: 'Layers',
+        default: [
+          {
+            type: 'XYZ',
+            url: 'http://example.com/',
+            title: 'dummy title',
+            attribution: 'dummy attribution',
+          },
+        ],
+        description: 'The configuration for the map layers',
+      },
+    };
+    const controlPanel: ControlPanelConfig = {
+      controlPanelSections: [
+        {
+          label: 'Configuration',
+          expanded: true,
+          controlSetRows: [],
+        },
+        {
+          label: 'Map Options',
+          expanded: true,
+          controlSetRows: [
+            [
+              {
+                name: 'map_view',
+                config: {
+                  type: 'dummy',
+                },
+              },
+            ],
+            [layerConfigs],
+          ],
+        },
+        {
+          label: 'Chart Options',
+          expanded: true,
+          controlSetRows: [],
+        },
+      ],
+    };
+    const extractedLayerConfigs = getLayerConfig(controlPanel);
+
+    expect(extractedLayerConfigs).toEqual(layerConfigs);
   });
 });
 
