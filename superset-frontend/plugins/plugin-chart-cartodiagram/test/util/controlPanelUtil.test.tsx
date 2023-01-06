@@ -27,7 +27,7 @@ import {
 } from '../../src/util/controlPanelUtil';
 
 describe('getLayerConfig', () => {
-  it('return the correct layer config', () => {
+  it('returns the correct layer config', () => {
     const layerConfigs: CustomControlItem = {
       name: 'layer_configs',
       config: {

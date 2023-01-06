@@ -43,14 +43,14 @@ describe('createChartComponent', () => {
   const width = 100;
   const height = 100;
 
-  it('returns pie chart', () => {
+  it('creates pie chart', () => {
     const result = createChartComponent('pie', config, width, height);
     const createdType = result.type.name;
 
     expect(createdType).toEqual('EchartsPie');
   });
 
-  it('returns classic timeseries', () => {
+  it('creates classic timeseries', () => {
     const timeSeriesTypes = [
       'echarts_timeseries_bar',
       'echarts_timeseries_line',
@@ -70,7 +70,7 @@ describe('createChartComponent', () => {
     });
   });
 
-  it('returns mixed timeseries', () => {
+  it('creates mixed timeseries', () => {
     const result = createChartComponent(
       'mixed_timeseries',
       config,
