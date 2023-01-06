@@ -50,24 +50,39 @@ describe('createChartComponent', () => {
     expect(createdType).toEqual('EchartsPie');
   });
 
-  it('creates classic timeseries', () => {
-    const timeSeriesTypes = [
-      'echarts_timeseries_bar',
-      'echarts_timeseries_line',
-      'echarts_timeseries_smooth',
-      'echarts_timeseries_scatter',
-      'echarts_timeseries_step',
-    ];
-    timeSeriesTypes.forEach(timeSeriesType => {
-      const result = createChartComponent(
-        timeSeriesType,
-        config,
-        width,
-        height,
-      );
-      const createdType = result.type.name;
-      expect(createdType).toEqual('EchartsTimeseries');
-    });
+  it('creates timeseries chart', () => {
+    const result = createChartComponent('echarts_timeseries_bar', config, width, height);
+    const createdType = result.type.name;
+
+    expect(createdType).toEqual('EchartsTimeseries');
+  });
+
+  it('creates timeseries line', () => {
+    const result = createChartComponent('echarts_timeseries_line', config, width, height);
+    const createdType = result.type.name;
+
+    expect(createdType).toEqual('EchartsTimeseries');
+  });
+
+  it('creates timeseries smooth', () => {
+    const result = createChartComponent('echarts_timeseries_smooth', config, width, height);
+    const createdType = result.type.name;
+
+    expect(createdType).toEqual('EchartsTimeseries');
+  });
+
+  it('creates timeseries scatter', () => {
+    const result = createChartComponent('echarts_timeseries_scatter', config, width, height);
+    const createdType = result.type.name;
+
+    expect(createdType).toEqual('EchartsTimeseries');
+  });
+
+  it('creates timeseries step', () => {
+    const result = createChartComponent('echarts_timeseries_step', config, width, height);
+    const createdType = result.type.name;
+
+    expect(createdType).toEqual('EchartsTimeseries');
   });
 
   it('creates mixed timeseries', () => {
