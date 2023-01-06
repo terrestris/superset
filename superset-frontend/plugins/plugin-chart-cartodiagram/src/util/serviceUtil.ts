@@ -48,10 +48,12 @@ export const isVersionBelow = (
   versions.reverse();
   const versionIdx = versions.indexOf(version);
   if (versionIdx === -1) {
+    // TODO: consider throwing an error instead
     return false;
   }
   const belowIdx = versions.indexOf(below);
   if (belowIdx === -1) {
+    // TODO: consider throwing an error instead
     return false;
   }
 

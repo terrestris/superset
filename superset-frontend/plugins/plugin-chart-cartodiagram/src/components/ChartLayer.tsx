@@ -9,7 +9,7 @@ import {
   SupportedVizTypes,
 } from '../types';
 import { createChartComponent } from '../util/chartUtil';
-import { getCoordinateFromGeometry } from '../util/geometryUtil';
+import { getProjectedCoordinateFromPointGeoJson } from '../util/geometryUtil';
 
 import Loader from '../images/loading.gif';
 
@@ -77,7 +77,7 @@ export class ChartLayer extends Layer {
     spinner.style.top = '50%';
     spinner.style.left = '50%';
     spinner.style.transform = 'translate(-50%, -50%)';
-    
+
     this.loadingMask = document.createElement('div');
     this.loadingMask.style.position = 'relative';
     this.loadingMask.style.height = '100%';
@@ -166,7 +166,7 @@ export class ChartLayer extends Layer {
 
       return {
         htmlElement: container,
-        coordinate: getCoordinateFromGeometry(feature.geometry),
+        coordinate: getProjectedCoordinateFromPointGeoJson(feature.geometry),
         width: chartWidth,
         height: chartHeight,
         feature,

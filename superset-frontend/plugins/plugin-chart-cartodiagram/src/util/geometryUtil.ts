@@ -23,22 +23,24 @@
 
 import GeoJSON from 'ol/format/GeoJSON';
 import Feature from 'ol/Feature';
-import { Point } from 'ol/geom';
+import { Point as OlPoint } from 'ol/geom';
 import VectorSource from 'ol/source/Vector';
-import { Geometry } from 'geojson';
+import { Point as GeoJsonPoint } from 'geojson';
 
 /**
- * Converts a location string to a coordinate.
+ * Extracts the coordinate from a Point GeoJSON in the current map projection.
  *
- * @param location The location string
+ * @param geoJsonPoint The GeoJSON string for the point
  *
  * @returns The coordinate
  */
-export const getCoordinateFromGeometry = (geometry: Geometry) => {
-  const geom: Point = new GeoJSON().readGeometry(geometry, {
+export const getProjectedCoordinateFromPointGeoJson = (
+  geoJsonPoint: GeoJsonPoint,
+) => {
+  const geom: OlPoint = new GeoJSON().readGeometry(geoJsonPoint, {
     // TODO: adapt to map projection
     featureProjection: 'EPSG:3857',
-  }) as Point;
+  }) as OlPoint;
   return geom.getCoordinates();
 };
 

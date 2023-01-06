@@ -17,6 +17,9 @@
  * under the License.
  */
 
+/**
+ * Util for map related operations.
+ */
 import { Map } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import { ChartConfig } from '../types';
@@ -28,9 +31,11 @@ import { getExtentFromFeatures } from './geometryUtil';
 const defaultExtent = [-16000000, -7279000, 20500000, 11000000];
 
 /**
- * Util for map related operations.
+ * Fits map to the spatial extent of provided charts.
+ *
+ * @param olMap The OpenLayers map
+ * @param chartConfigs The chart configuration
  */
-
 export const fitMapToCharts = (olMap: Map, chartConfigs: ChartConfig) => {
   const view = olMap.getView();
   const features = new GeoJSON().readFeatures(chartConfigs, {
