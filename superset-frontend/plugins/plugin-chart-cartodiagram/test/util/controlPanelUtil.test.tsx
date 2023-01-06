@@ -81,7 +81,56 @@ describe('getLayerConfig', () => {
 });
 
 describe('selectedChartMutator', () => {
-  it('exists', () => {
+  it('returns empty array for empty inputs', () => {
+    const response = undefined;
+    const value = undefined;
+    const result = selectedChartMutator(response, value);
+    expect(result).toEqual([]);
+  });
+
+  it('returns parsed value if response is empty', () => {
+    const response = undefined;
+
+    const sliceName = 'foobar';
+    const value = JSON.stringify({
+      id: 278,
+      params: '',
+      slice_name: sliceName,
+      viz_type: 'pie',
+    });
+
+    const result = selectedChartMutator(response, value);
+
+    expect(result[0].label).toEqual(sliceName);
+  });
+
+  it('returns response options if no value is chosen', () => {
+    const sliceName1 = 'foo';
+    const sliceName2 = 'bar';
+    const response = {
+      result: [
+        {
+          id: 1,
+          params: '{}',
+          slice_name: sliceName1,
+          viz_type: 'viz1',
+        },
+        {
+          id: 2,
+          params: '{}',
+          slice_name: sliceName2,
+          viz_type: 'viz2',
+        },
+      ],
+    };
+    const value = undefined;
+
+    const result = selectedChartMutator(response, value);
+    expect(result[0].label).toEqual(sliceName1);
+    expect(result[1].label).toEqual(sliceName2);
+  });
+  it('returns correct result if both value and response are provided', () => {
+    // TODO
     expect(selectedChartMutator).toBeDefined();
   });
 });
