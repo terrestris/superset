@@ -130,8 +130,81 @@ describe('selectedChartMutator', () => {
     expect(result[1].label).toEqual(sliceName2);
   });
 
-  it('returns correct result if both value and response are provided', () => {
-    // TODO:
-    expect(false).toEqual(true);
+  it('returns correct result if id of chosen config does not exist in response', () => {
+    const response = {
+      result: [
+        {
+          id: 1,
+          params: '{}',
+          slice_name: 'foo',
+          viz_type: 'viz1',
+        },
+        {
+          id: 2,
+          params: '{}',
+          slice_name: 'bar',
+          viz_type: 'viz2',
+        },
+      ],
+    };
+
+    const value = JSON.stringify({
+      id: 3,
+      params: '{}',
+      slice_name: 'my-slice',
+      viz_type: 'pie',
+    });
+
+    const result = selectedChartMutator(response, value);
+
+    // collect all ids in a set to prevent double entries
+    const ids = new Set();
+    result.forEach((item: any) => {
+      const config = JSON.parse(item.value);
+      const { id } = config;
+      ids.add(id);
+    });
+
+    const threeDifferentIds = ids.size === 3;
+
+    expect(threeDifferentIds).toEqual(true);
+  });
+
+  it('returns correct result if id of chosen config already exists', () => {
+    const response = {
+      result: [
+        {
+          id: 1,
+          params: '{}',
+          slice_name: 'foo',
+          viz_type: 'viz1',
+        },
+        {
+          id: 2,
+          params: '{}',
+          slice_name: 'bar',
+          viz_type: 'viz2',
+        },
+      ],
+    };
+
+    const value = JSON.stringify({
+      id: 1,
+      params: '{}',
+      slice_name: 'my-slice',
+      viz_type: 'pie',
+    });
+
+    const result = selectedChartMutator(response, value);
+
+    const itemsIdWithId1 = result.filter((item: any) => {
+      const config = JSON.parse(item.value);
+      const { id } = config;
+      return id === 1;
+    });
+    expect(itemsIdWithId1.length).toEqual(2);
+
+    const labelsEqual = itemsIdWithId1[0].label === itemsIdWithId1[1].label;
+    expect(labelsEqual).toEqual(false);
   });
 });
