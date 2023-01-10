@@ -39,7 +39,7 @@ describe('computeConfigValues', () => {
 
     const zoomConfigs: ZoomConfigs = {
       type: 'FIXED',
-      values: zoomConfigValues,
+      values: {},
       configs: {
         zoom: 2,
         width,
@@ -53,6 +53,57 @@ describe('computeConfigValues', () => {
     expect(result[4]).toEqual({
       width,
       height,
+    });
+  });
+
+  it('computes linear values', () => {
+    const height = 100;
+    const width = 100;
+
+    const zoomConfigs: ZoomConfigs = {
+      type: 'LINEAR',
+      values: {},
+      configs: {
+        zoom: 2,
+        width,
+        height,
+        slope: 2,
+      },
+    };
+    const result = computeConfigValues(zoomConfigs);
+
+    expect(Object.keys(result).length).toEqual(
+      Object.keys(zoomConfigValues).length,
+    );
+    expect(result[4]).toEqual({
+      width: 104,
+      height: 104,
+    });
+  });
+
+  it('computes exponential values', () => {
+    const height = 100;
+    const width = 100;
+
+    const zoomConfigs: ZoomConfigs = {
+      type: 'EXP',
+      values: {},
+      configs: {
+        zoom: 2,
+        width,
+        height,
+        exponent: 1.6,
+      },
+    };
+    const result = computeConfigValues(zoomConfigs);
+
+    expect(Object.keys(result).length).toEqual(
+      Object.keys(zoomConfigValues).length,
+    );
+
+    expect(result[4]).toEqual({
+      width: 119,
+      height: 119,
     });
   });
 });
