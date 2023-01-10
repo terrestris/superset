@@ -45,5 +45,4 @@ describe('ChartLayer', () => {
     chartLayer.removeAllChartElements();
     expect(chartLayer.charts).toEqual([]);
   });
-
 });
