@@ -238,8 +238,8 @@ export type ChartLayerOptions = {
   chartSizeValues?: ChartSizeValues;
   chartConfigs?: ChartConfig;
   chartVizType: SupportedVizTypes;
-  onMouseOver: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
-  onMouseOut: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
+  onMouseOver?: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
+  onMouseOut?: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
   [key: string]: any; // allow custom types like 'name'
   // these properties are copied from OpenLayers
   // TODO: consider extending the OpenLayers options type
