@@ -22,6 +22,9 @@ import {
   computeConfigValues,
   MAX_ZOOM_LEVEL,
   MIN_ZOOM_LEVEL,
+  toExpConfig,
+  toFixedConfig,
+  toLinearConfig,
   zoomConfigsToData,
 } from '../../src/util/zoomUtil';
 
@@ -114,5 +117,80 @@ describe('zoomConfigsToData', () => {
 
     expect(result.length).toEqual(Object.keys(zoomConfigValues).length);
     expect(result[12]).toEqual([100, 100, 12]);
+  });
+});
+
+describe('toFixedConfig', () => {
+  const configs: ZoomConfigs['configs'] = {
+    width: 100,
+    height: 100,
+    zoom: 5,
+  };
+  const result = toFixedConfig(configs);
+
+  it('has correct type', () => {
+    expect(result.type).toEqual('FIXED');
+  });
+
+  it('returns correct result', () => {
+    expect(result.values[4]).toEqual({
+      width: 100,
+      height: 100,
+    });
+
+    expect(result.values[6]).toEqual({
+      width: 100,
+      height: 100,
+    });
+  });
+});
+
+describe('toLinearConfig', () => {
+  const configs: ZoomConfigs['configs'] = {
+    width: 100,
+    height: 100,
+    zoom: 5,
+    slope: 2,
+  };
+  const result = toLinearConfig(configs);
+
+  it('has correct type', () => {
+    expect(result.type).toEqual('LINEAR');
+  });
+
+  it('returns correct result', () => {
+    expect(result.values[4]).toEqual({
+      width: 98,
+      height: 98,
+    });
+
+    expect(result.values[6]).toEqual({
+      width: 102,
+      height: 102,
+    });
+  });
+});
+
+describe('toExpConfig', () => {
+  const configs: ZoomConfigs['configs'] = {
+    width: 100,
+    height: 100,
+    zoom: 5,
+    exponent: 1.5,
+  };
+  const result = toExpConfig(configs);
+  it('has correct type', () => {
+    expect(result.type).toEqual('EXP');
+  });
+  it('returns correct result', () => {
+    expect(result.values[4]).toEqual({
+      width: 93,
+      height: 93,
+    });
+
+    expect(result.values[6]).toEqual({
+      width: 107,
+      height: 107,
+    });
   });
 });
