@@ -46,6 +46,22 @@ describe('ChartLayer', () => {
     expect(chartLayer.charts).toEqual([]);
   });
 
+  describe('setChartConfig', () => {
+    it('calls changed()', () => {
+      const options: ChartLayerOptions = {
+        chartVizType: 'pie',
+      };
+      const chartLayer = new ChartLayer(options);
+      const mockedChanged = jest.fn();
+      console.log(mockedChanged.mock);
+      chartLayer.changed = new mockedChanged();
+      chartLayer.setChartBackgroundBorderRadius(1);
+      // chartLayer.changed();
+      console.log(mockedChanged.mock);
+      expect(true).toEqual(false);
+    });
+  });
+
   it('can update chart elements', () => {
     const chartConfigs = {
       type: 'FeatureCollection',
