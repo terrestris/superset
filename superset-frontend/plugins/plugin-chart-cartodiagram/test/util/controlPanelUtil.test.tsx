@@ -82,14 +82,14 @@ describe('getLayerConfig', () => {
 
 describe('selectedChartMutator', () => {
   it('returns empty array for empty inputs', () => {
-    const response = undefined;
+    const response = {};
     const value = undefined;
     const result = selectedChartMutator(response, value);
     expect(result).toEqual([]);
   });
 
   it('returns parsed value if response is empty', () => {
-    const response = undefined;
+    const response = {};
 
     const sliceName = 'foobar';
     const value = JSON.stringify({
