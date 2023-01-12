@@ -50,7 +50,7 @@ describe('createChartComponent', () => {
     expect(createdType).toEqual('EchartsPie');
   });
 
-  it('creates timeseries chart', () => {
+  it('creates timeseries bar', () => {
     const result = createChartComponent(
       'echarts_timeseries_bar',
       config,

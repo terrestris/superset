@@ -17,12 +17,14 @@
  * under the License.
  */
 
+import { getChartTransformPropsRegistry } from '@superset-ui/core';
 import {
   groupByLocationTs,
   groupByLocation,
   getEchartConfigs,
   parseSelectedChart,
 } from '../../src/util/transformPropsUtil';
+import { pieChartData } from '../testData';
 
 describe('groupByLocationTs', () => {
   it('exists', () => {
@@ -31,14 +33,78 @@ describe('groupByLocationTs', () => {
 });
 
 describe('groupByLocation', () => {
-  it('exists', () => {
-    expect(groupByLocation).toBeDefined();
+  const geometryColumn = 'geom';
+  const result = groupByLocation(pieChartData, geometryColumn);
+
+  it('groups in the correct count of geometries', () => {
+    const countOfGeometries = Object.keys(result).length;
+    expect(countOfGeometries).toEqual(2);
+  });
+
+  it('groups items with the correct geometry', () => {
+    Object.entries(result).forEach(([geom, items]) => {
+      const allGeomsAreTheSame = items.every((item: any) => geom === item.geom);
+      expect(allGeomsAreTheSame).toEqual(true);
+    });
   });
 });
 
 describe('getEchartConfigs', () => {
-  it('exists', () => {
-    expect(getEchartConfigs).toBeDefined();
+  it('works for pie charts', () => {
+    const dummyTransformProps = 'dummyTransformProps';
+    const chartQueryBuilderMock: jest.MockedFunction<any> = jest.fn(
+      () => dummyTransformProps,
+    );
+
+    const transformPropsRegistry = getChartTransformPropsRegistry();
+    transformPropsRegistry.registerValue('pie', chartQueryBuilderMock);
+    const geomColumn = 'geom';
+
+    const chartTransformer = transformPropsRegistry.get('pie');
+
+    const pieChartConfig = {
+      params: {},
+      viz_type: 'pie',
+    };
+
+    const pieChartProps: any = {
+      queriesData: [{}],
+    };
+
+    const result = getEchartConfigs(
+      pieChartData,
+      undefined,
+      pieChartConfig,
+      geomColumn,
+      pieChartProps,
+      chartTransformer,
+    );
+
+    const countLocations = 2;
+    expect(chartQueryBuilderMock.mock.calls).toHaveLength(countLocations);
+
+    const expectedOutput = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [1, 2],
+          },
+          properties: dummyTransformProps,
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [3, 4],
+          },
+          properties: dummyTransformProps,
+        },
+      ],
+    };
+    expect(result).toEqual(expectedOutput);
   });
 });
 
