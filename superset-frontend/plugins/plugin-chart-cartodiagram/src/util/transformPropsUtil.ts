@@ -41,6 +41,10 @@ export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
     return locations;
   }
   data.forEach(d => {
+    // eslint-disable-next-line no-underscore-dangle
+    const timestamp = d.__timestamp;
+    if (!timestamp) return;
+
     const keys = Object.keys(d).filter(k => k !== '__timestamp');
 
     keys.forEach(k => {
@@ -58,14 +62,12 @@ export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
       const currentLocation = locations[location];
       if (Array.isArray(currentLocation)) {
         dataAtLocation = currentLocation.find(
-          // eslint-disable-next-line no-underscore-dangle
-          dal => dal.__timestamp === d.__timestamp,
+          dal => dal.__timestamp === timestamp,
         );
       }
       if (!dataAtLocation) {
         dataAtLocation = {
-          // eslint-disable-next-line no-underscore-dangle
-          __timestamp: d.__timestamp,
+          __timestamp: timestamp,
         };
         if (Array.isArray(currentLocation)) {
           currentLocation.push(dataAtLocation);

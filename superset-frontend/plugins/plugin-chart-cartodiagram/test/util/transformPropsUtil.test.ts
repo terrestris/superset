@@ -24,11 +24,16 @@ import {
   getEchartConfigs,
   parseSelectedChart,
 } from '../../src/util/transformPropsUtil';
-import { pieChartData } from '../testData';
+import { barChartData, pieChartData } from '../testData';
 
 describe('groupByLocationTs', () => {
-  it('exists', () => {
-    expect(groupByLocationTs).toBeDefined();
+  it('returns empty result when no timestamps provided', () => {
+    const result = groupByLocationTs(pieChartData);
+    expect(result).toEqual({});
+  });
+  it('returns correct structure on valid input', () => {
+    const result = groupByLocationTs(barChartData);
+    expect(false).toEqual(true);
   });
 });
 

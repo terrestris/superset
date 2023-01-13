@@ -71,3 +71,66 @@ export const pieChartData: any = [
     my_count: 218,
   },
 ];
+
+export const barChartData: any = [
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'apple',
+    my_count: 347,
+    __timestamp: 1564275000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'apple',
+    my_count: 360,
+    __timestamp: 1564275000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'lemon',
+    my_count: 335,
+    __timestamp: 1564275000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'lemon',
+    my_count: 333,
+    __timestamp: 1564272000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'lemon',
+    my_count: 353,
+    __timestamp: 1564272000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord1}}`,
+    my_value: 'lemon',
+    my_count: 359,
+    __timestamp: 1564272000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord2}}`,
+    my_value: 'lemon',
+    my_count: 347,
+    __timestamp: 1564272000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord2}}`,
+    my_value: 'apple',
+    my_count: 335,
+    __timestamp: 1564272000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord2}}`,
+    my_value: 'apple',
+    my_count: 356,
+    __timestamp: 1564275000000,
+  },
+  {
+    geom: `{"type":"Point","coordinates":${coord2}}`,
+    my_value: 'banana',
+    my_count: 218,
+    __timestamp: 1564275000000,
+  },
+];
