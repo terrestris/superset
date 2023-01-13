@@ -50,7 +50,7 @@ describe('groupByLocation', () => {
 });
 
 describe('getEchartConfigs', () => {
-  it('works for pie charts', () => {
+  it('works for pie chart', () => {
     const dummyTransformProps = 'dummyTransformProps';
     const chartQueryBuilderMock: jest.MockedFunction<any> = jest.fn(
       () => dummyTransformProps,
@@ -105,6 +105,14 @@ describe('getEchartConfigs', () => {
       ],
     };
     expect(result).toEqual(expectedOutput);
+  });
+  it('works for bar chart', () => {
+    // TODO
+    expect(false).toEqual(true);
+  });
+  it('works for mixed time-series', () => {
+    // TODO
+    expect(false).toEqual(true);
   });
 });
 
