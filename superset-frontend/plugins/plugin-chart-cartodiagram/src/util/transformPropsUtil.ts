@@ -62,6 +62,7 @@ export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
       const currentLocation = locations[location];
       if (Array.isArray(currentLocation)) {
         dataAtLocation = currentLocation.find(
+          // eslint-disable-next-line no-underscore-dangle
           dal => dal.__timestamp === timestamp,
         );
       }
