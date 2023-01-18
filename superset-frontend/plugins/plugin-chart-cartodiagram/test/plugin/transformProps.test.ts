@@ -16,39 +16,140 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// import { ChartProps } from '@superset-ui/core';
-// import transformProps from '../../src/plugin/transformProps';
+import {
+  ChartProps,
+  getChartTransformPropsRegistry,
+  supersetTheme,
+} from '@superset-ui/core';
+import { LayerConf, MapViewConfigs, ZoomConfigs } from '../../src/types';
+import transformProps from '../../src/plugin/transformProps';
 
 describe('CartodiagramPlugin transformProps', () => {
-  // const formData = {
-  //   colorScheme: 'bnbColors',
-  //   datasource: '3__table',
-  //   granularity_sqla: 'ds',
-  //   metric: 'sum__num',
-  //   series: 'name',
-  //   boldText: true,
-  //   headerFontSize: 'xs',
-  //   headerText: 'my text',
-  // };
-  // const chartProps = new ChartProps({
-  //   formData,
-  //   width: 800,
-  //   height: 600,
-  //   queriesData: [{
-  //     data: [{ name: 'Hulk', sum__num: 1, __timestamp: 599616000000 }],
-  //   }],
-  // });
+  // TODO
+  const chartSize: ZoomConfigs = {
+    type: 'FIXED',
+    configs: {
+      height: 10,
+      width: 10,
+      zoom: 1,
+    },
+    values: {
+      1: {
+        height: 10,
+        width: 10,
+      },
+    },
+  };
+  const layerConfigs: LayerConf[] = [
+    {
+      type: 'XYZ',
+      title: 'foo',
+      url: 'example.com',
+    },
+  ];
+  const mapView: MapViewConfigs = {
+    mode: 'FIT_DATA',
+    zoom: 1,
+    latitude: 0,
+    longitude: 0,
+    fixedZoom: 1,
+    fixedLatitude: 0,
+    fixedLongitude: 0,
+  };
+
+  // only minimal subset of actual params
+  const selectedChartParams = {
+    groupby: ['bar'],
+  };
+
+  const selectedChart = {
+    id: 1,
+    viz_type: 'pie',
+    slice_name: 'foo',
+    params: JSON.stringify(selectedChartParams),
+  };
+
+  const formData = {
+    viz_type: 'cartodiagram',
+    geomColumn: 'geom',
+    selectedChart: JSON.stringify(selectedChart),
+    chartSize,
+    layerConfigs,
+    mapView,
+    chartBackgroundColor: '#000000',
+    chartBackgroundBorderRadius: 5,
+  };
+
+  const geom = {
+    loc: 'fake location',
+  };
+
+  const chartProps = new ChartProps({
+    formData,
+    width: 800,
+    height: 600,
+    queriesData: [
+      {
+        data: [
+          {
+            geom: JSON.stringify(geom),
+            sum__num: 1,
+            __timestamp: 599616000000,
+          },
+        ],
+      },
+    ],
+    theme: supersetTheme,
+  });
+
+  let chartTransformPropsPieMock: jest.MockedFunction<any>;
+  let chartTransformPropsTimeseriesMock: jest.MockedFunction<any>;
+  beforeEach(() => {
+    chartTransformPropsPieMock = jest.fn();
+    chartTransformPropsTimeseriesMock = jest.fn();
+    const registry = getChartTransformPropsRegistry();
+    registry.registerValue('pie', chartTransformPropsPieMock);
+    registry.registerValue(
+      'echarts_timeseries',
+      chartTransformPropsTimeseriesMock,
+    );
+  });
+
+  afterEach(() => {
+    // remove registered transformProps
+    const registry = getChartTransformPropsRegistry();
+    registry.clear();
+  });
+
+  it('should call the transform props function of the referenced chart', () => {
+    transformProps(chartProps);
+    expect(chartTransformPropsPieMock).toHaveBeenCalled();
+    expect(chartTransformPropsTimeseriesMock).not.toHaveBeenCalled();
+  });
 
   it('should transform chart props for viz', () => {
-    // TODO fix tests
-    // expect(transformProps(chartProps)).toEqual({
-    //   width: 800,
-    //   height: 600,
-    //   boldText: true,
-    //   headerFontSize: 'xs',
-    //   headerText: 'my text',
-    //   data: [{ name: 'Hulk', sum__num: 1, __timestamp: new Date(599616000000) }],
-    // });
-    expect(true).toBe(true);
+    const transformedProps = transformProps(chartProps);
+    expect(transformedProps).toEqual(
+      expect.objectContaining({
+        width: chartProps.width,
+        height: chartProps.height,
+        geomColumn: formData.geomColumn,
+        selectedChart: expect.objectContaining({
+          viz_type: selectedChart.viz_type,
+          params: selectedChartParams,
+        }),
+        // The actual test for the created chartConfigs
+        // will be done in transformPropsUtil.test.ts
+        chartConfigs: expect.objectContaining({
+          type: 'FeatureCollection',
+        }),
+        chartVizType: selectedChart.viz_type,
+        chartSize,
+        layerConfigs,
+        mapView,
+        chartBackgroundColor: formData.chartBackgroundColor,
+        chartBackgroundBorderRadius: formData.chartBackgroundBorderRadius,
+      }),
+    );
   });
 });

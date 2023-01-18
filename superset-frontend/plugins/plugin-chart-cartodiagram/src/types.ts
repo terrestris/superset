@@ -64,7 +64,6 @@ export type ChartConfig = FeatureCollection<
 >;
 
 interface CartodiagramPluginCustomizeProps {
-  headerText: string;
   geomColumn: string;
   selectedChart: string;
   chartConfigs: ChartConfig;
