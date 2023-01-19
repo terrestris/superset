@@ -19,7 +19,10 @@
 
 const coord1 = '[1,2]';
 const coord2 = '[3,4]';
-export const pieChartData: any = [
+export const geom1 = `{"type":"Point","coordinates":${coord1}}`;
+export const geom2 = `{"type":"Point","coordinates":${coord2}}`;
+
+export const nonTimeSeriesChartData: any = [
   {
     geom: `{"type":"Point","coordinates":${coord1}}`,
     my_value: 'apple',
@@ -72,65 +75,32 @@ export const pieChartData: any = [
   },
 ];
 
-export const barChartData: any = [
+export const timeseriesChartData = [
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'apple',
-    my_count: 347,
+    [geom1]: 347,
+    [geom2]: 360,
     __timestamp: 1564275000000,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'apple',
-    my_count: 360,
+    [geom1]: 353,
+    [geom2]: 328,
+    __timestamp: 1564272000000,
+  },
+];
+
+export const groupedTimeseriesChartData = [
+  {
+    [`${geom1}, apple`]: 347,
+    [`${geom2}, apple`]: 360,
+    [`${geom1}, lemon`]: 352,
+    [`${geom2}, lemon`]: 364,
     __timestamp: 1564275000000,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'lemon',
-    my_count: 335,
-    __timestamp: 1564275000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'lemon',
-    my_count: 333,
+    [`${geom1}, apple`]: 353,
+    [`${geom2}, apple`]: 328,
+    [`${geom1}, lemon`]: 346,
+    [`${geom2}, lemon`]: 333,
     __timestamp: 1564272000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'lemon',
-    my_count: 353,
-    __timestamp: 1564272000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
-    my_value: 'lemon',
-    my_count: 359,
-    __timestamp: 1564272000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
-    my_value: 'lemon',
-    my_count: 347,
-    __timestamp: 1564272000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
-    my_value: 'apple',
-    my_count: 335,
-    __timestamp: 1564272000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
-    my_value: 'apple',
-    my_count: 356,
-    __timestamp: 1564275000000,
-  },
-  {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
-    my_value: 'banana',
-    my_count: 218,
-    __timestamp: 1564275000000,
   },
 ];
