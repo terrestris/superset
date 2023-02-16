@@ -51,6 +51,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     chartBackgroundColor,
     chartBackgroundBorderRadius,
     setControlValue,
+    theme,
   } = props;
 
   const [currentChartConfigs, setCurrentChartConfigs] =
@@ -62,14 +63,14 @@ export const OlChartMap = (props: OlChartMapProps) => {
    */
   useEffect(() => {
     olMap.setTarget(mapId);
-  }, []);
+  }, [olMap, mapId]);
 
   /**
    * Update map size if size of parent container changes.
    */
   useEffect(() => {
     olMap.updateSize();
-  }, [width, height]);
+  }, [olMap, width, height]);
 
   /**
    * The prop chartConfigs will always be created on the fly,
@@ -191,18 +192,13 @@ export const OlChartMap = (props: OlChartMapProps) => {
     };
 
     addLayers(layerConfigs);
-  }, [layerConfigs]);
+  }, [olMap, layerConfigs]);
 
   /**
    * Create listener on map movement
    */
   useEffect(() => {
-    const { mode, fixedLatitude, fixedLongitude, fixedZoom } = currentMapView;
-
-    if (mode === 'FIT_DATA') {
-      fitMapToCharts(olMap, currentChartConfigs);
-      return undefined;
-    }
+    const { fixedLatitude, fixedLongitude, fixedZoom } = currentMapView;
 
     const view = olMap.getView();
 
@@ -248,7 +244,27 @@ export const OlChartMap = (props: OlChartMapProps) => {
     return () => {
       unByKey(listenerKey);
     };
-  }, [currentMapView, currentChartConfigs]);
+  }, [olMap, setControlValue, currentMapView, currentChartConfigs]);
+
+  useEffect(() => {
+    if (currentMapView.mode === 'FIT_DATA') {
+      const layers = olMap.getLayers();
+      const chartLayer = layers
+        .getArray()
+        .filter(layer => layer instanceof ChartLayer)[0] as ChartLayer;
+      if (!chartLayer) {
+        return;
+      }
+      const extent = chartLayer.getExtent();
+      if (!extent) {
+        return;
+      }
+      const view = olMap.getView();
+      view.fit(extent, {
+        size: [250, 250],
+      });
+    }
+  }, [olMap, currentMapView.mode]);
 
   /**
    * Send updated zoom to chart config control.
@@ -294,7 +310,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     return () => {
       unByKey(listenerKey);
     };
-  }, [chartSize]);
+  }, [olMap, setControlValue, chartSize]);
 
   /**
    * Handle changes that trigger changes of charts. Also instantiate
@@ -324,54 +340,65 @@ export const OlChartMap = (props: OlChartMapProps) => {
           interaction.setActive(false);
         });
       };
+
       const activateInteractions = () => {
         olMap.getInteractions().forEach(interaction => {
           interaction.setActive(true);
         });
       };
 
+      const { r, g, b, a } = chartBackgroundColor;
+      const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+
       const newChartLayer = new ChartLayer({
         name: CHART_LAYER_NAME,
         chartConfigs: currentChartConfigs,
         chartVizType,
+        chartSizeValues: chartSize.values,
+        chartBackgroundCssColor: cssColor,
+        chartBackgroundBorderRadius,
         onMouseOver: deactivateInteractions,
         onMouseOut: activateInteractions,
+        theme,
       });
-
-      // Only the last setter triggers rerendering of charts
-      newChartLayer.setChartConfig(currentChartConfigs, true);
-      newChartLayer.setChartVizType(chartVizType, true);
-      newChartLayer.setChartSizeValues(chartSize.values);
 
       olMap.addLayer(newChartLayer);
     } else {
+      let recreateCharts = false;
+      if (chartVizType !== chartLayer.chartVizType) {
+        chartLayer.setChartVizType(chartVizType, true);
+        recreateCharts = true;
+      }
+      if (
+        JSON.stringify(currentChartConfigs) !==
+        JSON.stringify(chartLayer.chartConfigs)
+      ) {
+        chartLayer.setChartConfig(currentChartConfigs, true);
+        recreateCharts = true;
+      }
       // Only the last setter triggers rerendering of charts
-      chartLayer.setChartConfig(currentChartConfigs, true);
-      chartLayer.setChartVizType(chartVizType, true);
-      chartLayer.setChartSizeValues(chartSize.values);
+      chartLayer.setChartBackgroundBorderRadius(
+        chartBackgroundBorderRadius,
+        true,
+      );
+      const { r, g, b, a } = chartBackgroundColor;
+      const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+      chartLayer.setChartBackgroundCssColor(cssColor, true);
+      chartLayer.setChartSizeValues(chartSize.values, true);
+      if (recreateCharts) {
+        chartLayer.removeAllChartElements();
+      }
+      chartLayer.changed();
     }
-  }, [currentChartConfigs, chartVizType, chartSize.values]);
-
-  /**
-   * Handle changes of properties that do not trigger
-   * recreation of charts.
-   */
-  useEffect(() => {
-    const layers = olMap.getLayers();
-    const chartLayer = layers
-      .getArray()
-      .filter(layer => layer instanceof ChartLayer)[0] as ChartLayer;
-
-    if (!chartLayer) {
-      return;
-    }
-
-    const { r, g, b, a } = chartBackgroundColor;
-    const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
-
-    chartLayer.setChartBackgroundCssColor(cssColor);
-    chartLayer.setChartBackgroundBorderRadius(chartBackgroundBorderRadius);
-  }, [chartBackgroundColor, chartBackgroundBorderRadius]);
+  }, [
+    olMap,
+    theme,
+    currentChartConfigs,
+    chartVizType,
+    chartSize.values,
+    chartBackgroundColor,
+    chartBackgroundBorderRadius,
+  ]);
 
   return (
     <div

@@ -16,13 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ChartProps, getChartTransformPropsRegistry } from '@superset-ui/core';
 import {
-  ChartProps,
-  TimeseriesDataRecord,
-  getChartTransformPropsRegistry,
-} from '@superset-ui/core';
-import {
-  getEchartConfigs,
+  getChartConfigs,
   parseSelectedChart,
 } from '../util/transformPropsUtil';
 
@@ -56,7 +52,7 @@ export default function transformProps(chartProps: ChartProps) {
    * function during development with hot reloading, changes won't
    * be seen until restarting the development server.
    */
-  const { width, height, formData, queriesData, hooks } = chartProps;
+  const { width, height, formData, hooks, theme } = chartProps;
   const {
     geomColumn,
     selectedChart: selectedChartString,
@@ -67,17 +63,11 @@ export default function transformProps(chartProps: ChartProps) {
     chartBackgroundBorderRadius,
   } = formData;
   const { setControlValue = () => {} } = hooks;
-  const data = queriesData[0].data as TimeseriesDataRecord[];
-  const data_b = queriesData[1]
-    ? (queriesData[1].data as TimeseriesDataRecord[])
-    : undefined;
   const selectedChart = parseSelectedChart(selectedChartString);
   const transformPropsRegistry = getChartTransformPropsRegistry();
   const chartTransformer = transformPropsRegistry.get(selectedChart.viz_type);
 
-  const chartConfigs = getEchartConfigs(
-    data,
-    data_b,
+  const chartConfigs = getChartConfigs(
     selectedChart,
     geomColumn,
     chartProps,
@@ -87,14 +77,6 @@ export default function transformProps(chartProps: ChartProps) {
   return {
     width,
     height,
-
-    data: data.map(item => ({
-      ...item,
-      // convert epoch to native Date
-      // eslint-disable-next-line no-underscore-dangle
-      __timestamp: new Date(item.__timestamp as number),
-    })),
-    // and now your control data, manipulated as needed, and passed through as props!
     geomColumn,
     selectedChart,
     chartConfigs,
@@ -105,5 +87,6 @@ export default function transformProps(chartProps: ChartProps) {
     chartBackgroundColor,
     chartBackgroundBorderRadius,
     setControlValue,
+    theme,
   };
 }

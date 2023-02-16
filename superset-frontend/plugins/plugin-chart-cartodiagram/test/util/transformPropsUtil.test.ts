@@ -20,7 +20,7 @@
 import {
   groupByLocationTs,
   groupByLocation,
-  getEchartConfigs,
+  getChartConfigs,
   parseSelectedChart,
 } from '../../src/util/transformPropsUtil';
 import {
@@ -70,50 +70,43 @@ describe('transformPropsUtil', () => {
       expect(countOfGeometries).toEqual(2);
     });
 
-    it('groups items with the correct geometry', () => {
+    it('groups items by same geometry', () => {
       const geometryColumn = 'geom';
       const result = groupByLocation(nonTimeSeriesChartData, geometryColumn);
-      // @ts-ignore
-      const allGeom1 = result[geom1].every((item: any) => item.geom === geom1);
-      // @ts-ignore
-      const allGeom2 = result[geom2].every((item: any) => item.geom === geom2);
+      const allGeom1 = result[geom1].length === 6;
+      const allGeom2 = result[geom2].length === 4;
       expect(allGeom1 && allGeom2).toBe(true);
     });
   });
 
-  describe('getEchartConfigs', () => {
+  describe('getChartConfigs', () => {
     let chartTransformer: jest.MockedFunction<any>;
     const geomColumn = 'geom';
     const pieChartConfig = {
       params: {},
       viz_type: 'pie',
     };
-    const pieChartProps: any = {
-      queriesData: [{}],
+    const chartProps: any = {
+      queriesData: [
+        {
+          data: nonTimeSeriesChartData,
+        },
+      ],
     };
     beforeEach(() => {
       chartTransformer = jest.fn();
     });
 
     it('calls the transformProps function for every location', () => {
-      getEchartConfigs(
-        nonTimeSeriesChartData,
-        undefined,
-        pieChartConfig,
-        geomColumn,
-        pieChartProps,
-        chartTransformer,
-      );
+      getChartConfigs(pieChartConfig, geomColumn, chartProps, chartTransformer);
 
       expect(chartTransformer).toHaveBeenCalledTimes(2);
     });
     it('returns a geojson', () => {
-      const result = getEchartConfigs(
-        nonTimeSeriesChartData,
-        undefined,
+      const result = getChartConfigs(
         pieChartConfig,
         geomColumn,
-        pieChartProps,
+        chartProps,
         chartTransformer,
       );
 
@@ -129,12 +122,10 @@ describe('transformPropsUtil', () => {
       );
     });
     it('returns a feature for each location', () => {
-      const result = getEchartConfigs(
-        nonTimeSeriesChartData,
-        undefined,
+      const result = getChartConfigs(
         pieChartConfig,
         geomColumn,
-        pieChartProps,
+        chartProps,
         chartTransformer,
       );
       expect(result.features).toHaveLength(2);

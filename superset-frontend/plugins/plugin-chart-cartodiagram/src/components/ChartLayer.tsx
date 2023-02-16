@@ -1,13 +1,27 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import Layer from 'ol/layer/Layer';
 import { FrameState } from 'ol/Map';
 import { apply as applyTransform } from 'ol/transform';
 import ReactDOM from 'react-dom';
-import {
-  ChartConfig,
-  ChartLayerOptions,
-  ChartSizeValues,
-  SupportedVizTypes,
-} from '../types';
+import { SupersetTheme } from '@superset-ui/core';
+import { ChartConfig, ChartLayerOptions, ChartSizeValues } from '../types';
 import { createChartComponent } from '../util/chartUtil';
 import { getProjectedCoordinateFromPointGeoJson } from '../util/geometryUtil';
 
@@ -26,7 +40,7 @@ export class ChartLayer extends Layer {
 
   chartSizeValues: ChartSizeValues = {};
 
-  chartVizType: SupportedVizTypes;
+  chartVizType: string;
 
   div: HTMLDivElement;
 
@@ -36,6 +50,8 @@ export class ChartLayer extends Layer {
 
   chartBackgroundBorderRadius = 0;
 
+  theme: SupersetTheme;
+
   /**
    * Create a ChartLayer.
    *
@@ -43,11 +59,12 @@ export class ChartLayer extends Layer {
    * @param {ChartHtmlElement[]} options.charts An array with the chart objects containing the HTML element and the coordinate
    * @param {ChartConfig} options.chartConfigs The chart configuration for the charts
    * @param {ChartSizeValues} options.chartSizeValues The values for the chart sizes
-   * @param {SupportedVizTypes} options.chartVizType The viztype of the charts
+   * @param {String} options.chartVizType The viztype of the charts
    * @param {String} options.chartBackgroundCssColor The color of the additionally added chart background
    * @param {Number} options.chartBackgroundBorderRadius The border radius in percent of the additionally added chart background
    * @param {Function} options.onMouseOver The handler function to execute when the mouse entering a HTML element
    * @param {Function} options.onMouseOut The handler function to execute when the mouse leaves a HTML element
+   * @param {SupersetTheme} options.theme The superset theme
    */
   constructor(options: ChartLayerOptions) {
     super(options);
@@ -68,6 +85,10 @@ export class ChartLayer extends Layer {
 
     if (options.chartBackgroundBorderRadius) {
       this.chartBackgroundBorderRadius = options.chartBackgroundBorderRadius;
+    }
+
+    if (options.theme) {
+      this.theme = options.theme;
     }
 
     const spinner = document.createElement('img');
@@ -103,7 +124,7 @@ export class ChartLayer extends Layer {
     }
   }
 
-  setChartVizType(chartVizType: SupportedVizTypes, silent = false) {
+  setChartVizType(chartVizType: string, silent = false) {
     this.chartVizType = chartVizType;
     if (!silent) {
       this.changed();
@@ -158,9 +179,13 @@ export class ChartLayer extends Layer {
 
       const chartComponent = createChartComponent(
         this.chartVizType,
-        feature,
+        // Seems like the registered chart components change some
+        // props in-place, which leads to unwanted side effects. Therefore,
+        // we only pass a copy.
+        JSON.parse(JSON.stringify(feature)),
         chartWidth,
         chartHeight,
+        this.theme,
       );
       ReactDOM.render(chartComponent, container);
 
@@ -177,7 +202,7 @@ export class ChartLayer extends Layer {
   }
 
   updateCharts(zoom: number) {
-    this.charts = this.charts.map(chart => {
+    const charts = this.charts.map(chart => {
       let chartWidth = 0;
       let chartHeight = 0;
       if (this.chartSizeValues[zoom]) {
@@ -192,9 +217,13 @@ export class ChartLayer extends Layer {
 
       const chartComponent = createChartComponent(
         this.chartVizType,
-        chart.feature,
+        // Seems like the registered chart components change some
+        // props in-place, which leads to unwanted side effects. Therefore,
+        // we only pass a copy.
+        JSON.parse(JSON.stringify(chart.feature)),
         chartWidth,
         chartHeight,
+        this.theme,
       );
       ReactDOM.render(chartComponent, chart.htmlElement);
 
@@ -204,6 +233,8 @@ export class ChartLayer extends Layer {
         height: chartHeight,
       };
     });
+
+    this.charts = charts;
   }
 
   render(frameState: FrameState | null) {

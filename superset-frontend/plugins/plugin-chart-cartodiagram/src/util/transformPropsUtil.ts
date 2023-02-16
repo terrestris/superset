@@ -20,6 +20,8 @@
 import {
   ChartProps,
   convertKeysToCamelCase,
+  DataRecord,
+  isTimeseriesDataRecordList,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 import {
@@ -88,16 +90,12 @@ export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
  * @param geomColumn The name of the geometry column
  * @returns The grouped data
  */
-export const groupByLocation = (
-  data: TimeseriesDataRecord[],
-  geomColumn: string,
-) => {
+export const groupByLocation = (data: DataRecord[], geomColumn: string) => {
   const locations: LocationConfigMapping = {};
 
   data.forEach(d => {
     const loc = d[geomColumn] as string;
     if (!loc) {
-      // TODO add proper handling
       return;
     }
 
@@ -108,7 +106,11 @@ export const groupByLocation = (
     const currentLocation = locations[loc];
 
     if (Array.isArray(currentLocation)) {
-      currentLocation.push(d);
+      const item = {
+        ...d,
+      };
+      delete item[geomColumn];
+      currentLocation.push(item);
     }
   });
 
@@ -116,19 +118,36 @@ export const groupByLocation = (
 };
 
 /**
- * Create the ECharts configuration depending on the referenced Superset chart.
+ * Strip occurrences of the geom column from the query data in-place.
  *
- * @param data The incoming dataset
- * @param data_b Another incoming dataset, if available
+ * @param queryData The query data
+ * @param geomColumn The name of the geom column
+ * @returns void
+ */
+export const stripGeomColumnFromQueryData = (
+  queryData: any,
+  geomColumn: string,
+) => {
+  const geomIdx = queryData.colnames?.indexOf(geomColumn);
+  if (geomIdx === -1) {
+    return;
+  }
+  queryData.colnames?.splice(geomIdx, 1);
+  queryData.coltypes?.splice(geomIdx, 1);
+  // eslint-disable-next-line no-param-reassign
+  delete queryData.label_map?.[geomColumn];
+};
+
+/**
+ * Create the charts configuration depending on the referenced Superset chart.
+ *
  * @param selectedChart The configuration of the referenced Superset chart
  * @param geomColumn The name of the geometry column
  * @param chartProps The properties provided within this OL plugin
  * @param chartTransformer The transformer function
  * @returns The ECharts configuration
  */
-export const getEchartConfigs = (
-  data: TimeseriesDataRecord[],
-  data_b: TimeseriesDataRecord[] | undefined,
+export const getChartConfigs = (
   selectedChart: SelectedChartConfig,
   geomColumn: string,
   chartProps: ChartProps,
@@ -144,42 +163,43 @@ export const getEchartConfigs = (
     width: null,
     height: null,
     formData: chartFormData,
-    // TODO check if we should use chartProps.datasource here
+    rawFormData: chartFormDataSnake,
     datasource: {},
   };
 
+  const data = chartProps.queriesData[0].data as DataRecord[];
+  const data_b = chartProps.queriesData[1]?.data as DataRecord[];
   let dataByLocation: LocationConfigMapping;
   let dataByLocation_b: LocationConfigMapping;
-
-  switch (selectedChart.viz_type) {
-    case 'pie':
-      dataByLocation = groupByLocation(data, geomColumn);
-      if (
-        Object.keys(chartFormData).includes('groupby') &&
-        chartFormData.groupby[0] === geomColumn
-      ) {
-        chartFormData.groupby.shift();
-      }
-      break;
-    case 'mixed_timeseries':
-      dataByLocation = groupByLocationTs(data);
-      dataByLocation_b = groupByLocationTs(data_b);
-      break;
-    default:
-      // TODO check if there is a better solution here
-      dataByLocation = groupByLocationTs(data);
-      break;
-  }
 
   const chartConfigs: ChartConfig = {
     type: 'FeatureCollection',
     features: [],
   };
 
-  Object.keys(dataByLocation).forEach(location => {
-    const { queriesData } = chartProps;
-    const queryData = queriesData[0];
+  if (!data) {
+    return chartConfigs;
+  }
 
+  if (isTimeseriesDataRecordList(data)) {
+    dataByLocation = groupByLocationTs(data);
+  } else {
+    dataByLocation = groupByLocation(data, geomColumn);
+  }
+
+  if (data_b && isTimeseriesDataRecordList(data_b)) {
+    if (isTimeseriesDataRecordList(data_b)) {
+      dataByLocation_b = groupByLocationTs(data_b);
+    } else {
+      dataByLocation = groupByLocation(data_b, geomColumn);
+    }
+  }
+
+  const { queriesData } = chartProps;
+  const queryData = queriesData[0];
+  stripGeomColumnFromQueryData(queryData, geomColumn);
+
+  Object.keys(dataByLocation).forEach(location => {
     const config = {
       ...baseConfig,
       queriesData: [
@@ -196,13 +216,14 @@ export const getEchartConfigs = (
         data: dataByLocation_b[location],
       });
     }
-    // TODO create proper clone of argument
     const transformedProps = chartTransformer(config);
 
     const feature: ChartConfigFeature = {
       type: 'Feature',
       geometry: JSON.parse(location),
-      properties: transformedProps,
+      properties: {
+        ...transformedProps,
+      },
     };
 
     chartConfigs.features.push(feature);

@@ -24,52 +24,52 @@ export const geom2 = `{"type":"Point","coordinates":${coord2}}`;
 
 export const nonTimeSeriesChartData: any = [
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'apple',
     my_count: 347,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'apple',
     my_count: 360,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'lemon',
     my_count: 335,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'lemon',
     my_count: 333,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'lemon',
     my_count: 353,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord1}}`,
+    geom: geom1,
     my_value: 'lemon',
     my_count: 359,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
+    geom: geom2,
     my_value: 'lemon',
     my_count: 347,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
+    geom: geom2,
     my_value: 'apple',
     my_count: 335,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
+    geom: geom2,
     my_value: 'apple',
     my_count: 356,
   },
   {
-    geom: `{"type":"Point","coordinates":${coord2}}`,
+    geom: geom2,
     my_value: 'banana',
     my_count: 218,
   },

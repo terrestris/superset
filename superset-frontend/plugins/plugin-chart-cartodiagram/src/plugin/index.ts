@@ -51,6 +51,7 @@ export default class CartodiagramPlugin extends ChartPlugin {
       if (layerConfig) {
         layerConfig.config.default = opts.defaultLayers;
       } else {
+        // eslint-disable-next-line no-console
         console.warn(
           'Cannot set defaultLayers. layerConfig not found in control panel. Please check if the path to layerConfig should be adjusted.',
         );

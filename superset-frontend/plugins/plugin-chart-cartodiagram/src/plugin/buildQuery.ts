@@ -43,11 +43,13 @@ export default function buildQuery(formData: QueryFormData) {
   // and is always at first position
 
   // remove geometry column if it is included
-  const groupby = chartFormData.groupby.filter(
-    (item: any) => item !== geometryColumn,
-  );
+  let { groupby } = chartFormData;
+  if (!groupby) {
+    groupby = [];
+  }
+  groupby = groupby.filter((item: any) => item !== geometryColumn);
   // add geometry column at the first place
-  groupby.unshift(geometryColumn);
+  groupby?.unshift(geometryColumn);
   chartFormData.groupby = groupby;
 
   // special case for mixed-times series chart

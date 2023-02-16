@@ -17,7 +17,11 @@
  * under the License.
  */
 import { ControlComponentProps } from '@superset-ui/chart-controls';
-import { QueryFormData, TimeseriesDataRecord } from '@superset-ui/core';
+import {
+  QueryFormData,
+  SupersetTheme,
+  TimeseriesDataRecord,
+} from '@superset-ui/core';
 import { EChartsCoreOption, ECharts } from 'echarts';
 import { CardStyleProps } from 'geostyler/dist/Component/CardStyle/CardStyle';
 import { RenderFunction } from 'ol/layer/Layer';
@@ -31,31 +35,11 @@ import { Feature, FeatureCollection, Point } from 'geojson';
 export interface CartodiagramPluginStylesProps {
   height: number;
   width: number;
+  theme: SupersetTheme;
 }
 
-export type SupportedVizTypes =
-  | 'pie'
-  | 'mixed_timeseries'
-  | 'echarts_timeseries'
-  | 'echarts_timeseries_bar'
-  | 'echarts_timeseries_line'
-  | 'echarts_timeseries_smooth'
-  | 'echarts_timeseries_scatter'
-  | 'echarts_timeseries_step';
-
 // TODO find a way to reference props from plugin-chart-echarts
-export type ChartConfigProperties = {
-  setDataMask: any;
-  labelMap: any;
-  labelMapB: any;
-  groupby: any;
-  selectedValues: any;
-  formData: any;
-  groupbyB: any;
-  seriesBreakdown: any;
-  legendData: any;
-  echartOptions: any;
-};
+export type ChartConfigProperties = any;
 
 export type ChartConfigFeature = Feature<Point, ChartConfigProperties>;
 export type ChartConfig = FeatureCollection<
@@ -68,7 +52,7 @@ interface CartodiagramPluginCustomizeProps {
   selectedChart: string;
   chartConfigs: ChartConfig;
   chartSize: ZoomConfigs;
-  chartVizType: SupportedVizTypes;
+  chartVizType: string;
   layerConfigs: LayerConf[];
   mapView: MapViewConfigs;
   chartBackgroundColor: {
@@ -236,7 +220,7 @@ export type ChartHtmlElement = {
 export type ChartLayerOptions = {
   chartSizeValues?: ChartSizeValues;
   chartConfigs?: ChartConfig;
-  chartVizType: SupportedVizTypes;
+  chartVizType: string;
   onMouseOver?: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
   onMouseOut?: (this: GlobalEventHandlers, ev: MouseEvent) => any | undefined;
   [key: string]: any; // allow custom types like 'name'
@@ -326,4 +310,12 @@ export interface MapViewPopoverContentProps {
 
 export type CartodiagramPluginConstructorOpts = {
   defaultLayers?: LayerConf[];
+};
+
+export type ChartWrapperProps = {
+  vizType: string;
+  theme: SupersetTheme;
+  width: number;
+  height: number;
+  chartConfig: ChartConfigFeature;
 };
