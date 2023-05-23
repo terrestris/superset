@@ -251,7 +251,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
       const layers = olMap.getLayers();
       const chartLayer = layers
         .getArray()
-        .filter(layer => layer instanceof ChartLayer)[0] as ChartLayer;
+        .find(layer => layer instanceof ChartLayer) as ChartLayer;
+
       if (!chartLayer) {
         return;
       }
@@ -320,7 +321,10 @@ export const OlChartMap = (props: OlChartMapProps) => {
     const layers = olMap.getLayers();
     const chartLayer = layers
       .getArray()
-      .filter(layer => layer instanceof ChartLayer)[0] as ChartLayer;
+      .find(layer => layer instanceof ChartLayer) as ChartLayer;
+
+    const { r, g, b, a } = chartBackgroundColor;
+    const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
 
     if (!chartLayer) {
       layers.forEach(layer => {
@@ -346,9 +350,6 @@ export const OlChartMap = (props: OlChartMapProps) => {
           interaction.setActive(true);
         });
       };
-
-      const { r, g, b, a } = chartBackgroundColor;
-      const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
 
       const newChartLayer = new ChartLayer({
         name: CHART_LAYER_NAME,
@@ -381,8 +382,6 @@ export const OlChartMap = (props: OlChartMapProps) => {
         chartBackgroundBorderRadius,
         true,
       );
-      const { r, g, b, a } = chartBackgroundColor;
-      const cssColor = `rgba(${r}, ${g}, ${b}, ${a})`;
       chartLayer.setChartBackgroundCssColor(cssColor, true);
       chartLayer.setChartSizeValues(chartSize.values, true);
       if (recreateCharts) {
