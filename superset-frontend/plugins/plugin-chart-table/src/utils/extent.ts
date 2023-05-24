@@ -23,8 +23,8 @@ export default function extent<T = number | string | Date | undefined | null>(
   let max: T | undefined;
   // eslint-disable-next-line no-restricted-syntax
   for (const value of values) {
-    if (value !== null) {
-      if (min === undefined) {
+    if (value !== null && value !== undefined) {
+      if (min === undefined || min === null) {
         if (value !== undefined) {
           min = value;
           max = value;
@@ -33,7 +33,7 @@ export default function extent<T = number | string | Date | undefined | null>(
         if (min > value) {
           min = value;
         }
-        if (max !== undefined) {
+        if (max !== undefined && max !== null) {
           if (max < value) {
             max = value;
           }

@@ -79,6 +79,7 @@ export default class BoxPlot extends React.PureComponent<Props> {
   renderChart = (dim: Dimension) => {
     const { width, height } = dim;
     const { data, margin, theme, TooltipRenderer, encoding } = this.props;
+    // @ts-ignore
     const encoder = this.createEncoder(encoding);
     const { channels } = encoder;
 
@@ -158,6 +159,7 @@ export default class BoxPlot extends React.PureComponent<Props> {
         height={height}
         position="top"
         renderLegend={createRenderLegend(
+          // @ts-ignore
           this.createEncoder(encoding),
           data,
           this.props,
