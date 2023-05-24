@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ZoomConfigs } from '../../src/types';
+import { ZoomConfigs, ZoomConfigsExp } from '../../src/types';
 import {
   computeConfigValues,
   MAX_ZOOM_LEVEL,
@@ -172,7 +172,7 @@ describe('toLinearConfig', () => {
 });
 
 describe('toExpConfig', () => {
-  const configs: ZoomConfigs['configs'] = {
+  const configs: ZoomConfigsExp['configs'] = {
     width: 100,
     height: 100,
     zoom: 5,

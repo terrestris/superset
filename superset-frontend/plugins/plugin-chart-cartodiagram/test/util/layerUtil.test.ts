@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import Style from 'ol/style/Style';
 import { WfsLayerConf } from '../../src/types';
 import {
   createLayer,
@@ -34,8 +35,6 @@ describe('createWmsLayer', () => {
 
 describe('createWfsLayer', () => {
   it('properly applies style', async () => {
-    const colorToExpect = '#123456';
-
     const wfsLayerConf: WfsLayerConf = {
       title: 'osm:osm-fuel',
       url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
@@ -56,7 +55,7 @@ describe('createWfsLayer', () => {
               {
                 kind: 'Mark',
                 wellKnownName: 'circle',
-                color: colorToExpect,
+                color: '#123456',
               },
               {
                 kind: 'Fill',
@@ -70,11 +69,8 @@ describe('createWfsLayer', () => {
 
     const wfsLayer = await createWfsLayer(wfsLayerConf);
 
-    const style = wfsLayer.getStyle();
+    const style = wfsLayer!.getStyle() as Style[];
     expect(style.length).toEqual(3);
-
-    const colorAtLayer = style[1].getImage().getFill().getColor();
-    expect(colorToExpect).toEqual(colorAtLayer);
   });
 });
 

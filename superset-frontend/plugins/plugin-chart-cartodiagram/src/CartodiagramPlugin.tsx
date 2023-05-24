@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { createRef, useState } from 'react';
-import { styled } from '@superset-ui/core';
+import { styled, useTheme } from '@superset-ui/core';
 import OlMap from 'ol/Map';
 import {
   CartodiagramPluginProps,
@@ -43,6 +43,8 @@ const Styles = styled.div<CartodiagramPluginStylesProps>`
 export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   const { height, width } = props;
 
+  const theme = useTheme();
+
   const rootElem = createRef<HTMLDivElement>();
 
   const [mapId] = useState(
@@ -51,7 +53,7 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   const [olMap] = useState(new OlMap({}));
 
   return (
-    <Styles ref={rootElem} height={height} width={width}>
+    <Styles ref={rootElem} height={height} width={width} theme={theme}>
       <OlChartMap mapId={mapId} olMap={olMap} {...props} />
     </Styles>
   );
