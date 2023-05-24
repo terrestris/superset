@@ -114,5 +114,13 @@ module.exports = {
       test: './plugins/plugin-chart-handlebars/node_modules/just-handlebars-helpers/*',
       sourceType: 'unambiguous',
     },
+    {
+      test: './plugins/plugin-chart-cartodiagram/node_modules/geostyler/*',
+      sourceType: 'unambiguous',
+    },
+    {
+      test: './plugins/plugin-chart-cartodiagram/node_modules/color/*',
+      sourceType: 'unambiguous',
+    },
   ],
 };
