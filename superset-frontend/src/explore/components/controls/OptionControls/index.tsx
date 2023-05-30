@@ -69,7 +69,7 @@ export const Label = styled.div`
   `}
 `;
 
-const LabelText = styled.span`
+export const LabelText = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
 `;

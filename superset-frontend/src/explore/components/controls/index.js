@@ -27,6 +27,7 @@ import DatasourceControl from './DatasourceControl';
 import DateFilterControl from './DateFilterControl';
 import FixedOrMetricControl from './FixedOrMetricControl';
 import HiddenControl from './HiddenControl';
+import MapLayerControl from './MapLayerControl/MapLayerControl';
 import MapViewControl from './MapViewControl/MapViewControl';
 import SelectAsyncControl from './SelectAsyncControl';
 import SelectControl from './SelectControl';
@@ -63,6 +64,7 @@ const controlMap = {
   DndMetricSelect,
   FixedOrMetricControl,
   HiddenControl,
+  MapLayerControl,
   MapViewControl,
   SelectAsyncControl,
   SelectControl,
