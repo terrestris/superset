@@ -139,11 +139,6 @@ export type LocationConfigMapping = {
   [key: string]: TimeseriesDataRecord | any[];
 };
 
-export interface EditItem {
-  layerConf: LayerConf;
-  idx: number;
-}
-
 export type LayerConfigsControlProps = ControlComponentProps<LayerConf[]>;
 export interface LayerConfigsPopoverContentProps {
   onClose?: () => void;

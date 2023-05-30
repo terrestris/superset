@@ -21,10 +21,7 @@ under the License.
 
 [![Version](https://img.shields.io/npm/v/@superset-ui/plugin-chart-cartodiagram.svg?style=flat-square)](https://www.npmjs.com/package/@superset-ui/plugin-chart-cartodiagram)
 
-This plugin provides ECharts viz on an OpenLayers map for Superset:
-
-- Timeseries Chart (combined line, area bar, scatter, smooth, step)
-- Pie Chart
+This plugin allows rendering arbitrary charts on an OpnLayers map.
 
 ### Usage
 
@@ -59,3 +56,12 @@ const opts = {
 
 new CartodiagramPlugin(opts).configure({ key: 'cartodiagram' }).register();
 ```
+
+This plugin expects a dataset to provide a column containing a GeoJSON point geometry. This column will be used for positioning the
+charts on the map.
+
+To create a cartodiagram, first create and save a chart of the type you want to render on the map (e.g. pieChart).
+This chart should not be grouped by location.
+
+Afterwards, create a cartodiagram, using the same dataset as the previously created chart. Then, select the previously created chart from the
+dropdown and specify the column name that contains the GeoJSON point geometries.

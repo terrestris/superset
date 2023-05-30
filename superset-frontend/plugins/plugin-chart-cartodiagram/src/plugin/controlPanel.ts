@@ -20,9 +20,7 @@ import { t, validateNonEmpty } from '@superset-ui/core';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
 import { selectedChartMutator } from '../util/controlPanelUtil';
 
-import LayerConfigsControl from '../components/controls/LayerConfigsControl/LayerConfigsControl';
 import ZoomConfigControl from '../components/controls/ZoomConfigControl/ZoomConfigControl';
-import { MapViewControl } from '../components/controls/MapViewControl/MapViewControl';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 
 const config: ControlPanelConfig = {
@@ -110,7 +108,7 @@ const config: ControlPanelConfig = {
           {
             name: 'map_view',
             config: {
-              type: MapViewControl,
+              type: 'MapViewControl',
               renderTrigger: true,
               description: t(
                 'The extent of the map on application start. FIT DATA automatically sets the extent so that all data points are included in the viewport. CUSTOM allows users to define the extent manually.',
@@ -128,7 +126,7 @@ const config: ControlPanelConfig = {
             // name is referenced in 'index.ts' for setting default value
             name: 'layer_configs',
             config: {
-              type: LayerConfigsControl,
+              type: 'MapLayerControl',
               renderTrigger: true,
               label: t('Layers'),
               default: [],
