@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { LayerConf } from '@superset-ui/chart-controls';
 import { styled, t, useTheme } from '@superset-ui/core';
 import React, { useCallback } from 'react';
 import { ControlComponentProps } from 'src/explore/components/Control';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import Icons from 'src/components/Icons';
-import { LayerConf } from './types';
 import { AddControlLabel, LabelsContainer } from '../OptionControls';
 import MapLayerOption from './MapLayerOption';
 import MapLayerPopoverTrigger from './MapLayerPopoverTrigger';

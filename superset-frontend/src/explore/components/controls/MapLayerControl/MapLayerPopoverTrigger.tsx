@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { LayerConf } from '@superset-ui/chart-controls';
 import React, { ReactNode, useState } from 'react';
 import ControlPopover from 'src/explore/components/controls/ControlPopover/ControlPopover';
-import { LayerConf } from './types';
 import MapLayerPopoverContent from './MapLayerPopoverContent';
 
 interface MapLayerPopoverTriggerProps {

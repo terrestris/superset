@@ -17,26 +17,19 @@
  * under the License.
  */
 import { styled, t } from '@superset-ui/core';
-import { sharedControlComponents } from '@superset-ui/chart-controls';
+import {
+  MapView,
+  MapViewControlProps,
+  sharedControlComponents,
+} from '@superset-ui/chart-controls';
 import React, { useState } from 'react';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import ControlPopover from 'src/explore/components/controls/ControlPopover/ControlPopover';
-import { ControlComponentProps } from 'src/explore/components/Control';
 import Button from 'src/components/Button';
 import MapViewPopoverContent from './MapViewPopoverContent';
 import ExtentTag from './ExtentTag';
 
 const { RadioButtonControl } = sharedControlComponents;
-
-export type InputValueType = {
-  mode: 'FIT_DATA' | 'CUSTOM';
-  zoom: number;
-  latitude: number;
-  longitude: number;
-  fixedZoom: number;
-  fixedLatitude: number;
-  fixedLongitude: number;
-};
 
 const StyledRadioButtonContainer = styled.div`
   margin-bottom: 8px;
@@ -45,8 +38,6 @@ const StyledRadioButtonContainer = styled.div`
 const StyledButton = styled(Button)`
   margin-top: 8px;
 `;
-
-export type MapViewControlProps = ControlComponentProps<InputValueType>;
 
 export const MapViewControl: React.FC<MapViewControlProps> = ({
   value,
@@ -69,7 +60,7 @@ export const MapViewControl: React.FC<MapViewControlProps> = ({
   const onModeChange = (newValue: 'FIT_DATA' | 'CUSTOM') => {
     if (!value) return;
 
-    const changedValue: InputValueType = {
+    const changedValue: MapView = {
       ...value,
       mode: newValue,
     };
@@ -84,7 +75,7 @@ export const MapViewControl: React.FC<MapViewControlProps> = ({
   const onButtonClick = () => {
     if (!value) return;
 
-    const changedValue: InputValueType = {
+    const changedValue: MapView = {
       ...value,
       fixedLatitude: value?.latitude,
       fixedLongitude: value?.longitude,
@@ -94,7 +85,7 @@ export const MapViewControl: React.FC<MapViewControlProps> = ({
     onChange(changedValue);
   };
 
-  const onSaveClick = (newValue: InputValueType) => {
+  const onSaveClick = (newValue: MapView) => {
     setPopoverVisible(false);
     onChange(newValue);
   };
@@ -154,7 +145,7 @@ export const MapViewControl: React.FC<MapViewControlProps> = ({
             <MapViewPopoverContent
               onClose={onCloseClick}
               onSave={onSaveClick}
-              mapViewConf={value}
+              mapView={value}
             />
           }
           onVisibleChange={togglePopover}

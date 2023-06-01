@@ -21,7 +21,8 @@ import { FrameState } from 'ol/Map';
 import { apply as applyTransform } from 'ol/transform';
 import ReactDOM from 'react-dom';
 import { SupersetTheme } from '@superset-ui/core';
-import { ChartConfig, ChartLayerOptions, ChartSizeValues } from '../types';
+import { MapChartSizeValues } from '@superset-ui/chart-controls';
+import { ChartConfig, ChartLayerOptions } from '../types';
 import { createChartComponent } from '../util/chartUtil';
 import { getProjectedCoordinateFromPointGeoJson } from '../util/geometryUtil';
 
@@ -38,7 +39,7 @@ export class ChartLayer extends Layer {
     features: [],
   };
 
-  chartSizeValues: ChartSizeValues = {};
+  chartSizeValues: MapChartSizeValues = {};
 
   chartVizType: string;
 
@@ -131,7 +132,7 @@ export class ChartLayer extends Layer {
     }
   }
 
-  setChartSizeValues(chartSizeValues: ChartSizeValues, silent = false) {
+  setChartSizeValues(chartSizeValues: MapChartSizeValues, silent = false) {
     this.chartSizeValues = chartSizeValues;
     if (!silent) {
       this.changed();

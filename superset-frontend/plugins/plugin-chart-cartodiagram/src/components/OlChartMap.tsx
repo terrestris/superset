@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useState } from 'react';
-
+import { LayerConf, MapView } from '@superset-ui/chart-controls';
 import Point from 'ol/geom/Point';
 import { View } from 'ol';
 import BaseEvent from 'ol/events/Event';
@@ -27,12 +27,7 @@ import _ from 'lodash';
 import { fitMapToCharts } from '../util/mapUtil';
 import { ChartLayer } from './ChartLayer';
 import { createLayer } from '../util/layerUtil';
-import {
-  ChartConfig,
-  LayerConf,
-  MapViewConfigs,
-  OlChartMapProps,
-} from '../types';
+import { ChartConfig, OlChartMapProps } from '../types';
 
 /** The name to reference the chart layer */
 const CHART_LAYER_NAME = 'openlayers-chart-layer';
@@ -56,7 +51,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
 
   const [currentChartConfigs, setCurrentChartConfigs] =
     useState<ChartConfig>(chartConfigs);
-  const [currentMapView, setCurrentMapView] = useState<MapViewConfigs>(mapView);
+  const [currentMapView, setCurrentMapView] = useState<MapView>(mapView);
 
   /**
    * Add map to correct DOM element.

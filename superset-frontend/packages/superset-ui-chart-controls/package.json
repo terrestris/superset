@@ -27,6 +27,7 @@
     "@react-icons/all-files": "^4.1.0",
     "@types/enzyme": "^3.10.5",
     "@types/react": "*",
+    "geostyler-style": "*",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2"
   },

@@ -17,6 +17,7 @@
  * under the License.
  */
 import { QueryFormData, JsonValue } from '@superset-ui/core';
+import { Style } from 'geostyler-style';
 import { ReactNode } from 'react';
 
 /**
@@ -38,3 +39,91 @@ export interface ControlComponentProps<
   hovered?: boolean;
   onChange?: (value: ValueType) => void;
 }
+
+export type MapView = {
+  mode: 'FIT_DATA' | 'CUSTOM';
+  zoom: number;
+  latitude: number;
+  longitude: number;
+  fixedZoom: number;
+  fixedLatitude: number;
+  fixedLongitude: number;
+};
+
+export type MapViewControlProps = ControlComponentProps<MapView>;
+
+export type MapChartSizeValues = {
+  [index: number]: { width: number; height: number };
+};
+
+export interface MapChartSizeConf {
+  zoom: number;
+  width: number;
+  height: number;
+  slope?: number;
+  exponent?: number;
+}
+
+export interface LinearMapChartSizeConf extends MapChartSizeConf {
+  slope: number;
+}
+
+export interface ExpMapChartSizeConf extends MapChartSizeConf {
+  exponent: number;
+}
+
+export interface BaseMapChartSize<T extends MapChartSizeConf> {
+  type: string;
+  configs: T;
+  values: MapChartSizeValues;
+}
+
+export interface FixedMapChartSize extends BaseMapChartSize<MapChartSizeConf> {
+  type: 'FIXED';
+}
+
+export interface LinearMapChartSize
+  extends BaseMapChartSize<LinearMapChartSizeConf> {
+  type: 'LINEAR';
+}
+
+export interface ExpMapChartSize extends BaseMapChartSize<ExpMapChartSizeConf> {
+  type: 'EXP';
+}
+
+export type MapChartSize =
+  | FixedMapChartSize
+  | LinearMapChartSize
+  | ExpMapChartSize;
+
+/**
+ * Props of a MapChartSizeControl
+ */
+export type MapChartSizeControlProps = ControlComponentProps<MapChartSize>;
+
+export interface BaseLayerConf {
+  title: string;
+  url: string;
+  type: string;
+  attribution?: string;
+}
+
+export interface WfsLayerConf extends BaseLayerConf {
+  type: 'WFS';
+  typeName: string;
+  version: string;
+  maxFeatures?: number;
+  style?: Style;
+}
+
+export interface XyzLayerConf extends BaseLayerConf {
+  type: 'XYZ';
+}
+
+export interface WmsLayerConf extends BaseLayerConf {
+  type: 'WMS';
+  version: string;
+  layersParam: string;
+}
+
+export type LayerConf = WmsLayerConf | WfsLayerConf | XyzLayerConf;

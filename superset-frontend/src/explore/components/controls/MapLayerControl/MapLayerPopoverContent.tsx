@@ -16,6 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import {
+  BaseLayerConf,
+  LayerConf,
+  WfsLayerConf,
+  WmsLayerConf,
+  XyzLayerConf,
+  isWfsLayerConf,
+  isWmsLayerConf,
+  isXyzLayerConf,
+} from '@superset-ui/chart-controls';
 import { JsonValue, styled, t } from '@superset-ui/core';
 import { Tabs } from 'antd';
 import { Data as GsData } from 'geostyler-data';
@@ -27,18 +37,10 @@ import WfsDataParser, {
 import React, { useEffect, useState } from 'react';
 import Button from 'src/components/Button';
 import { Input, InputNumber } from 'src/components/Input';
-import ControlHeader from 'src/explore/components/ControlHeader';
 import SelectControl from '../SelectControl';
-import { isWfsLayerConf, isWmsLayerConf, isXyzLayerConf } from './typeguards';
-import {
-  BaseLayerConf,
-  LayerConf,
-  WfsLayerConf,
-  WmsLayerConf,
-  XyzLayerConf,
-} from './types';
 import { getServiceVersions, hasAllRequiredWfsParams } from './serviceUtil';
 import StyledGeoStyler from './StyledGeoStyler';
+import HoverableContainer from '../MapChartSizeControl/HoverableContainer';
 
 // Enum for the different tabs
 const LAYER_CONFIG_TABS = {
@@ -324,11 +326,10 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
       <div>
         <Tabs defaultActiveKey={LAYER_CONFIG_TABS.LAYER}>
           <Tabs.TabPane tab={layerTabLabel} key={LAYER_CONFIG_TABS.LAYER}>
-            <div>
-              <ControlHeader
-                label={layerUrlLabel}
-                description={layerUrlDescription}
-              />
+            <HoverableContainer
+              label={layerUrlLabel}
+              description={layerUrlDescription}
+            >
               <Input
                 placeholder={layerUrlPlaceholder}
                 required
@@ -336,12 +337,11 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                 name="url"
                 onChange={onLayerUrlChange}
               />
-            </div>
-            <div>
-              <ControlHeader
-                label={layerTypeLabel}
-                description={layerTypeDescription}
-              />
+            </HoverableContainer>
+            <HoverableContainer
+              label={layerTypeLabel}
+              description={layerTypeDescription}
+            >
               <SelectControl
                 options={[
                   {
@@ -357,51 +357,51 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                     label: t('XYZ'),
                   },
                 ]}
+                clearable={false}
                 required
                 value={currentLayerConf.type}
                 defaultValue={currentLayerConf.type}
                 name="type"
                 onChange={onLayerTypeChange}
               />
-            </div>
+            </HoverableContainer>
             {isWmsLayerConf(currentLayerConf) && (
-              <div>
-                <ControlHeader
-                  label={serviceVersionLabel}
-                  description={serviceVersionDescription}
-                />
+              <HoverableContainer
+                label={serviceVersionLabel}
+                description={serviceVersionDescription}
+              >
                 <SelectControl
                   options={wmsVersionOptions}
+                  clearable={false}
                   required
                   value={wmsVersion}
                   defaultValue={wmsVersionOptions[0].value}
                   name="wmsVersion"
                   onChange={onWmsVersionChange}
                 />
-              </div>
+              </HoverableContainer>
             )}
             {isWfsLayerConf(currentLayerConf) && (
-              <div>
-                <ControlHeader
-                  label={serviceVersionLabel}
-                  description={serviceVersionDescription}
-                />
+              <HoverableContainer
+                label={serviceVersionLabel}
+                description={serviceVersionDescription}
+              >
                 <SelectControl
                   options={wfsVersionOptions}
+                  clearable={false}
                   required
                   value={wfsVersion}
                   defaultValue={wfsVersionOptions[0].value}
                   name="wfsVersion"
                   onChange={onWfsVersionChange}
                 />
-              </div>
+              </HoverableContainer>
             )}
             {isWmsLayerConf(currentLayerConf) && (
-              <div>
-                <ControlHeader
-                  label={layersParamLabel}
-                  description={layersParamDescription}
-                />
+              <HoverableContainer
+                label={layersParamLabel}
+                description={layersParamDescription}
+              >
                 <Input
                   placeholder={layersParamPlaceholder}
                   required
@@ -409,14 +409,13 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                   name="layersParam"
                   onChange={onLayersParamChange}
                 />
-              </div>
+              </HoverableContainer>
             )}
             {isWfsLayerConf(currentLayerConf) && (
-              <div>
-                <ControlHeader
-                  label={layersParamLabel}
-                  description={layersParamDescription}
-                />
+              <HoverableContainer
+                label={layersParamLabel}
+                description={layersParamDescription}
+              >
                 <Input
                   placeholder={layersParamPlaceholder}
                   required
@@ -424,13 +423,12 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                   name="typeName"
                   onChange={onTypeNameChange}
                 />
-              </div>
+              </HoverableContainer>
             )}
-            <div>
-              <ControlHeader
-                label={layerTitleLabel}
-                description={layerTitleDescription}
-              />
+            <HoverableContainer
+              label={layerTitleLabel}
+              description={layerTitleDescription}
+            >
               <Input
                 placeholder={layerTitlePlaceholder}
                 required
@@ -438,13 +436,12 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                 name="title"
                 onChange={onLayerTitleChange}
               />
-            </div>
+            </HoverableContainer>
             {isWfsLayerConf(currentLayerConf) && (
-              <div>
-                <ControlHeader
-                  label={maxFeaturesLabel}
-                  description={maxFeaturesDescription}
-                />
+              <HoverableContainer
+                label={maxFeaturesLabel}
+                description={maxFeaturesDescription}
+              >
                 <StyledInputNumber
                   placeholder={maxFeaturesPlaceholder}
                   value={currentLayerConf.maxFeatures}
@@ -452,13 +449,12 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                   required={false}
                   name="maxFeatures"
                 />
-              </div>
+              </HoverableContainer>
             )}
-            <div>
-              <ControlHeader
-                label={attributionLabel}
-                description={attributionDescription}
-              />
+            <HoverableContainer
+              label={attributionLabel}
+              description={attributionDescription}
+            >
               <Input
                 placeholder={attributionPlaceholder}
                 required={false}
@@ -466,7 +462,7 @@ export const LayerConfigsPopoverContent: React.FC<MapLayerPopoverContentProps> =
                 name="attribution"
                 onChange={onAttributionChange}
               />
-            </div>
+            </HoverableContainer>
           </Tabs.TabPane>
           <Tabs.TabPane
             tab={styleTabLabel}

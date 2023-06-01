@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WfsLayerConf } from './types';
+import { WfsLayerConf } from '@superset-ui/chart-controls';
 
 /**
  * Get the available versions of WFS and WMS.

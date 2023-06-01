@@ -20,7 +20,6 @@ import { t, validateNonEmpty } from '@superset-ui/core';
 import { ControlPanelConfig } from '@superset-ui/chart-controls';
 import { selectedChartMutator } from '../util/controlPanelUtil';
 
-import ZoomConfigControl from '../components/controls/ZoomConfigControl/ZoomConfigControl';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 
 const config: ControlPanelConfig = {
@@ -171,8 +170,7 @@ const config: ControlPanelConfig = {
           {
             name: 'chart_size',
             config: {
-              type: ZoomConfigControl,
-              // set this to true, if we are able to render it fast
+              type: 'MapChartSizeControl',
               renderTrigger: true,
               default: {
                 type: 'FIXED',

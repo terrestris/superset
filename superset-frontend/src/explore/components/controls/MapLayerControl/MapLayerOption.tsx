@@ -17,9 +17,9 @@
  * under the License.
  */
 import React from 'react';
+import { LayerConf } from '@superset-ui/chart-controls';
 import { css, styled } from '@superset-ui/core';
 import { OptionControlLabel } from 'src/explore/components/controls/OptionControls';
-import { LayerConf } from './types';
 import MapLayerOptionLabel from './MapLayerOptionLabel';
 import MapLayerPopoverTrigger from './MapLayerPopoverTrigger';
 
@@ -68,6 +68,7 @@ export const MapLayerOption: React.FC<MapLayerOptionProps> = ({
             type={layerConf.type}
           />
         }
+        // @ts-ignore
         onRemove={onRemove}
         onMoveLabel={onMoveLabel}
         onDropLabel={() => {}}

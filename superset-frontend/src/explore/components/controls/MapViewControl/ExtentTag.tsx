@@ -17,13 +17,13 @@
  * under the License.
  */
 
+import { MapView } from '@superset-ui/chart-controls';
 import { t } from '@superset-ui/core';
 import { Tag } from 'antd';
 import React from 'react';
-import { InputValueType } from './MapViewControl';
 
 interface ExtentTagProps {
-  value: InputValueType;
+  value: MapView;
   onClick: () => void;
   className?: string;
 }

@@ -22,12 +22,12 @@ import Button from 'src/components/Button';
 import ControlHeader from 'src/explore/components/ControlHeader';
 import ErrorBoundary from 'src/components/ErrorBoundary';
 import { InputNumber } from 'src/components/Input';
-import { InputValueType } from './MapViewControl';
+import { MapView } from '@superset-ui/chart-controls';
 
 interface MapViewPopoverContentProps {
   onClose: () => void;
-  onSave: (currentMapViewConf: InputValueType) => void;
-  mapViewConf: InputValueType;
+  onSave: (currentMapView: MapView) => void;
+  mapView: MapView;
 }
 
 const MapViewActionsContainer = styled.div`
@@ -41,17 +41,17 @@ const StyledInputNumber = styled(InputNumber)`
 export const MapViewPopoverContent: React.FC<MapViewPopoverContentProps> = ({
   onClose = () => {},
   onSave = () => {},
-  mapViewConf,
+  mapView,
 }) => {
   const [currentMapViewConf, setCurrentMapViewConf] =
-    useState<InputValueType>(mapViewConf);
+    useState<MapView>(mapView);
 
   useEffect(() => {
-    setCurrentMapViewConf({ ...mapViewConf });
-  }, [mapViewConf]);
+    setCurrentMapViewConf({ ...mapView });
+  }, [mapView]);
 
   const onCloseClick = () => {
-    setCurrentMapViewConf({ ...mapViewConf });
+    setCurrentMapViewConf({ ...mapView });
 
     onClose();
   };

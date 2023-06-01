@@ -27,6 +27,7 @@ import DatasourceControl from './DatasourceControl';
 import DateFilterControl from './DateFilterControl';
 import FixedOrMetricControl from './FixedOrMetricControl';
 import HiddenControl from './HiddenControl';
+import MapChartSizeControl from './MapChartSizeControl/MapChartSizeControl';
 import MapLayerControl from './MapLayerControl/MapLayerControl';
 import MapViewControl from './MapViewControl/MapViewControl';
 import SelectAsyncControl from './SelectAsyncControl';
@@ -64,6 +65,7 @@ const controlMap = {
   DndMetricSelect,
   FixedOrMetricControl,
   HiddenControl,
+  MapChartSizeControl,
   MapLayerControl,
   MapViewControl,
   SelectAsyncControl,

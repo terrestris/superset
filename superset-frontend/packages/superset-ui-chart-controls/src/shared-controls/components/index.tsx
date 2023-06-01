@@ -21,6 +21,8 @@ import ColumnConfigControl from './ColumnConfigControl';
 
 export * from './RadioButtonControl';
 export * from './ColumnConfigControl';
+export * from './types';
+export * from './typeguards';
 
 /**
  * Shared chart controls. Can be referred via string shortcuts in chart control

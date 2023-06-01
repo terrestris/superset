@@ -17,8 +17,8 @@
  * under the License.
  */
 
+import { WfsLayerConf } from '@superset-ui/chart-controls';
 import Style from 'ol/style/Style';
-import { WfsLayerConf } from '../../src/types';
 import {
   createLayer,
   createWfsLayer,

@@ -21,6 +21,15 @@
  * Util for layer related operations.
  */
 
+import {
+  LayerConf,
+  WfsLayerConf,
+  WmsLayerConf,
+  XyzLayerConf,
+  isWfsLayerConf,
+  isWmsLayerConf,
+  isXyzLayerConf,
+} from '@superset-ui/chart-controls';
 import OlParser from 'geostyler-openlayers-parser';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
@@ -29,8 +38,6 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import XyzSource from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
-import { WmsLayerConf, WfsLayerConf, LayerConf, XyzLayerConf } from '../types';
-import { isWfsLayerConf, isWmsLayerConf, isXyzLayerConf } from '../typeguards';
 import { isVersionBelow } from './serviceUtil';
 
 /**
@@ -87,6 +94,10 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
     style,
     attribution,
   } = wfsLayerConf;
+
+  if (!style) {
+    return undefined;
+  }
 
   const wfsSource = new VectorSource({
     format: new GeoJSON(),

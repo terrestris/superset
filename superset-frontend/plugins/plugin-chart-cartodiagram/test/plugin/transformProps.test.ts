@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { LayerConf, MapChartSize, MapView } from '@superset-ui/chart-controls';
 import {
   ChartProps,
   getChartTransformPropsRegistry,
   supersetTheme,
 } from '@superset-ui/core';
-import { LayerConf, MapViewConfigs, ZoomConfigs } from '../../src/types';
 import transformProps from '../../src/plugin/transformProps';
 import { groupedTimeseriesChartData } from '../testData';
 
 describe('CartodiagramPlugin transformProps', () => {
-  const chartSize: ZoomConfigs = {
+  const chartSize: MapChartSize = {
     type: 'FIXED',
     configs: {
       height: 10,
@@ -47,7 +47,7 @@ describe('CartodiagramPlugin transformProps', () => {
       url: 'example.com',
     },
   ];
-  const mapView: MapViewConfigs = {
+  const mapView: MapView = {
     mode: 'FIT_DATA',
     zoom: 1,
     latitude: 0,

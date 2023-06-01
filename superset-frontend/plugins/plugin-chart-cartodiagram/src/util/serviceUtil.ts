@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import { WfsLayerConf } from '../types';
-
 /**
  * Get the available versions of WFS and WMS.
  *
@@ -59,12 +57,3 @@ export const isVersionBelow = (
 
   return versionIdx < belowIdx;
 };
-
-/**
- * Checks if all required WFS params are provided.
- *
- * @param layerConf The config to check
- * @returns True, if all required params are provided. False, otherwise.
- */
-export const hasAllRequiredWfsParams = (layerConf: WfsLayerConf) =>
-  layerConf.url && layerConf.version && layerConf.typeName;
