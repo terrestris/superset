@@ -178,6 +178,7 @@ describe('toExpConfig', () => {
     zoom: 5,
     exponent: 1.5,
   };
+  // @ts-ignore
   const result = toExpConfig(configs);
   it('has correct type', () => {
     expect(result.type).toEqual('EXP');

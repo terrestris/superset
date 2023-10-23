@@ -16,49 +16,91 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import {
-  groupByLocationTs,
   groupByLocation,
   getChartConfigs,
   parseSelectedChart,
+  getGeojsonColumns,
+  createColumnName,
+  groupByLocationGenericX,
+  stripGeomFromColnamesAndTypes,
+  stripGeomColumnFromLabelMap,
 } from '../../src/util/transformPropsUtil';
 import {
-  timeseriesChartData,
   nonTimeSeriesChartData,
   groupedTimeseriesChartData,
   geom1,
   geom2,
+  groupedTimeseriesLabelMap,
 } from '../testData';
 
 describe('transformPropsUtil', () => {
-  describe('groupByLocationTs', () => {
-    it('returns empty result when no timestamps provided', () => {
-      const result = groupByLocationTs(nonTimeSeriesChartData);
-      expect(result).toEqual({});
+  const groupedTimeseriesParams = {
+    x_axis: 'mydate',
+  };
+
+  const groupedTimeseriesQueryData = {
+    label_map: groupedTimeseriesLabelMap,
+  };
+
+  describe('getGeojsonColumns', () => {
+    it('gets the GeoJSON columns', () => {
+      const columns = ['foo', 'bar', geom1];
+      const result = getGeojsonColumns(columns);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(2);
     });
 
+    it('gets multiple GeoJSON columns', () => {
+      const columns = ['foo', geom2, 'bar', geom1];
+      const result = getGeojsonColumns(columns);
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual(1);
+      expect(result[1]).toEqual(3);
+    });
+
+    it('returns empty array when no GeoJSON is included', () => {
+      const columns = ['foo', 'bar'];
+      const result = getGeojsonColumns(columns);
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  describe('createColumnName', () => {
+    it('creates a columns name', () => {
+      const columns = ['foo', 'bar'];
+      const result = createColumnName(columns, []);
+      expect(result).toEqual('foo, bar');
+    });
+
+    it('ignores items provided by ignoreIdx', () => {
+      const columns = ['foo', 'bar', 'baz'];
+      const ignoreIdx = [1];
+      const result = createColumnName(columns, ignoreIdx);
+      expect(result).toEqual('foo, baz');
+    });
+  });
+
+  describe('groupByLocationGenericX', () => {
     it('groups in the correct count of geometries', () => {
-      const result = groupByLocationTs(timeseriesChartData);
-
-      const countGeometries = Object.keys(result).length;
-      expect(countGeometries).toEqual(2);
+      const result = groupByLocationGenericX(
+        groupedTimeseriesChartData,
+        groupedTimeseriesParams,
+        groupedTimeseriesQueryData,
+      );
+      const countOfGeometries = Object.keys(result).length;
+      expect(countOfGeometries).toEqual(2);
     });
 
-    it('removes the geometry from the data field for grouped data', () => {
-      const result = groupByLocationTs(groupedTimeseriesChartData);
-
-      expect(result).toEqual(
-        expect.objectContaining({
-          [geom1]: expect.arrayContaining([
-            expect.objectContaining({
-              __timestamp: 1564275000000,
-              apple: 347,
-              lemon: 352,
-            }),
-          ]),
-        }),
+    it('groups items by same geometry', () => {
+      const result = groupByLocationGenericX(
+        groupedTimeseriesChartData,
+        groupedTimeseriesParams,
+        groupedTimeseriesQueryData,
       );
+      const allGeom1 = result[geom1].length === 2;
+      const allGeom2 = result[geom2].length === 2;
+      expect(allGeom1 && allGeom2).toBe(true);
     });
   });
 
@@ -76,6 +118,59 @@ describe('transformPropsUtil', () => {
       const allGeom1 = result[geom1].length === 6;
       const allGeom2 = result[geom2].length === 4;
       expect(allGeom1 && allGeom2).toBe(true);
+    });
+  });
+
+  describe('stripGeomFromColnamesAndTypes', () => {
+    it('strips the geom from colnames with geom column', () => {
+      const queryData = {
+        colnames: ['foo', 'geom'],
+        coltypes: [0, 0],
+      };
+      const result = stripGeomFromColnamesAndTypes(queryData, 'geom');
+      expect(result).toEqual({
+        colnames: ['foo'],
+        coltypes: [0],
+      });
+    });
+
+    it('strips the geom from colnames with grouped columns', () => {
+      const queryData = {
+        colnames: ['foo', `bar, ${geom1}`],
+        coltypes: [0, 0],
+      };
+      const result = stripGeomFromColnamesAndTypes(queryData, 'geom');
+      expect(result).toEqual({
+        colnames: ['foo', 'bar'],
+        coltypes: [0, 0],
+      });
+    });
+
+    it('strips the geom from colnames with grouped columns without geom', () => {
+      const queryData = {
+        colnames: ['foo', `bar, baz`],
+        coltypes: [0, 0],
+      };
+      const result = stripGeomFromColnamesAndTypes(queryData, 'geom');
+      expect(result).toEqual({
+        colnames: ['foo', 'bar, baz'],
+        coltypes: [0, 0],
+      });
+    });
+  });
+
+  describe('stripGeomColumnFromLabelMap', () => {
+    it('strips the geom column from label_map', () => {
+      const labelMap = {
+        [`apple, ${geom1}`]: ['apple', geom1],
+        [`${geom2}, lemon`]: [geom2, 'lemon'],
+        geom: ['geom'],
+      };
+      const result = stripGeomColumnFromLabelMap(labelMap, 'geom');
+      expect(result).toEqual({
+        apple: ['apple'],
+        lemon: ['lemon'],
+      });
     });
   });
 

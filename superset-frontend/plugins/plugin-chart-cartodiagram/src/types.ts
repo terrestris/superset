@@ -18,6 +18,7 @@
  */
 import { ControlComponentProps } from '@superset-ui/chart-controls';
 import {
+  DataRecord,
   QueryFormData,
   SupersetTheme,
   TimeseriesDataRecord,
@@ -134,9 +135,8 @@ export type SelectedChartConfig = {
   };
 };
 
-// TODO: remove any(?)
 export type LocationConfigMapping = {
-  [key: string]: TimeseriesDataRecord | any[];
+  [key: string]: DataRecord[];
 };
 
 export interface EditItem {

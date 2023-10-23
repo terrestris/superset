@@ -22,7 +22,6 @@ import buildQuery from '../../src/plugin/buildQuery';
 describe('CartodiagramPlugin buildQuery', () => {
   const selectedChartParams = {
     groupby: [],
-    // groupby_b (optional)
   };
 
   const selectedChart = {
@@ -36,25 +35,6 @@ describe('CartodiagramPlugin buildQuery', () => {
     series: 'foo',
     viz_type: 'my_chart',
     selected_chart: JSON.stringify(selectedChart),
-    geom_column: 'geom',
-  };
-
-  const selectedChartParamsB = {
-    groupby: [],
-    groupby_b: [],
-  };
-
-  const selectedChartB = {
-    viz_type: 'pie',
-    params: JSON.stringify(selectedChartParamsB),
-  };
-
-  const formDataB = {
-    datasource: '5__table',
-    granularity_sqla: 'ds',
-    series: 'foo',
-    viz_type: 'my_chart',
-    selected_chart: JSON.stringify(selectedChartB),
     geom_column: 'geom',
   };
 
@@ -81,17 +61,6 @@ describe('CartodiagramPlugin buildQuery', () => {
     const expectedParams = { ...selectedChartParams, groupby: ['geom'] };
 
     buildQuery(formData);
-    expect(chartQueryBuilderMock.mock.calls[0][0]).toEqual(expectedParams);
-  });
-
-  it('should build groupby_b with geom in form data', () => {
-    const expectedParams = {
-      ...selectedChartParams,
-      groupby: ['geom'],
-      groupby_b: ['geom'],
-    };
-
-    buildQuery(formDataB);
     expect(chartQueryBuilderMock.mock.calls[0][0]).toEqual(expectedParams);
   });
 });

@@ -79,12 +79,12 @@ export const timeseriesChartData = [
   {
     [geom1]: 347,
     [geom2]: 360,
-    __timestamp: 1564275000000,
+    mydate: 1564275000000,
   },
   {
     [geom1]: 353,
     [geom2]: 328,
-    __timestamp: 1564272000000,
+    mydate: 1564272000000,
   },
 ];
 
@@ -94,13 +94,20 @@ export const groupedTimeseriesChartData = [
     [`${geom2}, apple`]: 360,
     [`${geom1}, lemon`]: 352,
     [`${geom2}, lemon`]: 364,
-    __timestamp: 1564275000000,
+    mydate: 1564275000000,
   },
   {
     [`${geom1}, apple`]: 353,
     [`${geom2}, apple`]: 328,
     [`${geom1}, lemon`]: 346,
     [`${geom2}, lemon`]: 333,
-    __timestamp: 1564272000000,
+    mydate: 1564272000000,
   },
 ];
+
+export const groupedTimeseriesLabelMap = {
+  [`${geom1}, apple`]: [geom1, 'apple'],
+  [`${geom2}, apple`]: [geom2, 'apple'],
+  [`${geom1}, lemon`]: [geom1, 'lemon'],
+  [`${geom2}, lemon`]: [geom2, 'lemon'],
+};
