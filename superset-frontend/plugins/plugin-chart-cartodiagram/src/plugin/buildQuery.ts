@@ -42,25 +42,13 @@ export default function buildQuery(formData: QueryFormData) {
   // adapt groupby property to ensure geometry column always exists
   // and is always at first position
 
-  // remove geometry column if it is included
   let { groupby } = chartFormData;
   if (!groupby) {
     groupby = [];
   }
-  groupby = groupby.filter((item: any) => item !== geometryColumn);
   // add geometry column at the first place
   groupby?.unshift(geometryColumn);
   chartFormData.groupby = groupby;
-
-  // special case for mixed-times series chart
-  let groupbyB: string[] = chartFormData.groupby_b;
-  if (groupbyB) {
-    // remove geometry column if it is included
-    groupbyB = groupbyB.filter(item => item !== geometryColumn);
-    // add geometry column at the first place
-    groupbyB.unshift(geometryColumn);
-    chartFormData.groupby_b = groupbyB;
-  }
 
   // TODO: find way to import correct type "InclusiveLoaderResult"
   const buildQueryRegistry = getChartBuildQueryRegistry();
