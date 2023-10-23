@@ -23,9 +23,12 @@ import {
 } from '@superset-ui/core';
 import { LayerConf, MapViewConfigs, ZoomConfigs } from '../../src/types';
 import transformProps from '../../src/plugin/transformProps';
+import {
+  groupedTimeseriesChartData,
+  groupedTimeseriesLabelMap,
+} from '../testData';
 
 describe('CartodiagramPlugin transformProps', () => {
-  // TODO
   const chartSize: ZoomConfigs = {
     type: 'FIXED',
     configs: {
@@ -60,6 +63,7 @@ describe('CartodiagramPlugin transformProps', () => {
   // only minimal subset of actual params
   const selectedChartParams = {
     groupby: ['bar'],
+    x_axis: 'mydate',
   };
 
   const selectedChart = {
@@ -80,23 +84,14 @@ describe('CartodiagramPlugin transformProps', () => {
     chartBackgroundBorderRadius: 5,
   };
 
-  const geom = {
-    loc: 'fake location',
-  };
-
   const chartProps = new ChartProps({
     formData,
     width: 800,
     height: 600,
     queriesData: [
       {
-        data: [
-          {
-            geom: JSON.stringify(geom),
-            sum__num: 1,
-            __timestamp: 599616000000,
-          },
-        ],
+        data: groupedTimeseriesChartData,
+        label_map: groupedTimeseriesLabelMap,
       },
     ],
     theme: supersetTheme,

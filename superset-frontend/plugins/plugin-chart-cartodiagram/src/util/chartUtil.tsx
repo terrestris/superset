@@ -18,21 +18,18 @@
  */
 import React from 'react';
 
-import {
-  EchartsMixedTimeseries,
-  EchartsPie,
-  EchartsTimeseries,
-} from '@superset-ui/plugin-chart-echarts';
+import { SupersetTheme } from '@superset-ui/core';
 import { ChartConfigFeature } from '../types';
+import ChartWrapper from '../components/ChartWrapper';
 
 /**
  * Create a chart component for a location.
  *
- * @param loc The location string
  * @param chartVizType The superset visualization type
  * @param chartConfigs The chart configurations
  * @param chartWidth The chart width
  * @param chartHeight The chart height
+ * @param chartTheme The chart theme
  * @returns The chart as React component
  */
 export const createChartComponent = (
@@ -40,81 +37,13 @@ export const createChartComponent = (
   chartConfig: ChartConfigFeature,
   chartWidth: number,
   chartHeight: number,
-) => {
-  let chartComponent;
-
-  const {
-    setDataMask,
-    labelMap,
-    labelMapB,
-    groupby,
-    selectedValues,
-    formData,
-    groupbyB,
-    seriesBreakdown,
-    legendData,
-    echartOptions,
-  } = chartConfig.properties;
-
-  switch (chartVizType) {
-    case 'pie':
-      chartComponent = (
-        // TODO fix this typescript error when there is time
-        // @ts-ignore
-        <EchartsPie
-          height={chartHeight}
-          width={chartWidth}
-          echartOptions={echartOptions}
-          setDataMask={setDataMask}
-          labelMap={labelMap}
-          // TODO probably remove geom grouping
-          groupby={groupby}
-          selectedValues={selectedValues}
-          formData={formData}
-        />
-      );
-      break;
-    case 'mixed_timeseries':
-      chartComponent = (
-        // TODO fix this typescript error when there is time
-        // @ts-ignore
-        <EchartsMixedTimeseries
-          height={chartHeight}
-          width={chartWidth}
-          echartOptions={echartOptions}
-          setDataMask={setDataMask}
-          labelMap={labelMap}
-          labelMapB={labelMapB}
-          // TODO probably remove geom grouping
-          groupby={groupby}
-          selectedValues={selectedValues}
-          formData={formData}
-          // TODO probably remove geom grouping
-          groupbyB={groupbyB}
-          seriesBreakdown={seriesBreakdown}
-        />
-      );
-      break;
-    default:
-      chartComponent = (
-        // TODO fix this typescript error when there is time
-        // @ts-ignore
-        <EchartsTimeseries
-          height={chartHeight}
-          width={chartWidth}
-          echartOptions={echartOptions}
-          setDataMask={setDataMask}
-          labelMap={labelMap}
-          // TODO probably remove geom grouping
-          groupby={groupby}
-          selectedValues={selectedValues}
-          formData={formData}
-          legendData={legendData}
-          refs={{}}
-        />
-      );
-      break;
-  }
-
-  return chartComponent;
-};
+  chartTheme: SupersetTheme,
+) => (
+  <ChartWrapper
+    vizType={chartVizType}
+    chartConfig={chartConfig}
+    width={chartWidth}
+    height={chartHeight}
+    theme={chartTheme}
+  />
+);

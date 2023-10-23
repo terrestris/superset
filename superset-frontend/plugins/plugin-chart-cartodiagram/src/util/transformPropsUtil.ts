@@ -20,8 +20,9 @@
 import {
   ChartProps,
   convertKeysToCamelCase,
-  TimeseriesDataRecord,
+  DataRecord,
 } from '@superset-ui/core';
+import { isObject } from 'lodash';
 import {
   LocationConfigMapping,
   SelectedChartConfig,
@@ -29,53 +30,101 @@ import {
   ChartConfigFeature,
 } from '../types';
 
+const COLUMN_SEPARATOR = ', ';
+
 /**
- * Group data by location and timestamp.
+ * Get the indices of columns where the title is a geojson.
  *
- * @param data The incoming dataset
- * @returns The grouped data
+ * @param columns List of column names.
+ * @returns List of indices containing geojsonColumns.
  */
-export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
+export const getGeojsonColumns = (columns: string[]) =>
+  columns.reduce((prev, current, idx) => {
+    let parsedColName;
+    try {
+      parsedColName = JSON.parse(current);
+    } catch {
+      parsedColName = undefined;
+    }
+    if (!parsedColName || !isObject(parsedColName)) {
+      return [...prev];
+    }
+    if (!('type' in parsedColName) || !('coordinates' in parsedColName)) {
+      return [...prev];
+    }
+    return [...prev, idx];
+  }, []);
+
+/**
+ * Create a column name ignoring provided indices.
+ *
+ * @param columns List of column names.
+ * @param ignoreIdx List of indices to ignore.
+ * @returns Column name.
+ */
+export const createColumnName = (columns: string[], ignoreIdx: number[]) =>
+  columns.filter((l, idx) => !ignoreIdx.includes(idx)).join(COLUMN_SEPARATOR);
+
+/**
+ * Group data by location for data providing a generic
+ * x-axis.
+ *
+ * @param data The data to group.
+ * @param params The data params.
+ * @returns Data grouped by location.
+ */
+export const groupByLocationGenericX = (
+  data: DataRecord[],
+  params: SelectedChartConfig['params'],
+  queryData: any,
+) => {
   const locations: LocationConfigMapping = {};
   if (!data) {
     return locations;
   }
   data.forEach(d => {
-    // eslint-disable-next-line no-underscore-dangle
-    const timestamp = d.__timestamp;
-    if (!timestamp) return;
+    Object.keys(d)
+      .filter(k => k !== params.x_axis)
+      .forEach(k => {
+        const labelMap: string[] = queryData.label_map?.[k];
 
-    const keys = Object.keys(d).filter(k => k !== '__timestamp');
-
-    keys.forEach(k => {
-      const separator = ', ';
-      const parts = k.split(separator);
-      const location = parts[0];
-      parts.shift();
-      const leftOverKey = parts.join(separator);
-
-      if (!Object.keys(locations).includes(location)) {
-        locations[location] = [];
-      }
-
-      let dataAtLocation;
-      const currentLocation = locations[location];
-      if (Array.isArray(currentLocation)) {
-        dataAtLocation = currentLocation.find(
-          // eslint-disable-next-line no-underscore-dangle
-          dal => dal.__timestamp === timestamp,
-        );
-      }
-      if (!dataAtLocation) {
-        dataAtLocation = {
-          __timestamp: timestamp,
-        };
-        if (Array.isArray(currentLocation)) {
-          currentLocation.push(dataAtLocation);
+        if (!labelMap) {
+          console.log(
+            'Cannot extract location from queryData. label_map not defined',
+          );
+          return;
         }
-      }
-      dataAtLocation[leftOverKey] = d[k];
-    });
+
+        const geojsonCols = getGeojsonColumns(labelMap);
+
+        if (geojsonCols.length > 1) {
+          // TODO what should we do, if there is more than one geom column?
+          console.log(
+            'More than one geometry column detected. Using first found.',
+          );
+        }
+        const location = labelMap[geojsonCols[0]];
+        const filter = geojsonCols.length ? [geojsonCols[0]] : [];
+        const leftOverKey = createColumnName(labelMap, filter);
+
+        if (!Object.keys(locations).includes(location)) {
+          locations[location] = [];
+        }
+
+        let dataAtX = locations[location].find(
+          i => i[params.x_axis] === d[params.x_axis],
+        );
+
+        if (!dataAtX) {
+          dataAtX = {
+            // add the x_axis value explicitly, since we
+            // filtered it out for the rest of the computation.
+            [params.x_axis]: d[params.x_axis],
+          };
+          locations[location].push(dataAtX);
+        }
+        dataAtX[leftOverKey] = d[k];
+      });
   });
 
   return locations;
@@ -88,16 +137,12 @@ export const groupByLocationTs = (data: TimeseriesDataRecord[] | undefined) => {
  * @param geomColumn The name of the geometry column
  * @returns The grouped data
  */
-export const groupByLocation = (
-  data: TimeseriesDataRecord[],
-  geomColumn: string,
-) => {
+export const groupByLocation = (data: DataRecord[], geomColumn: string) => {
   const locations: LocationConfigMapping = {};
 
   data.forEach(d => {
     const loc = d[geomColumn] as string;
     if (!loc) {
-      // TODO add proper handling
       return;
     }
 
@@ -105,30 +150,112 @@ export const groupByLocation = (
       locations[loc] = [];
     }
 
-    const currentLocation = locations[loc];
+    const newData = {
+      ...d,
+    };
+    delete newData[geomColumn];
 
-    if (Array.isArray(currentLocation)) {
-      currentLocation.push(d);
-    }
+    locations[loc].push(newData);
   });
 
   return locations;
 };
 
 /**
- * Create the ECharts configuration depending on the referenced Superset chart.
+ * Strips the geom from colnames and coltypes.
  *
- * @param data The incoming dataset
- * @param data_b Another incoming dataset, if available
+ * @param queryData The querydata.
+ * @param geomColumn Name of the geom column.
+ * @returns colnames and coltypes without the geom.
+ */
+export const stripGeomFromColnamesAndTypes = (
+  queryData: any,
+  geomColumn: string,
+) => {
+  const newColnames: string[] = [];
+  const newColtypes: number[] = [];
+  queryData.colnames?.forEach((colname: string, idx: number) => {
+    if (colname === geomColumn) {
+      return;
+    }
+
+    const parts = colname.split(COLUMN_SEPARATOR);
+    const geojsonColumns = getGeojsonColumns(parts);
+    const filter = geojsonColumns.length ? [geojsonColumns[0]] : [];
+
+    const newColname = createColumnName(parts, filter);
+    if (newColnames.includes(newColname)) {
+      return;
+    }
+    newColnames.push(newColname);
+    newColtypes.push(queryData.coltypes[idx]);
+  });
+
+  return {
+    colnames: newColnames,
+    coltypes: newColtypes,
+  };
+};
+
+/**
+ * Strips the geom from labelMap.
+ *
+ * @param queryData The querydata.
+ * @param geomColumn Name of the geom column.
+ * @returns labelMap without the geom column.
+ */
+export const stripGeomColumnFromLabelMap = (
+  labelMap: { [key: string]: string[] },
+  geomColumn: string,
+) => {
+  const newLabelMap = {};
+  Object.entries(labelMap).forEach(([key, value]) => {
+    if (key === geomColumn) {
+      return;
+    }
+    const geojsonCols = getGeojsonColumns(value);
+    const filter = geojsonCols.length ? [geojsonCols[0]] : [];
+    const columnName = createColumnName(value, filter);
+    const restItems = value.filter((v, idx) => !geojsonCols.includes(idx));
+    newLabelMap[columnName] = restItems;
+  });
+  return newLabelMap;
+};
+
+/**
+ * Strip occurrences of the geom column from the query data.
+ *
+ * @param queryDataClone The query data
+ * @param geomColumn The name of the geom column
+ * @returns query data without geom column.
+ */
+export const stripGeomColumnFromQueryData = (
+  queryData: any,
+  geomColumn: string,
+) => {
+  const queryDataClone = {
+    ...structuredClone(queryData),
+    ...stripGeomFromColnamesAndTypes(queryData, geomColumn),
+  };
+  if (queryDataClone.label_map) {
+    queryDataClone.label_map = stripGeomColumnFromLabelMap(
+      queryData.label_map,
+      geomColumn,
+    );
+  }
+  return queryDataClone;
+};
+
+/**
+ * Create the charts configuration depending on the referenced Superset chart.
+ *
  * @param selectedChart The configuration of the referenced Superset chart
  * @param geomColumn The name of the geometry column
  * @param chartProps The properties provided within this OL plugin
  * @param chartTransformer The transformer function
  * @returns The ECharts configuration
  */
-export const getEchartConfigs = (
-  data: TimeseriesDataRecord[],
-  data_b: TimeseriesDataRecord[] | undefined,
+export const getChartConfigs = (
   selectedChart: SelectedChartConfig,
   geomColumn: string,
   chartProps: ChartProps,
@@ -144,65 +271,55 @@ export const getEchartConfigs = (
     width: null,
     height: null,
     formData: chartFormData,
-    // TODO check if we should use chartProps.datasource here
+    rawFormData: chartFormDataSnake,
     datasource: {},
   };
 
-  let dataByLocation: LocationConfigMapping;
-  let dataByLocation_b: LocationConfigMapping;
+  const { queriesData } = chartProps;
+  const [queryData] = queriesData;
 
-  switch (selectedChart.viz_type) {
-    case 'pie':
-      dataByLocation = groupByLocation(data, geomColumn);
-      if (
-        Object.keys(chartFormData).includes('groupby') &&
-        chartFormData.groupby[0] === geomColumn
-      ) {
-        chartFormData.groupby.shift();
-      }
-      break;
-    case 'mixed_timeseries':
-      dataByLocation = groupByLocationTs(data);
-      dataByLocation_b = groupByLocationTs(data_b);
-      break;
-    default:
-      // TODO check if there is a better solution here
-      dataByLocation = groupByLocationTs(data);
-      break;
-  }
+  const data = queryData.data as DataRecord[];
+  let dataByLocation: LocationConfigMapping;
 
   const chartConfigs: ChartConfig = {
     type: 'FeatureCollection',
     features: [],
   };
 
-  Object.keys(dataByLocation).forEach(location => {
-    const { queriesData } = chartProps;
-    const queryData = queriesData[0];
+  if (!data) {
+    return chartConfigs;
+  }
 
+  if ('x_axis' in selectedChart.params) {
+    dataByLocation = groupByLocationGenericX(
+      data,
+      selectedChart.params,
+      queryData,
+    );
+  } else {
+    dataByLocation = groupByLocation(data, geomColumn);
+  }
+
+  const strippedQueryData = stripGeomColumnFromQueryData(queryData, geomColumn);
+
+  Object.keys(dataByLocation).forEach(location => {
     const config = {
       ...baseConfig,
       queriesData: [
         {
-          ...queryData,
+          ...strippedQueryData,
           data: dataByLocation[location],
         },
       ],
     };
-    if (dataByLocation_b) {
-      const queryDataB = queriesData[1];
-      config.queriesData.push({
-        ...queryDataB,
-        data: dataByLocation_b[location],
-      });
-    }
-    // TODO create proper clone of argument
     const transformedProps = chartTransformer(config);
 
     const feature: ChartConfigFeature = {
       type: 'Feature',
       geometry: JSON.parse(location),
-      properties: transformedProps,
+      properties: {
+        ...transformedProps,
+      },
     };
 
     chartConfigs.features.push(feature);
