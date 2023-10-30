@@ -49,6 +49,9 @@ import DndColumnSelectControl, {
 import XAxisSortControl from './XAxisSortControl';
 import CurrencyControl from './CurrencyControl';
 import ColumnConfigControl from './ColumnConfigControl';
+import LayerConfigsControl from './LayerConfigsControl/LayerConfigsControl';
+import MapViewControl from './MapViewControl/MapViewControl';
+import ZoomConfigControl from './ZoomConfigControl/ZoomConfigControl';
 
 const controlMap = {
   AnnotationLayerControl,
@@ -67,6 +70,8 @@ const controlMap = {
   DndMetricSelect,
   FixedOrMetricControl,
   HiddenControl,
+  LayerConfigsControl,
+  MapViewControl,
   SelectAsyncControl,
   SelectControl,
   SliderControl,
@@ -82,6 +87,7 @@ const controlMap = {
   ConditionalFormattingControl,
   XAxisSortControl,
   ContourControl,
+  ZoomConfigControl,
   ...sharedControlComponents,
 };
 export default controlMap;

@@ -16,16 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  LayerConf,
-  WfsLayerConf,
-  WmsLayerConf,
-  ZoomConfigs,
-  ZoomConfigsFixed,
-  ZoomConfigsLinear,
-  ZoomConfigsExp,
-  XyzLayerConf,
-} from './types';
+import { LayerConf, WfsLayerConf, WmsLayerConf, XyzLayerConf } from './types';
 
 export const isWmsLayerConf = (
   layerConf: LayerConf,
@@ -38,15 +29,3 @@ export const isWfsLayerConf = (
 export const isXyzLayerConf = (
   layerConf: LayerConf,
 ): layerConf is XyzLayerConf => layerConf.type === 'XYZ';
-
-export const isZoomConfigsFixed = (
-  zoomConfigs: ZoomConfigs,
-): zoomConfigs is ZoomConfigsFixed => zoomConfigs.type === 'FIXED';
-
-export const isZoomConfigsLinear = (
-  zoomConfigs: ZoomConfigs,
-): zoomConfigs is ZoomConfigsLinear => zoomConfigs.type === 'LINEAR';
-
-export const isZoomConfigsExp = (
-  zoomConfigs: ZoomConfigs,
-): zoomConfigs is ZoomConfigsExp => zoomConfigs.type === 'EXP';

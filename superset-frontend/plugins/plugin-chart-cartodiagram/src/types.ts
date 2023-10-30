@@ -16,22 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ControlComponentProps } from '@superset-ui/chart-controls';
 import {
   DataRecord,
-  QueryFormData,
   SupersetTheme,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
-import { EChartsCoreOption, ECharts } from 'echarts';
-import { CardStyleProps } from 'geostyler/dist/Component/CardStyle/CardStyle';
 import { RenderFunction } from 'ol/layer/Layer';
 import { Extent } from 'ol/extent';
 import Source from 'ol/source/Source';
 import { Coordinate } from 'ol/coordinate';
-import { DataNode, TreeProps } from 'antd/lib/tree';
 import { Map } from 'ol';
 import { Feature, FeatureCollection, Point } from 'geojson';
+import { Style } from 'geostyler-style';
 
 export interface CartodiagramPluginStylesProps {
   height: number;
@@ -66,10 +62,6 @@ interface CartodiagramPluginCustomizeProps {
   setControlValue: Function;
 }
 
-export type CartodiagramPluginQueryFormData = QueryFormData &
-  CartodiagramPluginStylesProps &
-  CartodiagramPluginCustomizeProps;
-
 export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
   CartodiagramPluginCustomizeProps & {
     data: TimeseriesDataRecord[];
@@ -92,7 +84,7 @@ export interface WfsLayerConf extends BaseLayerConf {
   typeName: string;
   version: string;
   maxFeatures?: number;
-  style?: any; // 'geostyler-style'
+  style?: Style;
 }
 
 export interface XyzLayerConf extends BaseLayerConf {
@@ -107,25 +99,6 @@ export interface WmsLayerConf extends BaseLayerConf {
 
 export type LayerConf = WmsLayerConf | WfsLayerConf | XyzLayerConf;
 
-export type EchartsStylesProps = {
-  height: number;
-  width: number;
-};
-
-export interface EchartsProps {
-  height: number;
-  width: number;
-  echartOptions: EChartsCoreOption;
-  eventHandlers?: EventHandlers;
-  zrEventHandlers?: EventHandlers;
-  selectedValues?: Record<number, string>;
-  forceClear?: boolean;
-}
-
-export interface EchartsHandler {
-  getEchartInstance: () => ECharts | undefined;
-}
-
 export type EventHandlers = Record<string, { (props: any): void }>;
 
 export type SelectedChartConfig = {
@@ -139,18 +112,6 @@ export type LocationConfigMapping = {
   [key: string]: DataRecord[];
 };
 
-export interface EditItem {
-  layerConf: LayerConf;
-  idx: number;
-}
-
-export type LayerConfigsControlProps = ControlComponentProps<LayerConf[]>;
-export interface LayerConfigsPopoverContentProps {
-  onClose?: () => void;
-  onSave?: (layerConf: LayerConf) => void;
-  layerConf: LayerConf;
-}
-
 export type MapViewConfigs = {
   mode: 'FIT_DATA' | 'CUSTOM';
   zoom: number;
@@ -160,8 +121,6 @@ export type MapViewConfigs = {
   fixedLatitude: number;
   fixedLongitude: number;
 };
-
-export type MapViewConfigsControlProps = ControlComponentProps<MapViewConfigs>;
 
 export type ZoomConfigs = ZoomConfigsFixed | ZoomConfigsLinear | ZoomConfigsExp;
 
@@ -207,9 +166,6 @@ export interface ZoomConfigsExp extends ZoomConfigsBase {
   };
 }
 
-export type ZoomConfigsControlProps = ControlComponentProps<ZoomConfigs>;
-export type ZoomConfigsChartProps = ZoomConfigsControlProps;
-
 export type ChartHtmlElement = {
   htmlElement: HTMLDivElement;
   coordinate: Coordinate;
@@ -240,73 +196,6 @@ export type ChartLayerOptions = {
   render?: RenderFunction | undefined;
   properties?: { [x: string]: any } | undefined;
 };
-
-export interface GeoStylerWrapperProps extends CardStyleProps {
-  className?: string;
-}
-
-export interface FlatLayerDataNode extends DataNode {
-  layerConf: LayerConf;
-}
-
-export interface FlatLayerTreeProps {
-  layerConfigs: LayerConf[];
-  onAddLayer?: () => void;
-  onRemoveLayer?: (idx: number) => void;
-  onEditLayer?: (layerConf: LayerConf, idx: number) => void;
-  onMoveLayer?: (layerConfigs: LayerConf[]) => void;
-  draggable?: boolean;
-  className?: string;
-}
-
-export interface LayerTreeItemProps {
-  layerConf: LayerConf;
-  onEditClick?: () => void;
-  onRemoveClick?: () => void;
-  className?: string;
-}
-
-export type DropInfoType<T extends TreeProps['onDrop']> = T extends Function
-  ? Parameters<T>[0]
-  : undefined;
-
-export interface CreateDragGraphicOptions {
-  data: number[][];
-  onWidthDrag: (...arg: any[]) => any;
-  onHeightDrag: (...args: any[]) => any;
-  barWidth: number;
-  chart: any;
-}
-
-export interface CreateDragGraphicOption {
-  dataItem: number[];
-  dataItemIndex: number;
-  dataIndex: number;
-  onDrag: (...arg: any[]) => any;
-  barWidth: number;
-  chart: any;
-  add: boolean;
-}
-
-export interface GetDragGraphicPositionOptions {
-  chart: any;
-  x: number;
-  y: number;
-  barWidth: number;
-  add: boolean;
-}
-
-export interface ExtentTagProps {
-  value: MapViewConfigs;
-  onClick: () => void;
-  className?: string;
-}
-
-export interface MapViewPopoverContentProps {
-  onClose: () => void;
-  onSave: (currentMapViewConf: MapViewConfigs) => void;
-  mapViewConf: MapViewConfigs;
-}
 
 export type CartodiagramPluginConstructorOpts = {
   defaultLayers?: LayerConf[];

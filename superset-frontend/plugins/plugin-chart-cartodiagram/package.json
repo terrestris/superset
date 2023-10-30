@@ -31,11 +31,6 @@
   "dependencies": {
     "@types/geojson": "^7946.0.10",
     "geojson": "^0.5.0",
-    "geostyler": "^11.0.0",
-    "geostyler-data": "^1.0.0",
-    "geostyler-openlayers-parser": "^4.0.0",
-    "geostyler-style": "^7.2.0",
-    "geostyler-wfs-parser": "^2.0.0",
     "lodash": "^4.17.21",
     "ol": "^7.1.0"
   },
@@ -45,6 +40,11 @@
     "@superset-ui/core": "*",
     "antd": "^4.10.3",
     "echarts": "^5.4.1",
+    "geostyler": "^11.0.0",
+    "geostyler-data": "^1.0.0",
+    "geostyler-openlayers-parser": "^4.0.0",
+    "geostyler-style": "^7.2.0",
+    "geostyler-wfs-parser": "^2.0.0",
     "polished": "^3.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.0"

@@ -60,7 +60,7 @@ export const selectedChartMutator = (
   response: Record<string, any>,
   value: SelectValue | undefined,
 ) => {
-  if (!response || !response.result) {
+  if (!response?.result) {
     if (value && typeof value === 'string') {
       return [
         {

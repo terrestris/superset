@@ -104,7 +104,7 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
       params.append('bbox', extent.join(','));
       if (maxFeatures) {
         let maxFeaturesQuery = 'count';
-        if (isVersionBelow(version, '2.0', 'WFS')) {
+        if (isVersionBelow(version, '2.0.2', 'WFS')) {
           maxFeaturesQuery = 'maxFeatures';
         }
         params.append(maxFeaturesQuery, maxFeatures.toString());
@@ -115,16 +115,19 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
     strategy: bboxStrategy,
   });
 
-  const olParser = new OlParser();
-  const writeStyleResult = await olParser.writeStyle(style);
-  if (writeStyleResult.errors) {
-    console.warn('Could not create ol-style', writeStyleResult.errors);
-    return undefined;
+  let writeStyleResult;
+  if (style) {
+    const olParser = new OlParser();
+    writeStyleResult = await olParser.writeStyle(style);
+    if (writeStyleResult.errors) {
+      console.warn('Could not create ol-style', writeStyleResult.errors);
+      return undefined;
+    }
   }
 
   return new VectorLayer({
     source: wfsSource,
-    style: writeStyleResult.output,
+    style: writeStyleResult?.output,
   });
 };
 
