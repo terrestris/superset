@@ -21,6 +21,8 @@ import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from '../images/thumbnail.png';
+import example1 from '../images/example1.png';
+import example2 from '../images/example2.png';
 import { CartodiagramPluginConstructorOpts } from '../types';
 import { getLayerConfig } from '../util/controlPanelUtil';
 
@@ -37,11 +39,16 @@ export default class CartodiagramPlugin extends ChartPlugin {
    */
   constructor(opts: CartodiagramPluginConstructorOpts) {
     const metadata = new ChartMetadata({
-      description: 'Display multiple charts on an OpenLayers map.',
+      description:
+        'Display charts on a map. For using this plugin, users first have to create any other chart that can then be placed on the map.',
       name: t('Cartodiagram'),
       thumbnail,
-      tags: [t('ECharts'), t('Popular'), t('Geo'), t('2D')],
+      tags: [t('Geo'), t('2D'), t('Spatial'), t('Experimental')],
       category: t('Map'),
+      exampleGallery: [
+        { url: example1, caption: t('Pie charts on a map') },
+        { url: example2, caption: t('Line charts on a map') },
+      ],
     });
 
     if (opts.defaultLayers) {
