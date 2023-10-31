@@ -70,10 +70,11 @@ describe('createWfsLayer', () => {
 
     const wfsLayer = await createWfsLayer(wfsLayerConf);
 
-    const style = wfsLayer.getStyle();
-    expect(style.length).toEqual(3);
+    const style = wfsLayer!.getStyle();
+    // @ts-ignore
+    expect(style!.length).toEqual(3);
 
-    const colorAtLayer = style[1].getImage().getFill().getColor();
+    const colorAtLayer = style![1].getImage().getFill().getColor();
     expect(colorToExpect).toEqual(colorAtLayer);
   });
 });

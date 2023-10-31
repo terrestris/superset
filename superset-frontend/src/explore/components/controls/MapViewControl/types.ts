@@ -35,3 +35,9 @@ export interface MapViewPopoverContentProps {
   onSave: (currentMapViewConf: MapViewConfigs) => void;
   mapViewConf: MapViewConfigs;
 }
+
+export interface ExtentTagProps {
+  value: MapViewConfigs;
+  onClick: () => void;
+  className?: string;
+}

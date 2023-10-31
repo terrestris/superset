@@ -383,7 +383,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                 label={layerUrlLabel}
                 description={layerUrlDescription}
                 placeholder={layerUrlPlaceholder}
-                required
                 value={currentLayerConf.url}
                 name="url"
                 onChange={onLayerUrlChange}
@@ -397,7 +396,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   { value: 'WFS', label: t('WFS') },
                   { value: 'XYZ', label: t('XYZ') },
                 ]}
-                required
                 value={currentLayerConf.type}
                 defaultValue={currentLayerConf.type}
                 name="type"
@@ -409,7 +407,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   label={serviceVersionLabel}
                   description={serviceVersionDescription}
                   options={wmsVersionOptions}
-                  required
                   value={wmsVersion}
                   defaultValue={wmsVersionOptions[0].value as string}
                   name="wmsVersion"
@@ -422,7 +419,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   label={serviceVersionLabel}
                   description={serviceVersionDescription}
                   options={wfsVersionOptions}
-                  required
                   value={wfsVersion}
                   defaultValue={wfsVersionOptions[0].value as string}
                   name="wfsVersion"
@@ -435,7 +431,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   label={layersParamLabel}
                   description={layersParamDescription}
                   placeholder={layersParamPlaceholder}
-                  required
                   value={currentLayerConf.layersParam}
                   name="layersParam"
                   onChange={onLayersParamChange}
@@ -447,7 +442,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   label={layersParamLabel}
                   description={layersParamDescription}
                   placeholder={layersParamPlaceholder}
-                  required
                   value={currentLayerConf.typeName}
                   name="typeName"
                   onChange={onTypeNameChange}
@@ -458,7 +452,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                 label={layerTitleLabel}
                 description={layerTitleDescription}
                 placeholder={layerTitlePlaceholder}
-                required
                 value={currentLayerConf.title}
                 name="title"
                 onChange={onLayerTitleChange}
@@ -469,7 +462,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                   label={maxFeaturesLabel}
                   description={maxFeaturesDescription}
                   placeholder={maxFeaturesPlaceholder}
-                  required={false}
                   value={currentLayerConf.maxFeatures}
                   name="maxFeatures"
                   onChange={onMaxFeaturesChange}
@@ -480,7 +472,6 @@ export const LayerConfigsPopoverContent: React.FC<LayerConfigsPopoverContentProp
                 label={attributionLabel}
                 description={attributionDescription}
                 placeholder={attributionPlaceholder}
-                required={false}
                 value={currentLayerConf.attribution}
                 name="attribution"
                 onChange={onAttributionChange}

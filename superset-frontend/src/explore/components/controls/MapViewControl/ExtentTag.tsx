@@ -20,7 +20,7 @@
 import { t } from '@superset-ui/core';
 import { Tag } from 'antd';
 import React from 'react';
-import { ExtentTagProps } from '../../../types';
+import { ExtentTagProps } from './types';
 
 export const ExtentTag: React.FC<ExtentTagProps> = ({
   value,
