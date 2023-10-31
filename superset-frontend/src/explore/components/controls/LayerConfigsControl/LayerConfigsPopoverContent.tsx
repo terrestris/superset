@@ -97,6 +97,9 @@ export const StyledGeoStyler = styled(GeoStylerWrapper)`
       font-weight: ${theme.typography.weights.normal};
       font-size: ${theme.typography.sizes.xl}px;
     }
+    .ant-form-item-control {
+      flex: unset;
+    }
   `}
 `;
 
