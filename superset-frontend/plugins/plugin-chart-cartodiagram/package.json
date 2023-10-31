@@ -40,7 +40,7 @@
     "@superset-ui/core": "*",
     "antd": "^4.10.3",
     "echarts": "^5.4.1",
-    "geostyler": "^11.0.0",
+    "geostyler": "^12.0.0",
     "geostyler-data": "^1.0.0",
     "geostyler-openlayers-parser": "^4.0.0",
     "geostyler-style": "^7.2.0",
