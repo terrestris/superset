@@ -247,13 +247,13 @@ export const stripGeomColumnFromQueryData = (
 };
 
 /**
- * Create the charts configuration depending on the referenced Superset chart.
+ * Create the chart configurations depending on the referenced Superset chart.
  *
  * @param selectedChart The configuration of the referenced Superset chart
  * @param geomColumn The name of the geometry column
  * @param chartProps The properties provided within this OL plugin
  * @param chartTransformer The transformer function
- * @returns The ECharts configuration
+ * @returns The chart configurations
  */
 export const getChartConfigs = (
   selectedChart: SelectedChartConfig,

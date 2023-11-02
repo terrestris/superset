@@ -35,7 +35,7 @@ export interface CartodiagramPluginStylesProps {
   theme: SupersetTheme;
 }
 
-// TODO find a way to reference props from plugin-chart-echarts
+// TODO find a way to reference props from other charts
 export type ChartConfigProperties = any;
 
 export type ChartConfigFeature = Feature<Point, ChartConfigProperties>;

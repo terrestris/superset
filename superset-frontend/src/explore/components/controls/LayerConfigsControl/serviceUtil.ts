@@ -26,7 +26,7 @@ import { WfsLayerConf } from './types';
  */
 export const getServiceVersions = () => ({
   WMS: ['1.3.0', '1.1.1'],
-  WFS: ['2.0.2', '1.1.0', '1.0.0'],
+  WFS: ['2.0.2', '2.0.0', '1.1.0'],
 });
 
 /**

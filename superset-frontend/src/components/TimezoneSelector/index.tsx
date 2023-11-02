@@ -88,8 +88,10 @@ const TIMEZONE_OPTIONS = TIMEZONES.map(zone => ({
 }));
 
 const TIMEZONE_OPTIONS_SORT_COMPARATOR = (
-  a: (typeof TIMEZONE_OPTIONS)[number],
-  b: (typeof TIMEZONE_OPTIONS)[number],
+  // eslint-disable-next-line prettier/prettier
+  a: typeof TIMEZONE_OPTIONS[number],
+  // eslint-disable-next-line prettier/prettier
+  b: typeof TIMEZONE_OPTIONS[number],
 ) =>
   moment.tz(currentDate, a.timezoneName).utcOffset() -
   moment.tz(currentDate, b.timezoneName).utcOffset();

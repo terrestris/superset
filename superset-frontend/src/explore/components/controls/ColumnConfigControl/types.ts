@@ -32,7 +32,8 @@ import { ControlFormItemComponents } from './ControlForm';
  * Column formatting configs.
  */
 export type ColumnConfig = {
-  [key in SharedColumnConfigProp]?: (typeof SHARED_COLUMN_CONFIG_PROPS)[key]['value'];
+  // eslint-disable-next-line prettier/prettier
+  [key in SharedColumnConfigProp]?: typeof SHARED_COLUMN_CONFIG_PROPS[key]['value'];
 } & Record<string, StrictJsonValue>;
 
 /**

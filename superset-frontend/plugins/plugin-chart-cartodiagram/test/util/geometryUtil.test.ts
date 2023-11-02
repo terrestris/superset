@@ -24,77 +24,79 @@ import {
 } from '../../src/util/geometryUtil';
 import { ChartConfig } from '../../src/types';
 
-describe('getProjectedCoordinateFromPointGeoJson', () => {
-  it('returns a plausible result', () => {
-    const pointGeoJson: Point = {
-      type: 'Point',
-      coordinates: [6.6555, 49.74283],
-    };
-    const result = getProjectedCoordinateFromPointGeoJson(pointGeoJson);
+describe('geometryUtil', () => {
+  describe('getProjectedCoordinateFromPointGeoJson', () => {
+    it('returns a plausible result', () => {
+      const pointGeoJson: Point = {
+        type: 'Point',
+        coordinates: [6.6555, 49.74283],
+      };
+      const result = getProjectedCoordinateFromPointGeoJson(pointGeoJson);
 
-    expect(result.length).toEqual(2);
+      expect(result.length).toEqual(2);
 
-    const valuesAreNumbers =
-      !Number.isNaN(result[0]) && !Number.isNaN(result[1]);
-    expect(valuesAreNumbers).toEqual(true);
-  });
-});
-
-describe('getExtentFromFeatures', () => {
-  it('computes correct extent with valid input', () => {
-    const expectedExtent = [1, 2, 3, 4];
-
-    const chartConfig: ChartConfig = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [expectedExtent[0], expectedExtent[1]],
-          },
-          properties: {
-            setDataMask: '',
-            labelMap: '',
-            labelMapB: '',
-            groupby: '',
-            selectedValues: '',
-            formData: '',
-            groupbyB: '',
-            seriesBreakdown: '',
-            legendData: '',
-            echartOptions: '',
-          },
-        },
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [expectedExtent[2], expectedExtent[3]],
-          },
-          properties: {
-            setDataMask: '',
-            labelMap: '',
-            labelMapB: '',
-            groupby: '',
-            selectedValues: '',
-            formData: '',
-            groupbyB: '',
-            seriesBreakdown: '',
-            legendData: '',
-            echartOptions: '',
-          },
-        },
-      ],
-    };
-
-    const features = new GeoJSON().readFeatures(chartConfig);
-    const extent = getExtentFromFeatures(features);
-    expect(extent).toEqual(expectedExtent);
+      const valuesAreNumbers =
+        !Number.isNaN(result[0]) && !Number.isNaN(result[1]);
+      expect(valuesAreNumbers).toEqual(true);
+    });
   });
 
-  it('returns undefined on invalid input', () => {
-    const emptyExtent = getExtentFromFeatures([]);
-    expect(emptyExtent).toBeUndefined();
+  describe('getExtentFromFeatures', () => {
+    it('computes correct extent with valid input', () => {
+      const expectedExtent = [1, 2, 3, 4];
+
+      const chartConfig: ChartConfig = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [expectedExtent[0], expectedExtent[1]],
+            },
+            properties: {
+              setDataMask: '',
+              labelMap: '',
+              labelMapB: '',
+              groupby: '',
+              selectedValues: '',
+              formData: '',
+              groupbyB: '',
+              seriesBreakdown: '',
+              legendData: '',
+              echartOptions: '',
+            },
+          },
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [expectedExtent[2], expectedExtent[3]],
+            },
+            properties: {
+              setDataMask: '',
+              labelMap: '',
+              labelMapB: '',
+              groupby: '',
+              selectedValues: '',
+              formData: '',
+              groupbyB: '',
+              seriesBreakdown: '',
+              legendData: '',
+              echartOptions: '',
+            },
+          },
+        ],
+      };
+
+      const features = new GeoJSON().readFeatures(chartConfig);
+      const extent = getExtentFromFeatures(features);
+      expect(extent).toEqual(expectedExtent);
+    });
+
+    it('returns undefined on invalid input', () => {
+      const emptyExtent = getExtentFromFeatures([]);
+      expect(emptyExtent).toBeUndefined();
+    });
   });
 });

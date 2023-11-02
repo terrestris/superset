@@ -216,22 +216,18 @@ export const LayerConfigsPopoverContent: React.FC<
   };
 
   const onLayerTitleChange = (fieldValue: string) => {
-    // TODO should we sanitize the input here already?
     onFieldValueChange(fieldValue, 'title');
   };
 
   const onLayerUrlChange = (fieldValue: string) => {
-    // TODO should we sanitize the input here already?
     onFieldValueChange(fieldValue, 'url');
   };
 
   const onLayersParamChange = (fieldValue: string) => {
-    // TODO should we sanitize the input here already?
     onFieldValueChange(fieldValue, 'layersParam');
   };
 
   const onTypeNameChange = (fieldValue: string) => {
-    // TODO should we sanitize the input here already?
     onFieldValueChange(fieldValue, 'typeName');
   };
 
@@ -246,7 +242,6 @@ export const LayerConfigsPopoverContent: React.FC<
   };
 
   const onMaxFeaturesChange = (fieldValue: number) => {
-    // TODO should we sanitize the input here already?
     onFieldValueChange(fieldValue, 'maxFeatures');
   };
 

@@ -67,5 +67,5 @@ layers from those, you have to adjust the CSP settings. See also docs/docs/secur
 ### Geometry Column
 
 The plugin requires the selection of a geometry column for a dataset.
-This is expected to be a GeoJSON-Point-Geometry string. Other formats will
-be supported in the future.
+This is expected to be a GeoJSON-Point-Geometry string in WGS 84/Pseudo-Mercator (EPSG:3857). Other formats and projections
+will be supported in the future.

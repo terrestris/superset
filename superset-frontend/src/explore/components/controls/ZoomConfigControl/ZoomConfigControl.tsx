@@ -64,6 +64,7 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
   };
 
   const onBaseWidthChange = (width: number) => {
+    console.log('now in onbasewidthcahnge');
     setBaseWidth(width);
     if (!value) {
       return;
@@ -192,8 +193,6 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseWidthDescription}
           value={baseWidth}
           name="baseWidth"
-          // TODO properly create this form with ControlForm
-          //      and replace onAfterChange with onChange and debounceDelay.
           // @ts-ignore
           onAfterChange={onBaseWidthChange}
           step={1}
@@ -206,8 +205,6 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseHeightDescription}
           value={baseHeight}
           name="baseHeight"
-          // TODO properly create this form with ControlForm
-          //      and replace onAfterChange with onChange and debounceDelay.
           // @ts-ignore
           onAfterChange={onBaseHeightChange}
           step={1}
@@ -220,8 +217,6 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseSlopeDescription}
           value={baseSlope}
           name="slope"
-          // TODO properly create this form with ControlForm
-          //      and replace onAfterChange with onChange and debounceDelay.
           // @ts-ignore
           onAfterChange={onBaseSlopeChange}
           disabled={!!(value && !isZoomConfigsLinear(value))}
@@ -235,8 +230,6 @@ export const ZoomConfigControl: React.FC<ZoomConfigsControlProps> = ({
           description={baseExponentDescription}
           value={baseExponent}
           name="exponent"
-          // TODO properly create this form with ControlForm
-          //      and replace onAfterChange with onChange and debounceDelay.
           // @ts-ignore
           onAfterChange={onBaseExponentChange}
           disabled={!!(value && !isZoomConfigsExp(value))}

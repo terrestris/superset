@@ -41,7 +41,6 @@ export default function buildQuery(formData: QueryFormData) {
 
   // adapt groupby property to ensure geometry column always exists
   // and is always at first position
-
   let { groupby } = chartFormData;
   if (!groupby) {
     groupby = [];

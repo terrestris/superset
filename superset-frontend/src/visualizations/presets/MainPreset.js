@@ -170,12 +170,13 @@ export default class MainPreset extends Preset {
         new CartodiagramPlugin({
           defaultLayers: [
             {
-              // TODO use other default layer here
-              type: 'XYZ',
-              url: 'https://osm.bfs.de/tiles/topplusopen/{z}/{x}/{y}.png',
-              title: 'TopPlusOpen Graustufen',
+              type: 'WMS',
+              version: '1.3.0',
+              url: 'https://ows.terrestris.de/osm-gray/service',
+              layersParam: 'OSM-WMS',
+              title: 'OpenStreetMap',
               attribution:
-                '<a href="https://www.imis.bfs.de/geoportal/resources/sitepolicy.html" target="_blank">© Bundesamt für Strahlenschutz</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="https://www.openstreetmap.org/copyright/en" target="_blank">OpenStreetMap</a>&nbsp;&nbsp;&#x007C;&nbsp;&nbsp;<a href="http://www.geodatenzentrum.de/geodaten/gdz?l=down_opendata" target="_blank">BKG</a>',
+                '© Map data from <a href="openstreetmap.org/copyright">OpenStreetMap</a>. Service provided by <a href="https://www.terrestris.de">terrestris GmbH & Co. KG</a>',
             },
           ],
         }).configure({ key: 'cartodiagram' }),

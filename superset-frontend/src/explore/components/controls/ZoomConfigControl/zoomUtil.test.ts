@@ -35,163 +35,165 @@ const zoomConfigValues = {
   })),
 };
 
-describe('computeConfigValues', () => {
-  it('computes fixed values', () => {
-    const height = 100;
-    const width = 100;
+describe('zoomUtil', () => {
+  describe('computeConfigValues', () => {
+    it('computes fixed values', () => {
+      const height = 100;
+      const width = 100;
 
-    const zoomConfigs: ZoomConfigs = {
-      type: 'FIXED',
-      values: {},
-      configs: {
-        zoom: 2,
+      const zoomConfigs: ZoomConfigs = {
+        type: 'FIXED',
+        values: {},
+        configs: {
+          zoom: 2,
+          width,
+          height,
+        },
+      };
+      const result = computeConfigValues(zoomConfigs);
+      expect(Object.keys(result).length).toEqual(
+        Object.keys(zoomConfigValues).length,
+      );
+      expect(result[4]).toEqual({
         width,
         height,
-      },
-    };
-    const result = computeConfigValues(zoomConfigs);
-    expect(Object.keys(result).length).toEqual(
-      Object.keys(zoomConfigValues).length,
-    );
-    expect(result[4]).toEqual({
-      width,
-      height,
+      });
+    });
+
+    it('computes linear values', () => {
+      const height = 100;
+      const width = 100;
+
+      const zoomConfigs: ZoomConfigs = {
+        type: 'LINEAR',
+        values: {},
+        configs: {
+          zoom: 2,
+          width,
+          height,
+          slope: 2,
+        },
+      };
+      const result = computeConfigValues(zoomConfigs);
+
+      expect(Object.keys(result).length).toEqual(
+        Object.keys(zoomConfigValues).length,
+      );
+      expect(result[4]).toEqual({
+        width: 104,
+        height: 104,
+      });
+    });
+
+    it('computes exponential values', () => {
+      const height = 100;
+      const width = 100;
+
+      const zoomConfigs: ZoomConfigs = {
+        type: 'EXP',
+        values: {},
+        configs: {
+          zoom: 2,
+          width,
+          height,
+          exponent: 1.6,
+        },
+      };
+      const result = computeConfigValues(zoomConfigs);
+
+      expect(Object.keys(result).length).toEqual(
+        Object.keys(zoomConfigValues).length,
+      );
+
+      expect(result[4]).toEqual({
+        width: 119,
+        height: 119,
+      });
     });
   });
 
-  it('computes linear values', () => {
-    const height = 100;
-    const width = 100;
+  describe('zoomConfigsToData', () => {
+    it('returns correct output', () => {
+      const result = zoomConfigsToData(zoomConfigValues);
 
-    const zoomConfigs: ZoomConfigs = {
-      type: 'LINEAR',
-      values: {},
-      configs: {
-        zoom: 2,
-        width,
-        height,
-        slope: 2,
-      },
-    };
-    const result = computeConfigValues(zoomConfigs);
-
-    expect(Object.keys(result).length).toEqual(
-      Object.keys(zoomConfigValues).length,
-    );
-    expect(result[4]).toEqual({
-      width: 104,
-      height: 104,
+      expect(result.length).toEqual(Object.keys(zoomConfigValues).length);
+      expect(result[12]).toEqual([100, 100, 12]);
     });
   });
 
-  it('computes exponential values', () => {
-    const height = 100;
-    const width = 100;
-
-    const zoomConfigs: ZoomConfigs = {
-      type: 'EXP',
-      values: {},
-      configs: {
-        zoom: 2,
-        width,
-        height,
-        exponent: 1.6,
-      },
-    };
-    const result = computeConfigValues(zoomConfigs);
-
-    expect(Object.keys(result).length).toEqual(
-      Object.keys(zoomConfigValues).length,
-    );
-
-    expect(result[4]).toEqual({
-      width: 119,
-      height: 119,
-    });
-  });
-});
-
-describe('zoomConfigsToData', () => {
-  it('returns correct output', () => {
-    const result = zoomConfigsToData(zoomConfigValues);
-
-    expect(result.length).toEqual(Object.keys(zoomConfigValues).length);
-    expect(result[12]).toEqual([100, 100, 12]);
-  });
-});
-
-describe('toFixedConfig', () => {
-  const configs: ZoomConfigs['configs'] = {
-    width: 100,
-    height: 100,
-    zoom: 5,
-  };
-  const result = toFixedConfig(configs);
-
-  it('has correct type', () => {
-    expect(result.type).toEqual('FIXED');
-  });
-
-  it('returns correct result', () => {
-    expect(result.values[4]).toEqual({
+  describe('toFixedConfig', () => {
+    const configs: ZoomConfigs['configs'] = {
       width: 100,
       height: 100,
+      zoom: 5,
+    };
+    const result = toFixedConfig(configs);
+
+    it('has correct type', () => {
+      expect(result.type).toEqual('FIXED');
     });
 
-    expect(result.values[6]).toEqual({
+    it('returns correct result', () => {
+      expect(result.values[4]).toEqual({
+        width: 100,
+        height: 100,
+      });
+
+      expect(result.values[6]).toEqual({
+        width: 100,
+        height: 100,
+      });
+    });
+  });
+
+  describe('toLinearConfig', () => {
+    const configs: ZoomConfigs['configs'] = {
       width: 100,
       height: 100,
-    });
-  });
-});
+      zoom: 5,
+      slope: 2,
+    };
+    const result = toLinearConfig(configs);
 
-describe('toLinearConfig', () => {
-  const configs: ZoomConfigs['configs'] = {
-    width: 100,
-    height: 100,
-    zoom: 5,
-    slope: 2,
-  };
-  const result = toLinearConfig(configs);
-
-  it('has correct type', () => {
-    expect(result.type).toEqual('LINEAR');
-  });
-
-  it('returns correct result', () => {
-    expect(result.values[4]).toEqual({
-      width: 98,
-      height: 98,
+    it('has correct type', () => {
+      expect(result.type).toEqual('LINEAR');
     });
 
-    expect(result.values[6]).toEqual({
-      width: 102,
-      height: 102,
+    it('returns correct result', () => {
+      expect(result.values[4]).toEqual({
+        width: 98,
+        height: 98,
+      });
+
+      expect(result.values[6]).toEqual({
+        width: 102,
+        height: 102,
+      });
     });
   });
-});
 
-describe('toExpConfig', () => {
-  const configs: ZoomConfigs['configs'] = {
-    width: 100,
-    height: 100,
-    zoom: 5,
-    exponent: 1.5,
-  };
-  // @ts-ignore
-  const result = toExpConfig(configs);
-  it('has correct type', () => {
-    expect(result.type).toEqual('EXP');
-  });
-  it('returns correct result', () => {
-    expect(result.values[4]).toEqual({
-      width: 93,
-      height: 93,
+  describe('toExpConfig', () => {
+    const configs: ZoomConfigs['configs'] = {
+      width: 100,
+      height: 100,
+      zoom: 5,
+      exponent: 1.5,
+    };
+    // @ts-ignore
+    const result = toExpConfig(configs);
+    it('has correct type', () => {
+      expect(result.type).toEqual('EXP');
     });
+    it('returns correct result', () => {
+      expect(result.values[4]).toEqual({
+        width: 93,
+        height: 93,
+      });
 
-    expect(result.values[6]).toEqual({
-      width: 107,
-      height: 107,
+      expect(result.values[6]).toEqual({
+        width: 107,
+        height: 107,
+      });
     });
   });
 });

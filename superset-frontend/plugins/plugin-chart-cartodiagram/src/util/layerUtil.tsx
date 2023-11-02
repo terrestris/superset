@@ -91,7 +91,7 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
   const wfsSource = new VectorSource({
     format: new GeoJSON(),
     attributions: attribution,
-    url(extent) {
+    url: extent => {
       const requestUrl = new URL(url);
       const params = requestUrl.searchParams;
       params.append('service', 'wfs');
@@ -100,11 +100,17 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
       // TODO: make CRS configurable or take it from Ol Map
       params.append('srsName', 'EPSG:3857');
       params.append('version', version);
-      params.append('typeName', typeName);
+
+      let typeNameQuery = 'typeNames';
+      if (isVersionBelow(version, '2.0.0', 'WFS')) {
+        typeNameQuery = 'typeName';
+      }
+      params.append(typeNameQuery, typeName);
+
       params.append('bbox', extent.join(','));
       if (maxFeatures) {
         let maxFeaturesQuery = 'count';
-        if (isVersionBelow(version, '2.0.2', 'WFS')) {
+        if (isVersionBelow(version, '2.0.0', 'WFS')) {
           maxFeaturesQuery = 'maxFeatures';
         }
         params.append(maxFeaturesQuery, maxFeatures.toString());

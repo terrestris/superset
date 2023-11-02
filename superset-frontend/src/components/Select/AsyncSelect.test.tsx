@@ -218,8 +218,10 @@ test('sort the options by label if no sort comparator is provided', async () => 
 
 test('sort the options using a custom sort comparator', async () => {
   const sortComparator = (
-    option1: (typeof OPTIONS)[0],
-    option2: (typeof OPTIONS)[0],
+    // eslint-disable-next-line prettier/prettier
+    option1: typeof OPTIONS[0],
+    // eslint-disable-next-line prettier/prettier
+    option2: typeof OPTIONS[0],
   ) => option1.gender.localeCompare(option2.gender);
   render(<AsyncSelect {...defaultProps} sortComparator={sortComparator} />);
   await open();

@@ -25,69 +25,71 @@ import {
   createXyzLayer,
 } from '../../src/util/layerUtil';
 
-describe('createWmsLayer', () => {
-  it('exists', () => {
-    // function is trivial
-    expect(createWmsLayer).toBeDefined();
+describe('layerUtil', () => {
+  describe('createWmsLayer', () => {
+    it('exists', () => {
+      // function is trivial
+      expect(createWmsLayer).toBeDefined();
+    });
   });
-});
 
-describe('createWfsLayer', () => {
-  it('properly applies style', async () => {
-    const colorToExpect = '#123456';
+  describe('createWfsLayer', () => {
+    it('properly applies style', async () => {
+      const colorToExpect = '#123456';
 
-    const wfsLayerConf: WfsLayerConf = {
-      title: 'osm:osm-fuel',
-      url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
-      type: 'WFS',
-      version: '2.0.2',
-      typeName: 'osm:osm-fuel',
-      style: {
-        name: 'Default Style',
-        rules: [
-          {
-            name: 'Default Rule',
-            symbolizers: [
-              {
-                kind: 'Line',
-                color: '#000000',
-                width: 2,
-              },
-              {
-                kind: 'Mark',
-                wellKnownName: 'circle',
-                color: colorToExpect,
-              },
-              {
-                kind: 'Fill',
-                color: '#000000',
-              },
-            ],
-          },
-        ],
-      },
-    };
+      const wfsLayerConf: WfsLayerConf = {
+        title: 'osm:osm-fuel',
+        url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
+        type: 'WFS',
+        version: '2.0.2',
+        typeName: 'osm:osm-fuel',
+        style: {
+          name: 'Default Style',
+          rules: [
+            {
+              name: 'Default Rule',
+              symbolizers: [
+                {
+                  kind: 'Line',
+                  color: '#000000',
+                  width: 2,
+                },
+                {
+                  kind: 'Mark',
+                  wellKnownName: 'circle',
+                  color: colorToExpect,
+                },
+                {
+                  kind: 'Fill',
+                  color: '#000000',
+                },
+              ],
+            },
+          ],
+        },
+      };
 
-    const wfsLayer = await createWfsLayer(wfsLayerConf);
+      const wfsLayer = await createWfsLayer(wfsLayerConf);
 
-    const style = wfsLayer!.getStyle();
-    // @ts-ignore
-    expect(style!.length).toEqual(3);
+      const style = wfsLayer!.getStyle();
+      // @ts-ignore
+      expect(style!.length).toEqual(3);
 
-    const colorAtLayer = style![1].getImage().getFill().getColor();
-    expect(colorToExpect).toEqual(colorAtLayer);
+      const colorAtLayer = style![1].getImage().getFill().getColor();
+      expect(colorToExpect).toEqual(colorAtLayer);
+    });
   });
-});
 
-describe('createXyzLayer', () => {
-  it('exists', () => {
-    // function is trivial
-    expect(createXyzLayer).toBeDefined();
+  describe('createXyzLayer', () => {
+    it('exists', () => {
+      // function is trivial
+      expect(createXyzLayer).toBeDefined();
+    });
   });
-});
 
-describe('createLayer', () => {
-  it('exists', () => {
-    expect(createLayer).toBeDefined();
+  describe('createLayer', () => {
+    it('exists', () => {
+      expect(createLayer).toBeDefined();
+    });
   });
 });
