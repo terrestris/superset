@@ -179,10 +179,7 @@ export class ChartLayer extends Layer {
 
       const chartComponent = createChartComponent(
         this.chartVizType,
-        // Seems like the registered chart components change some
-        // props in-place, which leads to unwanted side effects. Therefore,
-        // we only pass a copy.
-        JSON.parse(JSON.stringify(feature)),
+        feature,
         chartWidth,
         chartHeight,
         this.theme,
@@ -217,10 +214,7 @@ export class ChartLayer extends Layer {
 
       const chartComponent = createChartComponent(
         this.chartVizType,
-        // Seems like the registered chart components change some
-        // props in-place, which leads to unwanted side effects. Therefore,
-        // we only pass a copy.
-        JSON.parse(JSON.stringify(chart.feature)),
+        chart.feature,
         chartWidth,
         chartHeight,
         this.theme,

@@ -33,6 +33,7 @@ import {
   MapViewConfigs,
   OlChartMapProps,
 } from '../types';
+import { isChartConfigEqual } from '../util/chartUtil';
 
 /** The name to reference the chart layer */
 const CHART_LAYER_NAME = 'openlayers-chart-layer';
@@ -83,9 +84,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
    */
   useEffect(() => {
     setCurrentChartConfigs(oldCurrentChartConfigs => {
-      if (
-        JSON.stringify(chartConfigs) === JSON.stringify(oldCurrentChartConfigs)
-      ) {
+      if (isChartConfigEqual(chartConfigs, oldCurrentChartConfigs)) {
         return oldCurrentChartConfigs;
       }
       return chartConfigs;
@@ -370,10 +369,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
         chartLayer.setChartVizType(chartVizType, true);
         recreateCharts = true;
       }
-      if (
-        JSON.stringify(currentChartConfigs) !==
-        JSON.stringify(chartLayer.chartConfigs)
-      ) {
+      if (!isChartConfigEqual(currentChartConfigs, chartLayer.chartConfigs)) {
         chartLayer.setChartConfig(currentChartConfigs, true);
         recreateCharts = true;
       }
