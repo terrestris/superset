@@ -22,6 +22,7 @@
  */
 
 import { FilterState } from '@superset-ui/core';
+import { t } from '@apache-superset/core/translation';
 import OlParser from 'geostyler-openlayers-parser';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -266,3 +267,31 @@ export const createSelectionLayer = (
   }
   return selectionLayer;
 };
+
+export const getDefaultStyle = () => ({
+  name: t('Default Style'),
+  rules: [
+    {
+      name: t('Default Rule'),
+      symbolizers: [
+        {
+          kind: 'Line',
+          // eslint-disable-next-line theme-colors/no-literal-colors
+          color: '#000000',
+          width: 2,
+        },
+        {
+          kind: 'Mark',
+          wellKnownName: 'circle',
+          // eslint-disable-next-line theme-colors/no-literal-colors
+          color: '#000000',
+        },
+        {
+          kind: 'Fill',
+          // eslint-disable-next-line theme-colors/no-literal-colors
+          color: '#000000',
+        },
+      ],
+    },
+  ],
+});
