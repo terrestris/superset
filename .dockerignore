@@ -45,3 +45,4 @@ superset/static/assets/
 superset-websocket/dist/
 venv
 .venv
+docker/geo_db/
