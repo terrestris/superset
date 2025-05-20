@@ -185,6 +185,20 @@ export default class MainPreset extends Preset {
           ],
         }).configure({ key: VizType.Cartodiagram }),
         ...experimentalPlugins,
+        new ThematicMapPlugin({
+          defaultLayers: [
+            {
+              type: 'WMS',
+              version: '1.3.0',
+              url: 'https://ows.terrestris.de/osm-gray/service',
+              layersParam: 'OSM-WMS',
+              title: 'OpenStreetMap',
+              attribution:
+                '© Map data from <a href="openstreetmap.org/copyright">OpenStreetMap</a>. Service provided by <a href="https://www.terrestris.de">terrestris GmbH & Co. KG</a>',
+            },
+          ],
+        }).configure({ key: 'thematic_map' }),
+        ...experimentalplugins,
       ],
     });
   }

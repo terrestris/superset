@@ -203,6 +203,9 @@ const babelLoader = {
 };
 
 const config = {
+  resolve: {
+    fullySpecified: false
+  },
   entry: {
     preamble: PREAMBLE,
     theme: path.join(APP_DIR, '/src/theme.ts'),
