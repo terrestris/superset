@@ -24,6 +24,7 @@
  */
 import { CardStyle } from 'geostyler';
 import { FC } from 'react';
+import { ConfigProvider } from 'antd-v5';
 import { GeoStylerWrapperProps } from './types';
 import 'geostyler/dist/index.css';
 
@@ -32,7 +33,15 @@ export const GeoStylerWrapper: FC<GeoStylerWrapperProps> = ({
   ...passThroughProps
 }) => (
   <div className={className}>
-    <CardStyle {...passThroughProps} />
+    {/*
+     We reset to the default class prefix since geostyler css relies on
+     the default antd prefix. This can probably be removed once
+     antd v4 is no longer supported and the prefix antd5 is not being
+     used anymore.
+    */}
+    <ConfigProvider prefixCls="ant">
+      <CardStyle {...passThroughProps} />
+    </ConfigProvider>
   </div>
 );
 
