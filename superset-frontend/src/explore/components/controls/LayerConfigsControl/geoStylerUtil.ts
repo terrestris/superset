@@ -146,7 +146,6 @@ export const getDefaultStyle = (
   if (geomTypes.includes('Polygon') || geomTypes.includes('MultiPolygon')) {
     symbolizers.push({
       kind: 'Fill',
-      // eslint-disable-next-line theme-colors/no-literal-colors
       color: theme.colorTextBase,
     });
   }
@@ -156,7 +155,6 @@ export const getDefaultStyle = (
   ) {
     symbolizers.push({
       kind: 'Line',
-      // eslint-disable-next-line theme-colors/no-literal-colors
       color: theme.colorTextBase,
       width: 2,
     });
@@ -165,7 +163,6 @@ export const getDefaultStyle = (
     symbolizers.push({
       kind: 'Mark',
       wellKnownName: 'circle',
-      // eslint-disable-next-line theme-colors/no-literal-colors
       color: theme.colorTextBase,
     });
   }
