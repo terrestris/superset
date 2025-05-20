@@ -41,7 +41,10 @@ import {
 } from '@superset-ui/legacy-preset-chart-nvd3';
 import { DeckGLChartPreset } from '@superset-ui/preset-chart-deckgl';
 import ScatterMapChartPlugin from '@superset-ui/plugin-chart-point-cluster-map';
-import { CartodiagramPlugin } from '@superset-ui/plugin-chart-cartodiagram';
+import {
+  CartodiagramPlugin,
+  ThematicMapPlugin,
+} from '@superset-ui/plugin-chart-cartodiagram';
 import {
   BigNumberChartPlugin,
   BigNumberTotalChartPlugin,
@@ -197,6 +200,7 @@ export default class MainPreset extends Preset {
         new HandlebarsChartPlugin().configure({ key: VizType.Handlebars }),
         new EchartsBubbleChartPlugin().configure({ key: VizType.Bubble }),
         new CartodiagramPlugin().configure({ key: VizType.Cartodiagram }),
+        new ThematicMapPlugin().configure({ key: 'thematic_map' }),
         ...experimentalPlugins,
         ...agGridTablePlugin,
       ],
