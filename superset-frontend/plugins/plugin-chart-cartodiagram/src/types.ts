@@ -60,6 +60,7 @@ interface CartodiagramPluginCustomizeProps {
   };
   chartBackgroundBorderRadius: number;
   setControlValue: Function;
+  mapExtentPadding?: number | undefined;
 }
 
 export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
@@ -206,6 +207,7 @@ export type ChartLayerOptions = {
   map?: Map | null | undefined;
   render?: RenderFunction | undefined;
   properties?: { [x: string]: any } | undefined;
+  locale: string;
 };
 
 export type CartodiagramPluginConstructorOpts = {
@@ -218,6 +220,7 @@ export type ChartWrapperProps = {
   width: number;
   height: number;
   chartConfig: ChartConfigFeature;
+  locale: string;
 };
 
 export type MapProjections = {
