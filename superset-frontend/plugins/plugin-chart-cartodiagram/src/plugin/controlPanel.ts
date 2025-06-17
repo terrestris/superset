@@ -22,6 +22,8 @@ import { ControlPanelConfig } from '@superset-ui/chart-controls';
 import { selectedChartMutator } from '../util/controlPanelUtil';
 
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
+import { MapViewConfigs } from '../types';
+import { GeometryFormat } from '../constants';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -84,6 +86,27 @@ const config: ControlPanelConfig = {
                   c.column_name,
                 ]),
               }),
+              validators: [validateNonEmpty],
+            },
+          },
+        ],
+        [
+          {
+            name: 'geom_format',
+            config: {
+              type: 'SelectControl',
+              label: t('Geometry Format'),
+              renderTrigger: false,
+              description: t(
+                'The format of the geometry column. GeoJSON columns are expected to use WGS84 coordinates. The EWKB and EWKT formats allow for arbitrary projections, which will be read from the data.',
+              ),
+              default: GeometryFormat.GEOJSON,
+              choices: [
+                [GeometryFormat.GEOJSON, t('GeoJSON')],
+                [GeometryFormat.WKB, t('EWKB')],
+                [GeometryFormat.WKT, t('EWKT')],
+              ],
+              clearable: false,
               validators: [validateNonEmpty],
             },
           },
