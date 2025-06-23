@@ -42,6 +42,26 @@ export type ChartConfig = FeatureCollection<
   ChartConfigFeature['properties']
 >;
 
+export type MapMaxExtentConfigs = {
+  extentMode: 'NONE' | 'CUSTOM';
+  maxX: number;
+  maxY: number;
+  minX: number;
+  minY: number;
+  fixedMaxX: number | undefined;
+  fixedMaxY: number | undefined;
+  fixedMinX: number | undefined;
+  fixedMinY: number | undefined;
+};
+
+export type MapMaxExtentConfigsControlProps =
+  ControlComponentProps<MapMaxExtentConfigs>;
+
+export interface MapMaxExtentTagProps {
+  value: MapMaxExtentConfigs;
+  className?: string;
+}
+
 interface CartodiagramPluginCustomizeProps {
   geomColumn: string;
   geomFormat: GeometryFormat;
@@ -51,6 +71,9 @@ interface CartodiagramPluginCustomizeProps {
   chartVizType: string;
   layerConfigs: LayerConf[];
   mapView: MapViewConfigs;
+  maxZoom: number;
+  minZoom: number;
+  mapMaxExtent: MapMaxExtentConfigs;
   chartBackgroundColor: {
     r: number;
     g: number;
@@ -59,6 +82,7 @@ interface CartodiagramPluginCustomizeProps {
   };
   chartBackgroundBorderRadius: number;
   setControlValue: Function;
+  mapExtentPadding?: number | undefined;
 }
 
 export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
