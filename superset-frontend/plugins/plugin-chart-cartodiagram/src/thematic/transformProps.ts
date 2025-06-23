@@ -66,7 +66,8 @@ export default function transformProps(chartProps: ChartProps) {
     timeColumn,
     tooltipTemplate,
   } = formData;
-  const { setControlValue = () => {} } = hooks;
+
+  const { setControlValue = () => {}, setDataMask = () => {} } = hooks;
 
   const { data } = queriesData[0];
 
@@ -85,6 +86,7 @@ export default function transformProps(chartProps: ChartProps) {
     mapExtentPadding,
     timesliderTooltipFormat,
     setControlValue,
+    setDataMask,
     showTimeslider,
     showLegend,
     showTooltip,

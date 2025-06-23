@@ -59,6 +59,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     minZoom,
     mapExtentPadding,
     setControlValue,
+    setDataMask,
     timeColumn,
     timeFilter,
     tooltipTemplate,
@@ -78,12 +79,11 @@ export const OlChartMap = (props: OlChartMapProps) => {
     if (geomFormat === GeometryFormat.GEOJSON) {
       const features: Feature[] = [];
       data.forEach(item => {
-        const { [geomColumn]: unparsedGeom, ...props } = item;
-        const parsedGeom = JSON.parse(unparsedGeom as string);
+        const parsedGeom = JSON.parse(item[geomColumn] as string);
         features.push({
           type: 'Feature',
           geometry: parsedGeom,
-          properties: props,
+          properties: { ...item },
         });
       });
       return {
@@ -529,6 +529,51 @@ export const OlChartMap = (props: OlChartMapProps) => {
       view.fit(extent, { padding });
     }
   }, [olMap, currentMapView.mode, mapExtentPadding]);
+
+  useEffect(() => {
+    const evtKey = olMap.on('singleclick', evt => {
+      const pixel = olMap.getEventPixel(evt.originalEvent);
+
+      const clickedFeatures: OlFeature[] = [];
+      olMap.forEachFeatureAtPixel(
+        pixel,
+        (feat: OlFeature) => {
+          clickedFeatures.push(feat);
+        },
+        {
+          layerFilter: layer =>
+            currentDataLayers
+              ? currentDataLayers.some(dataLayer => dataLayer === layer)
+              : false,
+        },
+      );
+
+      const vals = clickedFeatures.map(f => f.get(geomColumn));
+
+      setDataMask({
+        extraFormData: {
+          filters: [
+            {
+              col: geomColumn,
+              op: 'IN' as const,
+              val: vals,
+            },
+          ],
+        },
+        filterState: {
+          label: geomColumn,
+          value: geomColumn,
+          selectedValues: vals,
+        },
+      });
+      // TODO check if we have to manually filter in active chart
+      console.log(clickedFeatures);
+    });
+
+    return () => {
+      unByKey(evtKey);
+    };
+  }, [olMap, currentDataLayers, setDataMask, geomColumn]);
 
   return (
     <div

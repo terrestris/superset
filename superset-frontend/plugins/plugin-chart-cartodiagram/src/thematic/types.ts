@@ -53,6 +53,7 @@ interface ThematicMapPluginCustomizeProps {
   timesliderTooltipFormat: TimesliderTooltipFormat;
   mapMaxExtent: MapMaxExtentConfigs;
   setControlValue: Function;
+  setDataMask: Function;
   showTimeslider: boolean;
   timeColumn: string;
   tooltipTemplate: string;
