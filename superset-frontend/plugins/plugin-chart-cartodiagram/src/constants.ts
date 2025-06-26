@@ -26,3 +26,7 @@ declare module '*.jpg' {
   const value: string;
   export default value;
 }
+
+// copy of
+// superset-frontend/plugins/plugin-chart-echarts/src/constants.ts
+export const NULL_STRING = '<NULL>';
