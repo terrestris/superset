@@ -31,3 +31,9 @@ module.exports = {
   // Increase timeout from default 15s to 60s for CI environments
   testTimeout: 60000,
 };
+
+export const getMapDefaultLayers = () => {
+  const bootstrapData = getBootstrapData();
+  const mapDefaultLayers = bootstrapData?.common?.conf?.MAP_DEFAULT_LAYERS;
+  return mapDefaultLayers ?? [];
+};
