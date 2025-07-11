@@ -37,6 +37,7 @@ import { isObject } from 'lodash';
 import WKB from 'ol/format/WKB';
 import {
   LocationConfigMapping,
+  LocationTimeConfigMapping,
   SelectedChartConfig,
   ChartConfig,
   ChartConfigFeature,
@@ -218,6 +219,35 @@ export const groupByLocation = (data: DataRecord[], geomColumn: string) => {
   });
 
   return locations;
+};
+
+const groupByTime = (
+  dataByLocation: LocationConfigMapping,
+  timeColumn: string,
+): LocationTimeConfigMapping => {
+  const result: LocationTimeConfigMapping = {};
+
+  Object.entries(dataByLocation).forEach(([location, records]) => {
+    result[location] = {};
+
+    records.forEach(record => {
+      const time = record[timeColumn];
+      if (!time) return;
+
+      const timeKey = typeof time === 'string' ? time : String(time);
+
+      if (!result[location][timeKey]) {
+        result[location][timeKey] = [];
+      }
+
+      const cleanedRecord = { ...record };
+      delete cleanedRecord[timeColumn];
+
+      result[location][timeKey].push(cleanedRecord);
+    });
+  });
+
+  return result;
 };
 
 /**
@@ -464,6 +494,7 @@ export const getChartConfigs = (
   chartProps: ChartProps,
   chartTransformer: any,
   sliceId: number,
+  timeColumn?: string,
 ) => {
   const chartFormDataSnake = selectedChart.params;
   const chartFormData = convertKeysToCamelCase(chartFormDataSnake);
@@ -520,40 +551,83 @@ export const getChartConfigs = (
     sliceId,
   );
 
-  Object.keys(dataByLocation).forEach(location => {
-    const config = {
-      ...baseConfig,
-      queriesData: [
-        {
-          ...strippedQueryData,
-          data: dataByLocation[location],
-        },
-      ],
-    };
-    const transformedProps = chartTransformer(config);
+  const dataByLocationAndTime = timeColumn
+    ? groupByTime(dataByLocation, timeColumn)
+    : dataByLocation;
 
-    let geojsonFeature;
+  console.log(dataByLocationAndTime);
+  
 
-    if (geomFormat === GeometryFormat.GEOJSON) {
-      geojsonFeature = {
-        type: 'Feature',
-        geometry: JSON.parse(location),
-      };
-    } else if (geomFormat === GeometryFormat.WKB) {
-      geojsonFeature = wkbToGeoJSON(location);
+  Object.entries(dataByLocationAndTime).forEach(([location, timeGrouped]) => {
+    if (timeColumn) {
+      Object.entries(timeGrouped).forEach(([time, timeData]) => {
+        const config = {
+          ...baseConfig,
+          queriesData: [{ ...strippedQueryData, data: timeData }],
+        };
+
+        console.log('config', config);
+        const transformedProps = chartTransformer(config);
+
+        let geojsonFeature;
+
+        if (geomFormat === GeometryFormat.GEOJSON) {
+          geojsonFeature = {
+            type: 'Feature',
+            geometry: JSON.parse(location),
+          };
+        } else if (geomFormat === GeometryFormat.WKB) {
+          geojsonFeature = wkbToGeoJSON(location);
+        } else {
+          geojsonFeature = wktToGeoJSON(location);
+        }
+
+        const feature: ChartConfigFeature = {
+          type: 'Feature',
+          geometry: geojsonFeature.geometry,
+          properties: {
+            ...transformedProps,
+            timestamp: time,
+          },
+        };
+
+        chartConfigs.features.push(feature);
+      });
     } else {
-      geojsonFeature = wktToGeoJSON(location);
+      const config = {
+        ...baseConfig,
+        queriesData: [
+          {
+            ...strippedQueryData,
+            data: dataByLocation[location],
+          },
+        ],
+      };
+      const transformedProps = chartTransformer(config);
+
+      let geojsonFeature;
+
+      if (geomFormat === GeometryFormat.GEOJSON) {
+        geojsonFeature = {
+          type: 'Feature',
+          geometry: JSON.parse(location),
+        };
+      } else if (geomFormat === GeometryFormat.WKB) {
+        geojsonFeature = wkbToGeoJSON(location);
+      } else {
+        geojsonFeature = wktToGeoJSON(location);
+      }
+
+      const feature: ChartConfigFeature = {
+        type: 'Feature',
+        geometry: geojsonFeature.geometry,
+        properties: {
+          ...transformedProps,
+        },
+      };
+
+      chartConfigs.features.push(feature);
     }
-
-    const feature: ChartConfigFeature = {
-      type: 'Feature',
-      geometry: geojsonFeature.geometry,
-      properties: {
-        ...transformedProps,
-      },
-    };
-
-    chartConfigs.features.push(feature);
   });
   return chartConfigs;
 };
