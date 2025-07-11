@@ -23,6 +23,7 @@ export default function buildQuery(formData: QueryFormData) {
     selected_chart: selectedChartString,
     geom_column: geometryColumn,
     extra_form_data: extraFormData,
+    time_column: timeColumn,
   } = formData;
   const selectedChart = JSON.parse(selectedChartString);
   const vizType = selectedChart.viz_type;
@@ -44,6 +45,18 @@ export default function buildQuery(formData: QueryFormData) {
   // add geometry column at the first place
   groupby?.unshift(geometryColumn);
   chartFormData.groupby = groupby;
+
+  if (timeColumn) {
+  chartFormData.columns = [
+    ...(chartFormData.columns || []),
+    timeColumn,
+  ];
+
+  chartFormData.groupby = [
+    ...(chartFormData.groupby || []),
+    timeColumn,
+  ];
+}
 
   // TODO: find way to import correct type "InclusiveLoaderResult"
   const buildQueryRegistry = getChartBuildQueryRegistry();

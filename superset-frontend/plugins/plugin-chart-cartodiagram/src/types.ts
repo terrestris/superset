@@ -29,7 +29,8 @@ import { Coordinate } from 'ol/coordinate';
 import { Map } from 'ol';
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { Style } from 'geostyler-style';
-import { GeometryFormat } from './constants';
+import { SliderSingleProps } from 'antd/lib/slider';
+import { GeometryFormat, TimesliderTooltipFormat } from './constants';
 
 export interface CartodiagramPluginStylesProps {
   height: number;
@@ -87,6 +88,9 @@ interface CartodiagramPluginCustomizeProps {
   chartBackgroundBorderRadius: number;
   setControlValue: Function;
   mapExtentPadding?: number | undefined;
+  showTimeslider: boolean;
+  timeColumn: string;
+  timesliderTooltipFormat: TimesliderTooltipFormat;
 }
 
 export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
@@ -97,6 +101,7 @@ export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
 export interface OlChartMapProps extends CartodiagramPluginProps {
   mapId: string;
   olMap: Map;
+  timeFilter: number | undefined;
 }
 
 export interface BaseLayerConf {
@@ -148,6 +153,12 @@ export type SelectedChartConfig = {
 
 export type LocationConfigMapping = {
   [key: string]: DataRecord[];
+};
+
+export type LocationTimeConfigMapping = {
+  [location: string]: {
+    [time: string]: DataRecord[];
+  };
 };
 
 export type MapViewConfigs = {
@@ -252,3 +263,9 @@ export type ChartWrapperProps = {
 export type MapProjections = {
   [key: string]: string;
 };
+
+export interface TimeSliderProps extends SliderSingleProps {
+  data: DataRecord[];
+  timeColumn: string;
+  timesliderTooltipFormat: TimesliderTooltipFormat;
+}

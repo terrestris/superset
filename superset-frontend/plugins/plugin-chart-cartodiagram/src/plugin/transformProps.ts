@@ -23,7 +23,7 @@ import {
 } from '../util/transformPropsUtil';
 
 export default function transformProps(chartProps: ChartProps) {
-  const { width, height, formData, hooks, theme } = chartProps;
+  const { width, height, formData, hooks, theme, queriesData } = chartProps;
   const {
     geomColumn,
     geomFormat,
@@ -38,8 +38,18 @@ export default function transformProps(chartProps: ChartProps) {
     chartBackgroundColor,
     chartBackgroundBorderRadius,
     sliceId,
+    timeColumn,
+    showTimeslider,
+    timesliderTooltipFormat,
   } = formData;
   const { setControlValue = () => {} } = hooks;
+
+  const { data } = queriesData[0];
+
+  if (timeColumn && showTimeslider === undefined) {
+    setControlValue('show_timeslider', true);
+  }
+
   const selectedChart = parseSelectedChart(selectedChartString);
   const transformPropsRegistry = getChartTransformPropsRegistry();
   const chartTransformer = transformPropsRegistry.get(selectedChart.viz_type);
@@ -51,7 +61,10 @@ export default function transformProps(chartProps: ChartProps) {
     chartProps,
     chartTransformer,
     sliceId,
+    timeColumn,
   );
+
+  console.log('chartConfigs', chartConfigs);
 
   return {
     width,
@@ -72,5 +85,9 @@ export default function transformProps(chartProps: ChartProps) {
     chartBackgroundBorderRadius,
     setControlValue,
     theme,
+    timeColumn,
+    showTimeslider,
+    timesliderTooltipFormat,
+    data,
   };
 }

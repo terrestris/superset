@@ -64,6 +64,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
     chartBackgroundBorderRadius,
     setControlValue,
     theme,
+    timeColumn,
+    timeFilter,
   } = props;
 
   const locale = useSelector((state: any) => state?.common?.locale);
