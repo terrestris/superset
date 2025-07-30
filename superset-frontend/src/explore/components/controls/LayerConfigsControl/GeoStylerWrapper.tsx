@@ -22,8 +22,9 @@
  * via emotion. Emotion can only be used on a component that
  * accepts a className property.
  */
-import { CardStyle } from 'geostyler';
+import { CardStyle } from 'geostyler/dist/Component/CardStyle/CardStyle';
 import { FC } from 'react';
+import { ConfigProvider } from 'antd-v5';
 import { GeoStylerWrapperProps } from './types';
 import 'geostyler/dist/index.css';
 

@@ -30,7 +30,12 @@ import WfsDataParser, {
   RequestParams2_0_0,
 } from 'geostyler-wfs-parser';
 import { FC, useEffect, useState } from 'react';
-import { isWfsLayerConf, isWmsLayerConf, isXyzLayerConf } from './typeguards';
+
+import {
+  isWfsLayerConf,
+  isWmsLayerConf,
+  isXyzLayerConf,
+} from './typeguards';
 import {
   BaseLayerConf,
   LayerConf,
@@ -123,6 +128,23 @@ export const StyledSaveButton = styled(Button)`
     &:hover {
       background-color: ${theme.colorPrimaryText};
     }
+  `}
+`;
+
+export const StyledUploadButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const StyledFeedbackMessage = styled.div<{ success: boolean }>`
+  ${({ success, theme }) => css`
+    color: ${success ? theme.colors.success.base : theme.colors.error.base};
+    visibility: ${success === null ? 'hidden' : 'visible'};
+    min-width: 150px;
+    text-align: right;
   `}
 `;
 
