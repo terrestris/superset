@@ -76,7 +76,7 @@ def create_wfs_connection(page):
     page.wait_for_load_state('networkidle')
 
     row = page.locator('table[role="table"] tbody tr', has_text="Other").first
-    backend_cell = row.locator('td').nth(1)  
+    backend_cell = row.locator('td').nth(1)
     assert "wfs" in backend_cell.inner_text()
 
 
@@ -165,3 +165,31 @@ def delete_dataset(page):
 
     expect(page.get_by_text('Deleted:')).to_be_visible()
     expect(page.locator('span:has-text("Other")')).to_have_count(0)
+
+
+def open_dahboard(page, dashboard_name):
+    page.goto(URL + 'dashboard/list/?')
+    page.wait_for_load_state('networkidle')
+
+    expect(page).to_have_title('Superset')
+    expect(page.locator('div.header').first).to_have_text('Dashboards')
+
+    while True:
+        if page.get_by_text(dashboard_name).is_visible():
+            page.get_by_text(dashboard_name).click()
+            break
+        else:
+            print('Dashboard not found, going to next page...')
+            next_button = page.locator(
+                'ul[role="navigation"] li:has(span[role="button"]:text("»"))'
+            )
+            next_btn_class = next_button.get_attribute("class")
+            if next_btn_class and "disabled" in next_btn_class:
+                print('No more pages to navigate.')
+                break
+            next_button.click()
+            page.wait_for_load_state('networkidle')
+
+    expect(page.locator(
+        'span[aria-label="Dashboard title"]'
+        )).to_be_visible()
