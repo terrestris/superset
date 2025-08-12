@@ -76,7 +76,7 @@ def create_wfs_connection(page):
     page.wait_for_load_state('networkidle')
 
     row = page.locator('table[role="table"] tbody tr', has_text="Other").first
-    backend_cell = row.locator('td').nth(1)  
+    backend_cell = row.locator('td').nth(1)
     assert "wfs" in backend_cell.inner_text()
 
 
@@ -165,3 +165,72 @@ def delete_dataset(page):
 
     expect(page.get_by_text('Deleted:')).to_be_visible()
     expect(page.locator('span:has-text("Other")')).to_have_count(0)
+
+
+def open_dahboard(page, dashboard_name):
+    page.goto(URL + 'dashboard/list/?')
+    page.wait_for_load_state('networkidle')
+
+    expect(page).to_have_title('Superset')
+    expect(page.locator('div.header').first).to_have_text('Dashboards')
+
+    while True:
+        if page.get_by_text(dashboard_name).is_visible():
+            page.get_by_text(dashboard_name).click()
+            break
+        else:
+            print('Dashboard not found, going to next page...')
+            next_button = page.locator(
+                'ul[role="navigation"] li:has(span[role="button"]:text("»"))'
+            )
+            next_btn_class = next_button.get_attribute("class")
+            if next_btn_class and "disabled" in next_btn_class:
+                print('No more pages to navigate.')
+                break
+            next_button.click()
+            page.wait_for_load_state('networkidle')
+
+    expect(page.locator(
+        'span[aria-label="Dashboard title"]'
+        )).to_be_visible()
+
+
+def hover_canvas_until_tooltip(page, id):
+    canvas = page.locator(f'{id} .ol-layer canvas').first
+    expect(canvas).to_be_visible()
+    box = canvas.bounding_box()
+    print(f"Canvas bounding box: {box}")
+
+    assert box, "Canvas element not found or has no bounding box"
+    tooltip = page.locator("#infoTooltip")
+    expect(tooltip).not_to_be_visible()
+
+    page.locator(f'{id} .ol-zoom-in').click(click_count=3)
+
+    step = 10
+    found = False
+    found_pos = None
+
+    for y in range(0, canvas.bounding_box()['height'], step):
+        for x in range(0, canvas.bounding_box()['width'], step):
+            page.mouse.move(box['x'] + x, box['y'] + y)
+            page.wait_for_timeout(100)
+            if tooltip.is_visible():
+                print(f'Tooltip found at ({x}, {y})')
+                found = True
+                found_pos = {'x': x, 'y': y}
+                break
+            else:
+                print(f'No tooltip at ({x}, {y})')
+        if found:
+            break
+
+    assert found, 'Tooltip never appeared'
+
+    if found_pos is not None:
+        print(f'Clicking at last position: {found_pos}')
+        x = found_pos['x']
+        y = found_pos['y']
+        page.mouse.click(box['x'] + x, box['y'] + y)
+    else:
+        print('No position found to click, skipping click action')
