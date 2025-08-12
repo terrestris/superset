@@ -193,3 +193,44 @@ def open_dahboard(page, dashboard_name):
     expect(page.locator(
         'span[aria-label="Dashboard title"]'
         )).to_be_visible()
+
+
+def hover_canvas_until_tooltip(page, id):
+    canvas = page.locator(f'{id} .ol-layer canvas').first
+    expect(canvas).to_be_visible()
+    box = canvas.bounding_box()
+    print(f"Canvas bounding box: {box}")
+
+    assert box, "Canvas element not found or has no bounding box"
+    tooltip = page.locator("#infoTooltip")
+    expect(tooltip).not_to_be_visible()
+
+    page.locator(f'{id} .ol-zoom-in').click(click_count=3)
+
+    step = 10
+    found = False
+    found_pos = None
+
+    for y in range(0, canvas.bounding_box()['height'], step):
+        for x in range(0, canvas.bounding_box()['width'], step):
+            page.mouse.move(box['x'] + x, box['y'] + y)
+            page.wait_for_timeout(100)
+            if tooltip.is_visible():
+                print(f'Tooltip found at ({x}, {y})')
+                found = True
+                found_pos = {'x': x, 'y': y}
+                break
+            else:
+                print(f'No tooltip at ({x}, {y})')
+        if found:
+            break
+
+    assert found, 'Tooltip never appeared'
+
+    if found_pos is not None:
+        print(f'Clicking at last position: {found_pos}')
+        x = found_pos['x']
+        y = found_pos['y']
+        page.mouse.click(box['x'] + x, box['y'] + y)
+    else:
+        print('No position found to click, skipping click action')
