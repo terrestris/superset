@@ -26,6 +26,9 @@ import {
 
 import OlChartMap from './components/OlChartMap';
 
+import TimeSlider from './components/TimeSlider';
+import { TIMESLIDER_HEIGHT } from './constants';
+
 import 'ol/ol.css';
 
 // The following Styles component is a <div> element, which has been styled using Emotion
@@ -40,8 +43,22 @@ const Styles = styled.div<CartodiagramPluginStylesProps>`
   width: ${({ width }) => width}px;
 `;
 
+const StyledTimeSlider = styled(TimeSlider)`
+  height: ${TIMESLIDER_HEIGHT}px;
+  width: 90%;
+  margin-left: 30px;
+  margin-right: 0;
+`;
+
 export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
-  const { height, width } = props;
+  const {
+    height,
+    width,
+    showTimeslider,
+    timeColumn,
+    timesliderTooltipFormat,
+    data,
+  } = props;
   const theme = useTheme();
 
   const rootElem = createRef<HTMLDivElement>();
@@ -51,9 +68,32 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   );
   const [olMap] = useState(new OlMap({}));
 
+  const [timeSliderValue, setTimeSliderValue] = useState<number | undefined>();
+
+  const mapHeight = showTimeslider ? height - TIMESLIDER_HEIGHT * 2 : height;
+
+  const onSliderChange = (value: number) => {
+    setTimeSliderValue(value);
+  };
+
   return (
     <Styles ref={rootElem} height={height} width={width} theme={theme}>
-      <OlChartMap mapId={mapId} olMap={olMap} {...props} />
+      <OlChartMap
+        mapId={mapId}
+        olMap={olMap}
+        timeFilter={showTimeslider ? timeSliderValue : undefined}
+        {...props}
+        height={mapHeight}
+      />
+      {showTimeslider && timeColumn && (
+        <StyledTimeSlider
+          data={data}
+          defaultValue={timeSliderValue}
+          onChange={onSliderChange}
+          timeColumn={timeColumn}
+          timesliderTooltipFormat={timesliderTooltipFormat}
+        />
+      )}
     </Styles>
   );
 }

@@ -25,7 +25,7 @@ import { selectedChartMutator } from '../util/controlPanelUtil';
 
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 import { MapViewConfigs } from '../types';
-import { GeometryFormat } from '../constants';
+import { GeometryFormat, TimesliderTooltipFormat } from '../constants';
 import MapMaxExtentViewControl from '../components/MapMaxExtentControl/MapMaxExtentViewControl';
 
 const config: ControlPanelConfig = {
@@ -111,6 +111,25 @@ const config: ControlPanelConfig = {
               ],
               clearable: false,
               validators: [validateNonEmpty],
+            },
+          },
+        ],
+        [
+          {
+            name: 'time_column',
+            config: {
+              type: 'SelectControl',
+              label: t('Time Column'),
+              renderTrigger: false,
+              description: t('The name of the time column'),
+              mapStateToProps: state => ({
+                choices: state.datasource?.columns.map(c => [
+                  c.column_name,
+                  c.column_name,
+                ]),
+              }),
+              clearable: true,
+              queryField: true,
             },
           },
         ],
@@ -281,6 +300,44 @@ const config: ControlPanelConfig = {
               },
               label: t('Chart size'),
               description: t('Configure the chart size for each zoom level'),
+            },
+          },
+        ],
+      ],
+    },
+    {
+      label: t('Timeseries Options'),
+      expanded: true,
+      controlSetRows: [
+        [
+          {
+            name: 'show_timeslider',
+            config: {
+              type: 'CheckboxControl',
+              description: t('Whether to show the timeslider'),
+              label: t('Show timeslider'),
+              renderTrigger: true,
+              default: false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'timeslider_tooltip_format',
+            config: {
+              type: 'SelectControl',
+              label: t('Tooltip Format'),
+              description: t('Format for the tooltip of the timeslider.'),
+              renderTrigger: true,
+              visibility: ({ controls }) =>
+                Boolean(controls?.show_timeslider?.value),
+              clearable: false,
+              default: TimesliderTooltipFormat.DATETIME,
+              choices: [
+                [TimesliderTooltipFormat.DATETIME, t('Date & Time')],
+                [TimesliderTooltipFormat.DATE, t('Date')],
+                [TimesliderTooltipFormat.TIME, t('Time')],
+              ],
             },
           },
         ],
