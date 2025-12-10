@@ -117,7 +117,7 @@ const config: ControlPanelConfig = {
         ],
         [
           {
-            name: 'id_column',
+            name: 'cross_filter_column',
             config: {
               type: 'SelectControl',
               label: t('Cross-filter column'),
@@ -251,7 +251,6 @@ const config: ControlPanelConfig = {
               formWatchers: [
                 'adhoc_filters',
                 'columns',
-                'id_column',
                 'geom_column',
                 'geom_format',
                 'row_limit',
