@@ -636,8 +636,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
             : [
                 {
                   col: crossFilterColumn,
-                  op: '==',
-                  val,
+                  op: 'IN',
+                  val: [val],
                 },
               ],
         },
