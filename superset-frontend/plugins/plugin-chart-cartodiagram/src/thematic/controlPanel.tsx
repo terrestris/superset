@@ -251,6 +251,7 @@ const config: ControlPanelConfig = {
                 'adhoc_filters',
                 'columns',
                 'geom_column',
+                'cross_filter_column',
                 'geom_format',
                 'row_limit',
               ],
