@@ -61,6 +61,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     data,
     emitCrossFilters,
     filterState,
+    columns,
     crossFilterColumn,
     geomColumn,
     geomFormat,
@@ -684,6 +685,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
           tooltipTemplate={tooltipTemplate}
           geomColumn={geomColumn}
           mapId={mapId}
+          columns={columns}
         />
       )}
       {showLegend && <Legend olMap={olMap} layerConfigs={layerConfigs} />}

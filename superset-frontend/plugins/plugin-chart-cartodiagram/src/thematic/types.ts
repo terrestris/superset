@@ -17,6 +17,7 @@
  * under the License.
  */
 import { SupersetTheme } from '@apache-superset/core/theme';
+import { ColumnMeta } from '@superset-ui/chart-controls';
 import {
   DataRecord,
   FilterState,
@@ -47,7 +48,7 @@ interface ThematicMapPluginCustomizeProps {
   crossFilterColumn: string;
   geomColumn: string;
   geomFormat: GeometryFormat;
-  columns: string[];
+  columns: ColumnMeta[];
   layerConfigs: LayerConf[];
   mapView: MapViewConfigs;
   maxZoom: number;
@@ -96,6 +97,7 @@ export type FeatureTooltipProps = {
   tooltipTemplate: string;
   geomColumn: string;
   mapId: string;
+  columns: ColumnMeta[];
 };
 
 export type LegendProps = {

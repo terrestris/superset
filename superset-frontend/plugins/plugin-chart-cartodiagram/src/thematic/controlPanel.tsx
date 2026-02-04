@@ -87,7 +87,7 @@ const config: ControlPanelConfig = {
               mapStateToProps: state => ({
                 choices: state.datasource?.columns.map(c => [
                   c.column_name,
-                  c.column_name,
+                  (c as ColumnMeta).verbose_name || c.column_name,
                 ]),
               }),
               validators: [validateNonEmpty],
@@ -128,7 +128,7 @@ const config: ControlPanelConfig = {
               mapStateToProps: state => ({
                 choices: state.datasource?.columns.map(c => [
                   c.column_name,
-                  c.column_name,
+                  (c as ColumnMeta).verbose_name || c.column_name,
                 ]),
               }),
               validators: [validateNonEmpty],
@@ -381,14 +381,14 @@ const config: ControlPanelConfig = {
                 const currentColumns: string[] = state.controls.columns
                   ?.value as string[];
                 return {
-                  choices: currentColumns
-                    ?.filter((c: string) =>
-                      state.datasource?.columns.some(
-                        sourceCol =>
-                          sourceCol.column_name === c && sourceCol.is_dttm,
-                      ),
+                  choices: (state.datasource?.columns as QueryColumn[])
+                    .filter(
+                      c => currentColumns.includes(c.column_name) && c.is_dttm,
                     )
-                    .map((c: string) => [c, c]),
+                    .map(c => [
+                      c.column_name,
+                      (c as ColumnMeta).verbose_name || c.column_name,
+                    ]),
                 };
               },
             },
