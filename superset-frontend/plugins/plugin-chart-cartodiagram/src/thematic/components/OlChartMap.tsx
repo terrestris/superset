@@ -17,7 +17,7 @@
  * under the License.
  */
 import { DataRecord } from '@superset-ui/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Feature, FeatureCollection } from 'geojson';
 import { debounce, xor, uniq } from 'lodash';
@@ -31,6 +31,7 @@ import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import {
   dataRecordsToOlFeatures,
+  fitMapToFeatures,
   fitMapToData,
   fitMapToDataRecords,
 } from '../../util/mapUtil';
@@ -107,6 +108,20 @@ export const OlChartMap = (props: OlChartMapProps) => {
     }
     return data;
   }, [data, geomColumn, geomFormat]);
+
+  const dataFeatures = useMemo(() => {
+    if (
+      geomFormat === GeometryFormat.WKB ||
+      geomFormat === GeometryFormat.WKT
+    ) {
+      return dataRecordsToOlFeatures(
+        processedData as DataRecord[],
+        geomColumn,
+        geomFormat,
+      ) as OlFeature[];
+    }
+    return undefined;
+  }, [processedData, geomColumn, geomFormat]);
 
   /**
    * Add map to correct DOM element.
@@ -203,13 +218,21 @@ export const OlChartMap = (props: OlChartMapProps) => {
           geomFormat === GeometryFormat.WKB ||
           geomFormat === GeometryFormat.WKT
         ) {
-          fitMapToDataRecords(
-            olMap,
-            processedData as DataRecord[],
-            geomColumn,
-            geomFormat,
-            getMapExtentPadding(mapExtentPadding),
-          );
+          if (dataFeatures) {
+            fitMapToFeatures(
+              olMap,
+              dataFeatures,
+              getMapExtentPadding(mapExtentPadding),
+            );
+          } else {
+            fitMapToDataRecords(
+              olMap,
+              processedData as DataRecord[],
+              geomColumn,
+              geomFormat,
+              getMapExtentPadding(mapExtentPadding),
+            );
+          }
         } else {
           fitMapToData(
             olMap,
@@ -311,13 +334,21 @@ export const OlChartMap = (props: OlChartMapProps) => {
         geomFormat === GeometryFormat.WKB ||
         geomFormat === GeometryFormat.WKT
       ) {
-        fitMapToDataRecords(
-          olMap,
-          data,
-          geomColumn,
-          geomFormat,
-          getMapExtentPadding(mapExtentPadding),
-        );
+        if (dataFeatures) {
+          fitMapToFeatures(
+            olMap,
+            dataFeatures,
+            getMapExtentPadding(mapExtentPadding),
+          );
+        } else {
+          fitMapToDataRecords(
+            olMap,
+            data,
+            geomColumn,
+            geomFormat,
+            getMapExtentPadding(mapExtentPadding),
+          );
+        }
       } else {
         fitMapToData(
           olMap,
@@ -333,6 +364,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     geomFormat,
     geomColumn,
     processedData,
+    dataFeatures,
     mapExtentPadding,
   ]);
 
@@ -368,6 +400,23 @@ export const OlChartMap = (props: OlChartMapProps) => {
     }
     return filteredRecords;
   }, [processedData, timeColumn, timeFilter, geomFormat]);
+
+  const filteredFeatures = useMemo(() => {
+    if (
+      geomFormat === GeometryFormat.WKB ||
+      geomFormat === GeometryFormat.WKT
+    ) {
+      if (filteredData === processedData) {
+        return dataFeatures;
+      }
+      return dataRecordsToOlFeatures(
+        filteredData as DataRecord[],
+        geomColumn,
+        geomFormat,
+      ) as OlFeature[];
+    }
+    return undefined;
+  }, [filteredData, processedData, dataFeatures, geomColumn, geomFormat]);
 
   /**
    * Update layers
@@ -411,11 +460,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
         geomFormat === GeometryFormat.WKB ||
         geomFormat === GeometryFormat.WKT
       ) {
-        features = dataRecordsToOlFeatures(
-          filteredData as DataRecord[],
-          geomColumn,
-          geomFormat,
-        ) as OlFeature[];
+        features = (filteredFeatures || []) as OlFeature[];
       } else {
         features = new GeoJSON().readFeatures(filteredData, {
           featureProjection: 'EPSG:3857',
@@ -424,7 +469,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
       source?.clear();
       source?.addFeatures(features);
     });
-  }, [currentDataLayers, filteredData, geomColumn, geomFormat]);
+  }, [currentDataLayers, filteredData, filteredFeatures, geomColumn, geomFormat]);
 
   useEffect(() => {
     removeSelectionLayer(olMap);
