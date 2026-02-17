@@ -1,6 +1,6 @@
 """set cross_filter_column if null
 
-Revision ID: a1b2c3d4e5f6
+Revision ID: fea69e8db074
 Revises: 74ad1125881c
 Create Date: 2026-02-10 13:30:00.000000
 
@@ -14,18 +14,12 @@ import json
 
 
 # revision identifiers, used by Alembic.
-revision = "a1b2c3d4e5f6"
+revision = "fea69e8db074"
 down_revision = "74ad1125881c"
 branch_labels = None
 depends_on = None
 
 Base = declarative_base()
-
-
-class Database(Base):
-    __tablename__ = "dbs"
-    id = Column(Integer, primary_key=True)
-    sqlalchemy_uri = Column(String(1024))
 
 
 class Slice(Base):
@@ -34,13 +28,6 @@ class Slice(Base):
     datasource_id = Column(Integer)
     viz_type = Column(String(200))
     params = Column(Text)
-
-
-class SqlaTable(Base):
-    __tablename__ = "tables"
-    id = Column(Integer, primary_key=True)
-    database_id = Column(Integer)
-    datasource_type = Column(String(200))
 
 
 def upgrade():
