@@ -51,7 +51,7 @@ describe('transformPropsUtil', () => {
   };
 
   describe('getWkbColumns', () => {
-    it('gets the WKB columns', () => {
+    test('gets the WKB columns', () => {
       const wkbCol = '0101000020E610000000000000000020400000000000804A40';
       const columns = ['foo', 'bar', wkbCol];
 
@@ -60,7 +60,7 @@ describe('transformPropsUtil', () => {
       expect(result[0]).toEqual(2);
     });
 
-    it('gets multiple WKB columns', () => {
+    test('gets multiple WKB columns', () => {
       const wkbCol = '0101000020E610000000000000000020400000000000804A40';
       const columns = ['foo', 'bar', wkbCol, wkbCol];
 
@@ -69,7 +69,7 @@ describe('transformPropsUtil', () => {
       expect(result[0]).toEqual(2);
     });
 
-    it('returns empty array when no WKB column is included', () => {
+    test('returns empty array when no WKB column is included', () => {
       const columns = ['foo', 'bar'];
 
       const result = getWkbColumns(columns);
@@ -78,7 +78,7 @@ describe('transformPropsUtil', () => {
   });
 
   describe('getWktColumns', () => {
-    it('gets the WKT columns', () => {
+    test('gets the WKT columns', () => {
       const wktCol = 'POINT(8 53)';
       const columns = ['foo', 'bar', wktCol];
 
@@ -87,7 +87,7 @@ describe('transformPropsUtil', () => {
       expect(result[0]).toEqual(2);
     });
 
-    it('gets multiple WKT columns', () => {
+    test('gets multiple WKT columns', () => {
       const wktCol = 'POINT(8 53)';
       const columns = ['foo', 'bar', wktCol, wktCol];
 
@@ -96,7 +96,7 @@ describe('transformPropsUtil', () => {
       expect(result[0]).toEqual(2);
     });
 
-    it('returns empty array when no WKT column is included', () => {
+    test('returns empty array when no WKT column is included', () => {
       const columns = ['foo', 'bar'];
 
       const result = getWktColumns(columns);
@@ -287,7 +287,7 @@ describe('transformPropsUtil', () => {
       chartTransformer = jest.fn();
     });
 
-    it('calls the transformProps function for every location', () => {
+    test('calls the transformProps function for every location', () => {
       getChartConfigs(
         pieChartConfig,
         geomColumn,
@@ -333,7 +333,7 @@ describe('transformPropsUtil', () => {
       expect(result.features[0].geometry).toEqual(JSON.parse(geom1));
       expect(result.features[1].geometry).toEqual(JSON.parse(geom2));
     });
-    it('can handle WKB geometries', () => {
+    test('can handle WKB geometries', () => {
       const result = getChartConfigs(
         pieChartConfig,
         geomColumn,
@@ -348,7 +348,7 @@ describe('transformPropsUtil', () => {
       expect(result.features[1].geometry.coordinates).toHaveLength(2);
     });
 
-    it('can handle WKT geometries', () => {
+    test('can handle WKT geometries', () => {
       const result = getChartConfigs(
         pieChartConfig,
         geomColumn,

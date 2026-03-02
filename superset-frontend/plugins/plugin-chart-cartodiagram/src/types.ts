@@ -18,6 +18,7 @@
  */
 import { DataRecord, TimeseriesDataRecord } from '@superset-ui/core';
 import { SupersetTheme } from '@apache-superset/core/theme';
+import { ControlComponentProps } from '@superset-ui/chart-controls';
 import { RenderFunction } from 'ol/layer/Layer';
 import { Extent } from 'ol/extent';
 import Source from 'ol/source/Source';
@@ -232,4 +233,8 @@ export type ChartWrapperProps = {
   height: number;
   chartConfig: ChartConfigFeature;
   locale: string;
+};
+
+export type MapProjections = {
+  [key: string]: string;
 };

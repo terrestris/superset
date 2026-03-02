@@ -17,11 +17,13 @@
  * under the License.
  */
 import { ControlHeader } from '@superset-ui/chart-controls';
-import { css, styled, t } from '@apache-superset/core';
-import { Button, Radio } from 'antd';
+import { css, styled } from '@apache-superset/core/theme';
+import type { SupersetTheme } from '@apache-superset/core/theme';
+import { t } from '@apache-superset/core/translation';
+import { Button } from '@superset-ui/core/components/Button';
+import { Radio } from 'antd';
+import type { RadioChangeEvent } from 'antd';
 import { FC } from 'react';
-import { mix } from 'polished';
-import { RadioChangeEvent } from 'antd/lib/radio';
 import {
   MapMaxExtentConfigs,
   MapMaxExtentConfigsControlProps,
@@ -29,18 +31,18 @@ import {
 import MapMaxExtentTag from './MapMaxExtentTag';
 
 export const StyledMaxExtentButton = styled(Button)`
-  ${({ theme }) => css`
+  ${({ theme }: { theme: SupersetTheme }) => css`
     flex: 1;
     margin-right: 4px;
     line-height: 1.5715;
     border-radius: ${theme.borderRadius}px;
-    background-color: ${theme.colors.primary.light4};
-    color: ${theme.colors.primary.dark1};
-    font-size: ${theme.typography.sizes.s}px;
-    font-weight: ${theme.typography.weights.bold};
+    background-color: ${theme.colorPrimaryBg};
+    color: ${theme.colorPrimaryText};
+    font-size: ${theme.fontSizeSM}px;
+    font-weight: ${theme.fontWeightStrong};
     text-transform: uppercase;
-    min-width: ${theme.gridUnit * 36};
-    min-height: ${theme.gridUnit * 8};
+    min-width: ${theme.sizeUnit * 36};
+    min-height: ${theme.sizeUnit * 8};
     box-shadow: none;
     border-width: 0px;
     border-style: none;
@@ -48,12 +50,8 @@ export const StyledMaxExtentButton = styled(Button)`
     margin-left: 9px;
     margin-top: 10px;
     &:hover {
-      background-color: ${mix(
-        0.1,
-        theme.colors.primary.base,
-        theme.colors.primary.light4,
-      )};
-      color: ${theme.colors.primary.dark1};
+      background-color: ${theme.colorPrimaryBgHover};
+      color: ${theme.colorPrimaryText};
     }
   `}
 `;
