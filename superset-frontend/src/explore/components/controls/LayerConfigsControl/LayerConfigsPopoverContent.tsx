@@ -31,11 +31,7 @@ import WfsDataParser, {
 } from 'geostyler-wfs-parser';
 import { FC, useEffect, useState } from 'react';
 
-import {
-  isWfsLayerConf,
-  isWmsLayerConf,
-  isXyzLayerConf,
-} from './typeguards';
+import { isWfsLayerConf, isWmsLayerConf, isXyzLayerConf } from './typeguards';
 import {
   BaseLayerConf,
   LayerConf,
