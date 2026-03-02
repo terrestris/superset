@@ -20,7 +20,8 @@
 /**
  * Util for map related operations.
  */
-import { Map } from 'ol';
+import { DataRecord } from '@superset-ui/core';
+import { Feature, Map } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import WKB from 'ol/format/WKB';
 import WKT from 'ol/format/WKT';

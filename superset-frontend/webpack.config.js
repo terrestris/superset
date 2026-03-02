@@ -510,10 +510,6 @@ const config = {
           // Currently, GeoStyler uses imports without file extension
           // on ESM modules, which is not supported by webpack.
           fullySpecified: false,
-          alias: {
-            // GeoStyler expects antd v5 as usual antd import
-            antd: path.resolve(path.join(APP_DIR, './node_modules/antd-v5')),
-          },
         },
       },
       {

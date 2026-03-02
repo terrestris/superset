@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 import { WfsLayerConf } from '../../src/types';
 import {
   createLayer,
@@ -72,12 +74,26 @@ describe('layerUtil', () => {
       const wfsLayer = await createWfsLayer(wfsLayerConf);
 
       const style = wfsLayer!.getStyle();
-      // @ts-expect-error
-      expect(style!.length).toEqual(3);
+      expect(Array.isArray(style)).toBe(true);
+      if (!Array.isArray(style)) {
+        return;
+      }
+      const styleArray = style.filter(
+        (styleEntry): styleEntry is Style => styleEntry instanceof Style,
+      );
+      expect(styleArray).toHaveLength(3);
 
-      // @ts-expect-error upgrade `ol` package for better type of StyleLike type.
-      const colorAtLayer = style![1].getImage().getFill().getColor();
-      expect(colorToExpect).toEqual(colorAtLayer);
+      const iconSourcesAtLayer = styleArray
+        .map(styleEntry => styleEntry.getImage())
+        .filter((image): image is Icon => image instanceof Icon)
+        .map(icon => icon.getSrc())
+        .filter((src): src is string => typeof src === 'string')
+        .map(src => decodeURIComponent(src).toLowerCase());
+
+      expect(iconSourcesAtLayer.length).toBeGreaterThan(0);
+      expect(iconSourcesAtLayer.some(src => src.includes(colorToExpect))).toBe(
+        true,
+      );
     });
   });
 
