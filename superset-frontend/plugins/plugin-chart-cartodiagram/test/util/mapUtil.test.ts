@@ -110,7 +110,7 @@ describe('mapUtil', () => {
       });
 
       // should set center
-      fitMapToCharts(olMap, chartConfig);
+      fitMapToData(olMap, chartConfig);
 
       const updatedCenter = olMap.getView().getCenter();
 
@@ -119,7 +119,7 @@ describe('mapUtil', () => {
   });
 
   describe('wkbToGeoJSON', () => {
-    it('converts WKB to GeoJSON', () => {
+    test('converts WKB to GeoJSON', () => {
       const wkb = '0101000020E610000000000000000020400000000000804A40';
       const geoJSON = wkbToGeoJSON(wkb);
       expect(geoJSON).toEqual({
@@ -134,7 +134,7 @@ describe('mapUtil', () => {
   });
 
   describe('wktToGeoJSON', () => {
-    it('converts WKT to GeoJSON', () => {
+    test('converts WKT to GeoJSON', () => {
       const wkt = 'POINT(8 53)';
       const geoJSON = wktToGeoJSON(wkt);
       expect(geoJSON).toEqual({
@@ -147,7 +147,7 @@ describe('mapUtil', () => {
       });
     });
 
-    it('handles SRID in WKT', () => {
+    test('handles SRID in WKT', () => {
       const wkt = 'SRID=4326;POINT(8 53)';
       const geoJSON = wktToGeoJSON(wkt);
       expect(geoJSON).toEqual({

@@ -31,11 +31,7 @@ import WfsDataParser, {
 } from 'geostyler-wfs-parser';
 import { FC, useEffect, useState } from 'react';
 
-import {
-  isWfsLayerConf,
-  isWmsLayerConf,
-  isXyzLayerConf,
-} from './typeguards';
+import { isWfsLayerConf, isWmsLayerConf, isXyzLayerConf } from './typeguards';
 import {
   BaseLayerConf,
   LayerConf,
@@ -141,7 +137,7 @@ export const StyledUploadButtonContainer = styled.div`
 
 export const StyledFeedbackMessage = styled.div<{ success: boolean }>`
   ${({ success, theme }) => css`
-    color: ${success ? theme.colors.success.base : theme.colors.error.base};
+    color: ${success ? theme.colorSuccess : theme.colorError};
     visibility: ${success === null ? 'hidden' : 'visible'};
     min-width: 150px;
     text-align: right;

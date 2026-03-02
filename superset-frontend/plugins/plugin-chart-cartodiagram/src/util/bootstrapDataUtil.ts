@@ -17,12 +17,19 @@
  * under the License.
  */
 
-export enum GeometryFormat {
-  GEOJSON = 'GEOJSON',
-  WKB = 'WKB',
-  WKT = 'WKT',
-}
+/**
+ * Based on superset-frontend/src/utils/getBootstrapData.ts. Replicated
+ * in order to circumvent creating circular dependencies.
+ */
 
-// copy of
-// superset-frontend/plugins/plugin-chart-echarts/src/constants.ts
-export const NULL_STRING = '<NULL>';
+export const getBootstrapData = () => {
+  const appContainer = document.getElementById('app');
+  const dataBootstrap = appContainer?.getAttribute('data-bootstrap');
+  return dataBootstrap ? JSON.parse(dataBootstrap) : {};
+};
+
+export const getMapDefaultLayers = () => {
+  const bootstrapData = getBootstrapData();
+  const mapDefaultLayers = bootstrapData?.common?.conf?.MAP_DEFAULT_LAYERS;
+  return mapDefaultLayers ?? [];
+};
