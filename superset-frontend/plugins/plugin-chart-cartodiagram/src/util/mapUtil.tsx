@@ -72,6 +72,14 @@ const fitToData = (
   }
 };
 
+export const fitMapToFeatures = (
+  olMap: Map,
+  features: Feature[],
+  padding?: FitOptions['padding'] | undefined,
+) => {
+  fitToData(olMap, features, padding);
+};
+
 const extractSridFromWkt = (wkt: string) => {
   const extract: { geom: string; srid: string | null } = {
     geom: wkt,
@@ -127,35 +135,35 @@ export const dataRecordsToOlFeatures = (
   geomColumn: string,
   geomFormat: GeometryFormat.WKB | GeometryFormat.WKT,
 ) => {
-  let format: WKB | WKT = new WKB();
+  const format: WKB | WKT = geomFormat === GeometryFormat.WKT ? new WKT() : new WKB();
+  const features: Feature[] = [];
+  const defaultOpts: any = { featureProjection: 'EPSG:3857' };
+  const defaultWktOpts: any = {
+    featureProjection: 'EPSG:3857',
+    dataProjection: 'EPSG:4326',
+  };
 
-  if (geomFormat === GeometryFormat.WKT) {
-    format = new WKT();
+  for (let i = 0; i < dataRecords.length; i += 1) {
+    const item = dataRecords[i];
+    const geom = item[geomColumn];
+    if (typeof geom !== 'string') continue;
+
+    let cleanedGeom = geom;
+    let opts = defaultOpts;
+    if (geomFormat === GeometryFormat.WKT) {
+      const extract = extractSridFromWkt(geom);
+      cleanedGeom = extract.geom;
+      opts = extract.srid
+        ? { featureProjection: 'EPSG:3857', dataProjection: extract.srid }
+        : defaultWktOpts;
+    }
+
+    const feature = format.readFeature(cleanedGeom, opts);
+
+    feature.setProperties(item);
+
+    features.push(feature);
   }
-  const features = dataRecords
-    .map(item => {
-      const geom = item[geomColumn];
-      if (typeof geom !== 'string') {
-        return undefined;
-      }
-
-      let cleanedGeom = geom;
-      const opts: any = {
-        featureProjection: 'EPSG:3857',
-      };
-      if (geomFormat === GeometryFormat.WKT) {
-        const extract = extractSridFromWkt(geom);
-        cleanedGeom = extract.geom;
-        if (extract.srid) {
-          opts.dataProjection = extract.srid;
-        }
-      }
-      const feature = format.readFeature(cleanedGeom, opts);
-      feature.setProperties({ ...item });
-
-      return feature;
-    })
-    .filter(f => f !== undefined);
   return features;
 };
 
