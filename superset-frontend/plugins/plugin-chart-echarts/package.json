@@ -33,6 +33,7 @@
   },
   "peerDependencies": {
     "@apache-superset/core": "*",
+    "@reduxjs/toolkit": "*",
     "@superset-ui/chart-controls": "*",
     "@superset-ui/core": "*",
     "dayjs": "^1.11.19",
