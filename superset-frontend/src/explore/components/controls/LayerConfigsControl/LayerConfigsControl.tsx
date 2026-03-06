@@ -19,8 +19,11 @@
 import { ControlHeader } from '@superset-ui/chart-controls';
 import { t } from '@apache-superset/core/translation';
 import { css, styled } from '@apache-superset/core/theme';
+import { getChartBuildQueryRegistry } from '@superset-ui/core';
 import { Popover } from '@superset-ui/core/components';
-import { FC, useState } from 'react';
+import { FeatureCollection, GeoJsonGeometryTypes } from 'geojson';
+import { isEqual } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 import { EditItem, LayerConf, LayerConfigsControlProps } from './types';
 import LayerConfigsPopoverContent from './LayerConfigsPopoverContent';
 import FlatLayerTree from './FlatLayerTree';
@@ -80,18 +83,80 @@ const getEmptyEditItem = (): EditItem => ({
   },
 });
 
-export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
+export const LayerConfigsControl: React.FC<LayerConfigsControlProps> = ({
   value,
   onChange = () => {},
   name,
   label,
   description,
+  formData,
+  formWatchers,
+  featureCollectionTransformer,
   renderTrigger,
   hovered,
+  enableDataLayer = false,
+  colTypeMapping,
   validationErrors,
 }) => {
   const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<EditItem>(getEmptyEditItem());
+  const [currentFormData, setCurrentFormData] = useState(formData);
+  const [chartData, setChartData] = useState<FeatureCollection | undefined>();
+
+  /**
+   * We only want to watch for changes for a dynamic set of properties
+   * of the formData. To prevent unwanted http requests in the render cycles,
+   * we use the proxy currentFormData instead.
+   */
+  useEffect(() => {
+    setCurrentFormData(oldCurrentFormData => {
+      if (!formWatchers) {
+        return oldCurrentFormData;
+      }
+
+      const hasChanges = formWatchers.some(
+        watcher => !isEqual(formData?.[watcher], oldCurrentFormData?.[watcher]),
+      );
+      if (hasChanges) {
+        return formData;
+      }
+      return oldCurrentFormData;
+    });
+  }, [formData, formWatchers]);
+
+  useEffect(() => {
+    if (!currentFormData || !enableDataLayer) {
+      return;
+    }
+    const buildQueryRegistry = getChartBuildQueryRegistry();
+    const chartQueryBuilder = buildQueryRegistry.get(
+      currentFormData.viz_type,
+    ) as any;
+    const chartQuery = chartQueryBuilder(currentFormData);
+    const fetchChartData = async () => {
+      const body = JSON.stringify(chartQuery);
+      const response = await fetch('/api/v1/chart/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
+      if (!response.ok) {
+        return;
+      }
+      const responseJson = await response.json();
+      let { data } = responseJson.result[0];
+
+      if (featureCollectionTransformer) {
+        data = featureCollectionTransformer(data, currentFormData);
+      }
+
+      setChartData(data);
+    };
+
+    fetchChartData();
+  }, [currentFormData, enableDataLayer, featureCollectionTransformer]);
 
   const onAddClick = () => {
     setEditItem(getEmptyEditItem());
@@ -157,6 +222,21 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
     validationErrors,
   };
 
+  const geometryTypes = useMemo(() => {
+    if (!chartData) {
+      return [
+        'Point',
+        'MultiPoint',
+        'LineString',
+        'MultiLineString',
+        'Polygon',
+        'MultiPolygon',
+      ] as GeoJsonGeometryTypes[];
+    }
+    const geomTypes = chartData.features.map(f => f.geometry.type);
+    return [...new Set(geomTypes)];
+  }, [chartData]);
+
   return (
     <div>
       <ControlHeader {...controlHeaderProps} />
@@ -166,7 +246,6 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
         title={popoverTitle}
         placement="right"
         overlayStyle={{
-          maxWidth: '400px',
           maxHeight: '700px',
           overflowY: 'auto',
         }}
@@ -175,6 +254,10 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
             layerConf={editItem.layerConf}
             onClose={onPopoverClose}
             onSave={onPopoverSave}
+            enableDataLayer={enableDataLayer}
+            colTypeMapping={colTypeMapping}
+            dataFeatureCollection={chartData}
+            includedGeometryTypes={geometryTypes}
           />
         }
       >

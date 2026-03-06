@@ -17,42 +17,41 @@
  * under the License.
  */
 import { t } from '@apache-superset/core/translation';
-import { ChartMetadata, ChartPlugin } from '@superset-ui/core';
+import { ChartMetadata, ChartPlugin, Behavior } from '@superset-ui/core';
 import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
-import thumbnail from '../images/thumbnail.png';
-import thumbnailDark from '../images/thumbnail-dark.png';
-import example1 from '../images/example1.png';
-import example1Dark from '../images/example1-dark.png';
-import example2 from '../images/example2.png';
-import example2Dark from '../images/example2-dark.png';
-import { CartodiagramPluginConstructorOpts } from '../types';
+import thumbnail from './images/thumbnail.png';
+import example1 from './images/example1.png';
+import { ThematicMapPluginConstructorOpts } from './types';
 import { getLayerConfig } from '../util/controlPanelUtil';
-import { getMapDefaultLayers } from '../util/bootstrapDataUtil';
+import { getDefaultStyle } from '../util/layerUtil';
+import {
+  getMapDefaultLayers,
+  getMapProjections,
+} from '../util/bootstrapDataUtil';
+import { registerMapProjections } from '../util/mapUtil';
 
-export default class CartodiagramPlugin extends ChartPlugin {
-  constructor(opts: CartodiagramPluginConstructorOpts = {}) {
+export default class ThematicMapPlugin extends ChartPlugin {
+  /**
+   * The constructor is used to pass relevant metadata and callbacks that get
+   * registered in respective registries that are used throughout the library
+   * and application. A more thorough description of each property is given in
+   * the respective imported file.
+   *
+   * It is worth noting that `buildQuery` and is optional, and only needed for
+   * advanced visualizations that require either post processing operations
+   * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
+   */
+  constructor(opts: ThematicMapPluginConstructorOpts = {}) {
     const metadata = new ChartMetadata({
-      description:
-        'Display charts on a map. For using this plugin, users first have to create any other chart that can then be placed on the map.',
-      name: t('Cartodiagram'),
+      description: t('Create thematic maps.'),
+      name: t('Thematic Map'),
+      behaviors: [Behavior.InteractiveChart],
       thumbnail,
-      thumbnailDark,
       tags: [t('Geo'), t('2D'), t('Spatial'), t('Experimental')],
       category: t('Map'),
-      exampleGallery: [
-        {
-          url: example1,
-          urlDark: example1Dark,
-          caption: t('Pie charts on a map'),
-        },
-        {
-          url: example2,
-          urlDark: example2Dark,
-          caption: t('Line charts on a map'),
-        },
-      ],
+      exampleGallery: [{ url: example1, caption: t('Proportional symbols') }],
     });
 
     const layerConfig = getLayerConfig(controlPanel);
@@ -68,12 +67,21 @@ export default class CartodiagramPlugin extends ChartPlugin {
         );
         layerConfig.config.default = opts.defaultLayers;
       }
+
+      layerConfig.config.default.unshift({
+        type: 'DATA',
+        title: t('Data Layer'),
+        style: getDefaultStyle(),
+      });
     }
+
+    const mapProjections = getMapProjections();
+    registerMapProjections(mapProjections);
 
     super({
       buildQuery,
       controlPanel,
-      loadChart: () => import('../CartodiagramPlugin'),
+      loadChart: () => import('./ThematicMapPlugin'),
       metadata,
       transformProps,
     });
