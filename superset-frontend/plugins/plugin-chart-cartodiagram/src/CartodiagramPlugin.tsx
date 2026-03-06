@@ -36,8 +36,8 @@ import 'ol/ol.css';
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-core/src/style/index.ts
 
 const Styles = styled.div<CartodiagramPluginStylesProps>`
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
+  height: ${({ height }: CartodiagramPluginStylesProps) => height}px;
+  width: ${({ width }: CartodiagramPluginStylesProps) => width}px;
 `;
 
 export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
