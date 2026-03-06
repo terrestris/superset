@@ -28,6 +28,12 @@ export const getBootstrapData = () => {
   return dataBootstrap ? JSON.parse(dataBootstrap) : {};
 };
 
+export const getMapProjections = () => {
+  const bootstrapData = getBootstrapData();
+  const mapProjections = bootstrapData?.common?.conf?.MAP_PROJECTIONS;
+  return mapProjections ?? {};
+};
+
 export const getMapDefaultLayers = () => {
   const bootstrapData = getBootstrapData();
   const mapDefaultLayers = bootstrapData?.common?.conf?.MAP_DEFAULT_LAYERS;

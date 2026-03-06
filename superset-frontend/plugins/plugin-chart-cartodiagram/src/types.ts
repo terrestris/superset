@@ -98,13 +98,13 @@ export interface OlChartMapProps extends CartodiagramPluginProps {
 
 export interface BaseLayerConf {
   title: string;
-  url: string;
   type: string;
   attribution?: string;
 }
 
 export interface WfsLayerConf extends BaseLayerConf {
   type: 'WFS';
+  url: string;
   typeName: string;
   version: string;
   maxFeatures?: number;
@@ -113,15 +113,26 @@ export interface WfsLayerConf extends BaseLayerConf {
 
 export interface XyzLayerConf extends BaseLayerConf {
   type: 'XYZ';
+  url: string;
 }
 
 export interface WmsLayerConf extends BaseLayerConf {
   type: 'WMS';
+  url: string;
   version: string;
   layersParam: string;
 }
 
-export type LayerConf = WmsLayerConf | WfsLayerConf | XyzLayerConf;
+export interface DataLayerConf extends BaseLayerConf {
+  type: 'DATA';
+  style?: Style;
+}
+
+export type LayerConf =
+  | WmsLayerConf
+  | WfsLayerConf
+  | XyzLayerConf
+  | DataLayerConf;
 
 export type EventHandlers = Record<string, { (props: any): void }>;
 
