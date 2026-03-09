@@ -29,7 +29,7 @@ import {
 
 describe('tooltipUtil', () => {
   describe('setTooltipInvisible', () => {
-    it('sets the tooltip visibility to hidden', () => {
+    test('sets the tooltip visibility to hidden', () => {
       const tooltip = document.createElement('div');
       setTooltipInvisible(tooltip);
 
@@ -39,7 +39,7 @@ describe('tooltipUtil', () => {
   });
 
   describe('setTooltipVisible', () => {
-    it('sets the tooltip visibility to visible', () => {
+    test('sets the tooltip visibility to visible', () => {
       const tooltip = document.createElement('div');
       tooltip.style.visibility = 'hidden';
       setTooltipVisible(tooltip);
@@ -50,7 +50,7 @@ describe('tooltipUtil', () => {
   });
 
   describe('clearTooltip', () => {
-    it('clears the tooltip innerHTML', () => {
+    test('clears the tooltip innerHTML', () => {
       const tooltip = document.createElement('div');
       tooltip.innerHTML = '<p>Test</p>';
       clearTooltip(tooltip);
@@ -60,7 +60,7 @@ describe('tooltipUtil', () => {
   });
 
   describe('renderTooltip', () => {
-    it('renders the tooltip with the given template and props', () => {
+    test('renders the tooltip with the given template and props', () => {
       const tooltip = document.createElement('div');
       const template = '<p>{{name}}</p>';
       const props = { name: 'Test' };
@@ -71,7 +71,7 @@ describe('tooltipUtil', () => {
   });
 
   describe('positionTooltip', () => {
-    it('positions the tooltip correctly within viewport bounds', () => {
+    test('positions the tooltip correctly within viewport bounds', () => {
       const tooltip = document.createElement('div');
       tooltip.style.position = 'fixed';
       tooltip.style.width = '100px';
@@ -105,7 +105,7 @@ describe('tooltipUtil', () => {
   });
 
   describe('getTemplateProps', () => {
-    it('returns the feature properties excluding ignored properties', () => {
+    test('returns the feature properties excluding ignored properties', () => {
       const feature = {
         getProperties: () => ({
           name: 'Test',
