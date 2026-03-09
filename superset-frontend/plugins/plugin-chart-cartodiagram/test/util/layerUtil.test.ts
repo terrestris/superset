@@ -61,7 +61,7 @@ describe('layerUtil', () => {
           },
           {
             kind: 'Fill',
-            color: fillColor
+            color: fillColor,
           },
         ],
       },
@@ -194,7 +194,7 @@ describe('layerUtil', () => {
   });
 
   describe('getSelectedFeatures', () => {
-    it('returns the selected features from the data layers', () => {
+    test('returns the selected features from the data layers', () => {
       const selectedFeatures = getSelectedFeatures(
         [dataLayer],
         {

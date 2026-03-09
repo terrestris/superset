@@ -587,7 +587,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
         },
       );
 
-      const {target} = evt.originalEvent;
+      const { target } = evt.originalEvent;
       if (target instanceof HTMLElement) {
         target.style.cursor = hit ? 'pointer' : 'default';
       }
