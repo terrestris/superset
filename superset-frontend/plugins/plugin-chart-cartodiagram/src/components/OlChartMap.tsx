@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import Point from 'ol/geom/Point';
@@ -29,6 +29,7 @@ import { debounce } from 'lodash';
 import { fitMapToData } from '../util/mapUtil';
 import { ChartLayer } from './ChartLayer';
 import { createLayer } from '../util/layerUtil';
+import { GeometryFormat } from '../constants';
 import {
   ChartConfig,
   LayerConf,
@@ -64,12 +65,46 @@ export const OlChartMap = (props: OlChartMapProps) => {
     chartBackgroundBorderRadius,
     setControlValue,
     theme,
+    timeColumn,
+    timeFilter,
+    geomFormat,
   } = props;
 
   const locale = useSelector((state: any) => state?.common?.locale);
 
-  const [currentChartConfigs, setCurrentChartConfigs] =
-    useState<ChartConfig>(chartConfigs);
+  const filteredChartConfigs = useMemo<ChartConfig>(() => {
+    if (!timeColumn || timeFilter === undefined) {
+      return chartConfigs;
+    }
+
+    if (
+      geomFormat === GeometryFormat.WKB ||
+      geomFormat === GeometryFormat.WKT
+    ) {
+      return {
+        ...chartConfigs,
+        features: chartConfigs.features.filter(
+          f => f.properties && f.properties[timeColumn] === timeFilter,
+        ),
+      };
+    }
+
+    const filtered = {
+      ...chartConfigs,
+      features: chartConfigs.features.filter(feature => {
+        const timeValue = feature.properties?.timestamp;
+        if (!timeValue) {
+          return false;
+        }
+        const normalizedTimeValue = Number(timeValue);
+        const normalizedTimeFilter = Number(timeFilter);
+        return normalizedTimeValue === normalizedTimeFilter;
+      }),
+    };
+
+    return filtered;
+  }, [chartConfigs, timeColumn, timeFilter]);
+
   const [currentMapView, setCurrentMapView] = useState<MapViewConfigs>(mapView);
   const [currentMapMaxExtent, setCurrentMapMaxExtent] =
     useState<MapMaxExtentConfigs>(mapMaxExtent);
@@ -87,24 +122,6 @@ export const OlChartMap = (props: OlChartMapProps) => {
   useEffect(() => {
     olMap.updateSize();
   }, [olMap, width, height]);
-
-  /**
-   * The prop chartConfigs will always be created on the fly,
-   * therefore the shallow comparison of the effect hooks will
-   * always trigger. In this hook, we make a 'deep comparison'
-   * between the incoming prop and the state. Only if the objects
-   * differ will we set the state to the new object. All other
-   * effect hooks that depend on chartConfigs should now depend
-   * on currentChartConfigs instead.
-   */
-  useEffect(() => {
-    setCurrentChartConfigs(oldCurrentChartConfigs => {
-      if (isChartConfigEqual(chartConfigs, oldCurrentChartConfigs)) {
-        return oldCurrentChartConfigs;
-      }
-      return chartConfigs;
-    });
-  }, [chartConfigs]);
 
   /**
    * The prop mapView will always be created on the fly,
@@ -410,7 +427,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     olMap,
     setControlValue,
     currentMapView,
-    currentChartConfigs,
+    filteredChartConfigs,
     currentMapMaxExtent,
   ]);
 
@@ -544,7 +561,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
 
       const newChartLayer = new ChartLayer({
         name: CHART_LAYER_NAME,
-        chartConfigs: currentChartConfigs,
+        chartConfigs: filteredChartConfigs,
         chartVizType,
         chartSizeValues: chartSize.values,
         chartBackgroundCssColor: cssColor,
@@ -562,8 +579,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
         chartLayer.setChartVizType(chartVizType, true);
         recreateCharts = true;
       }
-      if (!isChartConfigEqual(currentChartConfigs, chartLayer.chartConfigs)) {
-        chartLayer.setChartConfig(currentChartConfigs, true);
+      if (!isChartConfigEqual(filteredChartConfigs, chartLayer.chartConfigs)) {
+        chartLayer.setChartConfig(filteredChartConfigs, true);
         recreateCharts = true;
       }
       // Only the last setter triggers rerendering of charts
@@ -581,7 +598,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
   }, [
     olMap,
     theme,
-    currentChartConfigs,
+    filteredChartConfigs,
     chartVizType,
     chartSize.values,
     chartBackgroundColor,
