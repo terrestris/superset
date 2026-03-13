@@ -18,6 +18,7 @@
  */
 import { DataRecord, TimeseriesDataRecord } from '@superset-ui/core';
 import { SupersetTheme } from '@apache-superset/core/theme';
+import { ControlComponentProps } from '@superset-ui/chart-controls';
 import { RenderFunction } from 'ol/layer/Layer';
 import { Extent } from 'ol/extent';
 import Source from 'ol/source/Source';
@@ -25,6 +26,7 @@ import { Coordinate } from 'ol/coordinate';
 import { Map } from 'ol';
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { Style } from 'geostyler-style';
+import { GeometryFormat } from './constants';
 
 export interface CartodiagramPluginStylesProps {
   height: number;
@@ -41,14 +43,38 @@ export type ChartConfig = FeatureCollection<
   ChartConfigFeature['properties']
 >;
 
+export type MapMaxExtentConfigs = {
+  extentMode: 'NONE' | 'CUSTOM';
+  maxX: number;
+  maxY: number;
+  minX: number;
+  minY: number;
+  fixedMaxX: number | undefined;
+  fixedMaxY: number | undefined;
+  fixedMinX: number | undefined;
+  fixedMinY: number | undefined;
+};
+
+export type MapMaxExtentConfigsControlProps =
+  ControlComponentProps<MapMaxExtentConfigs>;
+
+export interface MapMaxExtentTagProps {
+  value: MapMaxExtentConfigs;
+  className?: string;
+}
+
 interface CartodiagramPluginCustomizeProps {
   geomColumn: string;
+  geomFormat: GeometryFormat;
   selectedChart: string;
   chartConfigs: ChartConfig;
   chartSize: ZoomConfigs;
   chartVizType: string;
   layerConfigs: LayerConf[];
   mapView: MapViewConfigs;
+  maxZoom: number;
+  minZoom: number;
+  mapMaxExtent: MapMaxExtentConfigs;
   chartBackgroundColor: {
     r: number;
     g: number;
@@ -57,6 +83,7 @@ interface CartodiagramPluginCustomizeProps {
   };
   chartBackgroundBorderRadius: number;
   setControlValue: Function;
+  mapExtentPadding?: number | undefined;
 }
 
 export type CartodiagramPluginProps = CartodiagramPluginStylesProps &
@@ -206,4 +233,8 @@ export type ChartWrapperProps = {
   height: number;
   chartConfig: ChartConfigFeature;
   locale: string;
+};
+
+export type MapProjections = {
+  [key: string]: string;
 };

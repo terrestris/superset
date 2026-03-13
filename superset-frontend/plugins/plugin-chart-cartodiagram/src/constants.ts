@@ -17,23 +17,12 @@
  * under the License.
  */
 
-/**
- * Jest configuration for @storybook/test-runner
- *
- * This extends the default test-runner config with custom timeouts
- * to handle slow story rendering in CI environments.
- */
-const { getJestConfig } = require('@storybook/test-runner');
-const testRunnerConfig = getJestConfig();
+export enum GeometryFormat {
+  GEOJSON = 'GEOJSON',
+  WKB = 'WKB',
+  WKT = 'WKT',
+}
 
-module.exports = {
-  ...testRunnerConfig,
-  // Increase timeout from default 15s to 60s for CI environments
-  testTimeout: 60000,
-};
-
-export const getMapDefaultLayers = () => {
-  const bootstrapData = getBootstrapData();
-  const mapDefaultLayers = bootstrapData?.common?.conf?.MAP_DEFAULT_LAYERS;
-  return mapDefaultLayers ?? [];
-};
+// copy of
+// superset-frontend/plugins/plugin-chart-echarts/src/constants.ts
+export const NULL_STRING = '<NULL>';

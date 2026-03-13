@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import Style from 'ol/style/Style';
 import { WfsLayerConf } from '../../src/types';
 import {
   createLayer,
@@ -73,11 +74,16 @@ describe('layerUtil', () => {
       const wfsLayer = await createWfsLayer(wfsLayerConf);
 
       const style = wfsLayer!.getStyle();
-      // @ts-expect-error
-      expect(style!.length).toEqual(3);
+      expect(Array.isArray(style)).toBe(true);
+      if (!Array.isArray(style)) {
+        return;
+      }
+      const styleArray = style.filter(
+        (styleEntry): styleEntry is Style => styleEntry instanceof Style,
+      );
+      expect(styleArray).toHaveLength(3);
 
-      // @ts-expect-error upgrade `ol` package for better type of StyleLike type.
-      const colorAtLayer = style![2].getFill().getColor();
+      const colorAtLayer = styleArray[2].getFill()?.getColor();
       expect(colorAtLayer).toEqual(fillColor);
     });
   });
