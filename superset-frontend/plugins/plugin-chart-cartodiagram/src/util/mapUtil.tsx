@@ -135,7 +135,8 @@ export const dataRecordsToOlFeatures = (
   geomColumn: string,
   geomFormat: GeometryFormat.WKB | GeometryFormat.WKT,
 ) => {
-  const format: WKB | WKT = geomFormat === GeometryFormat.WKT ? new WKT() : new WKB();
+  const format: WKB | WKT =
+    geomFormat === GeometryFormat.WKT ? new WKT() : new WKB();
   const features: Feature[] = [];
   const defaultOpts: any = { featureProjection: 'EPSG:3857' };
   const defaultWktOpts: any = {

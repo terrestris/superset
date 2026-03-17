@@ -17,7 +17,7 @@
  * under the License.
  */
 import { DataRecord } from '@superset-ui/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Feature, FeatureCollection } from 'geojson';
 import { debounce, xor, uniq } from 'lodash';
@@ -33,7 +33,6 @@ import {
   dataRecordsToOlFeatures,
   fitMapToFeatures,
   fitMapToData,
-  fitMapToDataRecords,
 } from '../../util/mapUtil';
 import {
   createLayer,
@@ -109,6 +108,11 @@ export const OlChartMap = (props: OlChartMapProps) => {
     return data;
   }, [data, geomColumn, geomFormat]);
 
+  /**
+   * Use OL features for WKB/WKT-specific flows that need native OpenLayers
+   * features repeatedly, such as extent fitting and vector source updates.
+   * Keep using processedData for filtering and GeoJSON-backed logic.
+   */
   const dataFeatures = useMemo(() => {
     if (
       geomFormat === GeometryFormat.WKB ||
@@ -218,21 +222,11 @@ export const OlChartMap = (props: OlChartMapProps) => {
           geomFormat === GeometryFormat.WKB ||
           geomFormat === GeometryFormat.WKT
         ) {
-          if (dataFeatures) {
-            fitMapToFeatures(
-              olMap,
-              dataFeatures,
-              getMapExtentPadding(mapExtentPadding),
-            );
-          } else {
-            fitMapToDataRecords(
-              olMap,
-              processedData as DataRecord[],
-              geomColumn,
-              geomFormat,
-              getMapExtentPadding(mapExtentPadding),
-            );
-          }
+          fitMapToFeatures(
+            olMap,
+            dataFeatures || [],
+            getMapExtentPadding(mapExtentPadding),
+          );
         } else {
           fitMapToData(
             olMap,
@@ -334,21 +328,11 @@ export const OlChartMap = (props: OlChartMapProps) => {
         geomFormat === GeometryFormat.WKB ||
         geomFormat === GeometryFormat.WKT
       ) {
-        if (dataFeatures) {
-          fitMapToFeatures(
-            olMap,
-            dataFeatures,
-            getMapExtentPadding(mapExtentPadding),
-          );
-        } else {
-          fitMapToDataRecords(
-            olMap,
-            data,
-            geomColumn,
-            geomFormat,
-            getMapExtentPadding(mapExtentPadding),
-          );
-        }
+        fitMapToFeatures(
+          olMap,
+          dataFeatures || [],
+          getMapExtentPadding(mapExtentPadding),
+        );
       } else {
         fitMapToData(
           olMap,
@@ -469,7 +453,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
       source?.clear();
       source?.addFeatures(features);
     });
-  }, [currentDataLayers, filteredData, filteredFeatures, geomColumn, geomFormat]);
+  }, [currentDataLayers, filteredData, filteredFeatures, geomFormat]);
 
   useEffect(() => {
     removeSelectionLayer(olMap);
