@@ -42,6 +42,13 @@ export interface ThematicMapPluginStylesProps {
   theme: SupersetTheme;
 }
 
+type RgbaColor = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
+
 interface ThematicMapPluginCustomizeProps {
   emitCrossFilters: boolean;
   filterState: FilterState;
@@ -63,6 +70,12 @@ interface ThematicMapPluginCustomizeProps {
   tooltipTemplate: string;
   showLegend: boolean;
   showTooltip: boolean;
+  showAreaMask: boolean;
+  areaMaskOpacity: number;
+  areaMaskColor: RgbaColor;
+  mergePolygonEntities: boolean;
+  mergedPolygonStrokeWidth: number;
+  mergedPolygonStrokeColor: RgbaColor;
 }
 
 export type ThematicMapPluginProps = ThematicMapPluginStylesProps &

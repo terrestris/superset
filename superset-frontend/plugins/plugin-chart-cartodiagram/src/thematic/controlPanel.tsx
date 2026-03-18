@@ -321,6 +321,100 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'show_area_mask',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Area Mask'),
+              renderTrigger: true,
+              default: false,
+              description: t(
+                'Fade the area outside the currently displayed polygon perimeter.',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_mask_opacity',
+            config: {
+              type: 'SliderControl',
+              label: t('Area Mask Opacity'),
+              renderTrigger: true,
+              default: 75,
+              min: 0,
+              max: 100,
+              step: 5,
+              description: t('Opacity of the area mask overlay.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_mask_color',
+            config: {
+              type: 'ColorPickerControl',
+              label: t('Area Mask Color'),
+              renderTrigger: true,
+              default: { r: 255, g: 255, b: 255, a: 1 },
+              description: t('Fill color used for the area mask overlay.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'merge_polygon_entities',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Merge Polygon Entities'),
+              renderTrigger: true,
+              default: false,
+              description: t(
+                'Display filtered polygon entities as merged perimeters instead of keeping their internal boundaries.',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'merged_polygon_stroke_width',
+            config: {
+              type: 'SliderControl',
+              label: t('Merged Polygon Stroke Width'),
+              renderTrigger: true,
+              default: 2,
+              min: 1,
+              max: 10,
+              step: 1,
+              description: t(
+                'Stroke width used for merged polygon perimeters.',
+              ),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.merge_polygon_entities?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'merged_polygon_stroke_color',
+            config: {
+              type: 'ColorPickerControl',
+              label: t('Merged Polygon Stroke Color'),
+              renderTrigger: true,
+              default: { r: 0, g: 0, b: 0, a: 1 },
+              description: t(
+                'Stroke color used for merged polygon perimeters.',
+              ),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.merge_polygon_entities?.value),
+            },
+          },
+        ],
+        [
+          {
             name: 'tooltip_template',
             config: {
               type: 'TextAreaControl',

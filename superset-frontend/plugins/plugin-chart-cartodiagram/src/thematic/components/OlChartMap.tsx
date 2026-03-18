@@ -35,9 +35,12 @@ import {
   fitMapToData,
 } from '../../util/mapUtil';
 import {
+  createMaskLayer,
   createLayer,
+  createPresentationLayer,
   createSelectionLayer,
   getSelectedFeatures,
+  removeManagedLayer,
   removeSelectionLayer,
   setSelectionBackgroundOpacity,
 } from '../../util/layerUtil';
@@ -48,10 +51,17 @@ import { StyledFeatureTooltip } from './FeatureTooltip';
 import {
   FULL_OPACITY,
   GeometryFormat,
+  MASK_LAYER_NAME,
+  PRESENTATION_LAYER_NAME,
   SELECTION_BACKGROUND_OPACITY,
 } from '../../constants';
 import { Legend } from './Legend';
-import { getMapExtentPadding } from '../../util/geometryUtil';
+import {
+  areFeaturesPolygonal,
+  createMaskFeature,
+  getMapExtentPadding,
+  mergePolygonFeatures,
+} from '../../util/geometryUtil';
 
 export const OlChartMap = (props: OlChartMapProps) => {
   const {
@@ -79,6 +89,12 @@ export const OlChartMap = (props: OlChartMapProps) => {
     tooltipTemplate,
     showLegend,
     showTooltip,
+    showAreaMask,
+    areaMaskOpacity,
+    areaMaskColor,
+    mergePolygonEntities,
+    mergedPolygonStrokeWidth,
+    mergedPolygonStrokeColor,
   } = props;
 
   const [currentMapView, setCurrentMapView] = useState<MapViewConfigs>(mapView);
@@ -402,6 +418,30 @@ export const OlChartMap = (props: OlChartMapProps) => {
     return undefined;
   }, [filteredData, processedData, dataFeatures, geomColumn, geomFormat]);
 
+  const visibleFeatures = useMemo(() => {
+    if (
+      geomFormat === GeometryFormat.WKB ||
+      geomFormat === GeometryFormat.WKT
+    ) {
+      return (filteredFeatures || []) as OlFeature[];
+    }
+    return new GeoJSON().readFeatures(filteredData, {
+      featureProjection: 'EPSG:3857',
+    }) as OlFeature[];
+  }, [filteredData, filteredFeatures, geomFormat]);
+
+  const mergedVisibleFeatures = useMemo(() => {
+    if (!mergePolygonEntities || !areFeaturesPolygonal(visibleFeatures)) {
+      return undefined;
+    }
+    return mergePolygonFeatures(visibleFeatures) as OlFeature[];
+  }, [mergePolygonEntities, visibleFeatures]);
+
+  const usesMergedPresentation =
+    mergePolygonEntities &&
+    areFeaturesPolygonal(visibleFeatures) &&
+    Boolean(mergedVisibleFeatures?.length);
+
   /**
    * Update layers
    */
@@ -439,21 +479,82 @@ export const OlChartMap = (props: OlChartMapProps) => {
   useEffect(() => {
     currentDataLayers?.forEach(dataLayer => {
       const source = dataLayer.getSource();
-      let features: OlFeature[];
-      if (
-        geomFormat === GeometryFormat.WKB ||
-        geomFormat === GeometryFormat.WKT
-      ) {
-        features = (filteredFeatures || []) as OlFeature[];
-      } else {
-        features = new GeoJSON().readFeatures(filteredData, {
-          featureProjection: 'EPSG:3857',
-        });
-      }
       source?.clear();
-      source?.addFeatures(features);
+      source?.addFeatures(visibleFeatures);
     });
-  }, [currentDataLayers, filteredData, filteredFeatures, geomFormat]);
+  }, [currentDataLayers, visibleFeatures]);
+
+  useEffect(() => {
+    removeManagedLayer(olMap, PRESENTATION_LAYER_NAME);
+
+    if (
+      !currentDataLayers ||
+      currentDataLayers.length === 0 ||
+      !usesMergedPresentation ||
+      !mergedVisibleFeatures
+    ) {
+      return undefined;
+    }
+
+    const presentationLayer = createPresentationLayer(
+      mergedVisibleFeatures,
+      mergedPolygonStrokeColor,
+      mergedPolygonStrokeWidth,
+    );
+    olMap.addLayer(presentationLayer);
+
+    return () => {
+      removeManagedLayer(olMap, PRESENTATION_LAYER_NAME);
+    };
+  }, [
+    currentDataLayers,
+    mergedPolygonStrokeColor,
+    mergedPolygonStrokeWidth,
+    mergedVisibleFeatures,
+    olMap,
+    usesMergedPresentation,
+  ]);
+
+  useEffect(() => {
+    removeManagedLayer(olMap, MASK_LAYER_NAME);
+
+    if (!showAreaMask || !areFeaturesPolygonal(visibleFeatures)) {
+      return undefined;
+    }
+
+    const focusFeatures =
+      usesMergedPresentation && mergedVisibleFeatures
+        ? mergedVisibleFeatures
+        : visibleFeatures;
+    const projectionExtent = olMap.getView().getProjection().getExtent();
+    if (!projectionExtent) {
+      return undefined;
+    }
+
+    const maskFeature = createMaskFeature(focusFeatures, projectionExtent);
+    if (!maskFeature) {
+      return undefined;
+    }
+
+    const maskLayer = createMaskLayer(
+      maskFeature,
+      areaMaskColor,
+      areaMaskOpacity / 100,
+    );
+    olMap.addLayer(maskLayer);
+
+    return () => {
+      removeManagedLayer(olMap, MASK_LAYER_NAME);
+    };
+  }, [
+    mergedVisibleFeatures,
+    areaMaskOpacity,
+    areaMaskColor,
+    olMap,
+    showAreaMask,
+    usesMergedPresentation,
+    visibleFeatures,
+  ]);
 
   useEffect(() => {
     removeSelectionLayer(olMap);
@@ -467,21 +568,30 @@ export const OlChartMap = (props: OlChartMapProps) => {
       filterState,
       crossFilterColumn,
     );
+    const baseOpacity = usesMergedPresentation ? 0.01 : FULL_OPACITY;
 
     if (filterState.value !== null && filterState.value !== undefined) {
-      const selectionLayer = createSelectionLayer(
-        currentDataLayers,
-        selectedFeatures,
-      );
-      olMap.addLayer(selectionLayer);
+      if (!usesMergedPresentation) {
+        const selectionLayer = createSelectionLayer(
+          currentDataLayers,
+          selectedFeatures,
+        );
+        olMap.addLayer(selectionLayer);
+      }
       setSelectionBackgroundOpacity(
         currentDataLayers,
-        SELECTION_BACKGROUND_OPACITY,
+        usesMergedPresentation ? 0.01 : SELECTION_BACKGROUND_OPACITY,
       );
     } else {
-      setSelectionBackgroundOpacity(currentDataLayers, FULL_OPACITY);
+      setSelectionBackgroundOpacity(currentDataLayers, baseOpacity);
     }
-  }, [filterState, currentDataLayers, olMap, filteredData, crossFilterColumn]);
+  }, [
+    crossFilterColumn,
+    currentDataLayers,
+    filterState,
+    olMap,
+    usesMergedPresentation,
+  ]);
 
   useEffect(() => {
     const { extentMode, fixedMaxX, fixedMaxY, fixedMinX, fixedMinY } =
