@@ -39,6 +39,10 @@ import {
   dataToFeatureCollection,
 } from '../util/dataUtil';
 import { MapViewConfigs } from '../types';
+import {
+  DEFAULT_MASK_COLOR,
+  DEFAULT_MERGED_STROKE_COLOR,
+} from '../constants';
 
 const columnsControl: typeof sharedControls.groupby = {
   ...sharedControls.groupby,
@@ -357,7 +361,7 @@ const config: ControlPanelConfig = {
               type: 'ColorPickerControl',
               label: t('Area Mask Color'),
               renderTrigger: true,
-              default: { r: 255, g: 255, b: 255, a: 1 },
+              default: DEFAULT_MASK_COLOR,
               description: t('Fill color used for the area mask overlay.'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.show_area_mask?.value),
@@ -404,7 +408,7 @@ const config: ControlPanelConfig = {
               type: 'ColorPickerControl',
               label: t('Merged Polygon Stroke Color'),
               renderTrigger: true,
-              default: { r: 0, g: 0, b: 0, a: 1 },
+              default: DEFAULT_MERGED_STROKE_COLOR,
               description: t(
                 'Stroke color used for merged polygon perimeters.',
               ),

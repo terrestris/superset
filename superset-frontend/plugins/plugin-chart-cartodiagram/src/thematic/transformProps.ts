@@ -17,10 +17,12 @@
  * under the License.
  */
 import { ChartProps } from '@superset-ui/core';
+import {
+  DEFAULT_MASK_COLOR,
+  DEFAULT_MERGED_STROKE_COLOR,
+} from '../constants';
 
 export default function transformProps(chartProps: ChartProps) {
-  const defaultMaskColor = { r: 255, g: 255, b: 255, a: 1 };
-  const defaultMergedStrokeColor = { r: 0, g: 0, b: 0, a: 1 };
   /**
    * This function is called after a successful response has been
    * received from the chart data endpoint, and is used to transform
@@ -78,10 +80,10 @@ export default function transformProps(chartProps: ChartProps) {
     showTooltip,
     showAreaMask,
     areaMaskOpacity,
-    areaMaskColor = defaultMaskColor,
+    areaMaskColor = DEFAULT_MASK_COLOR,
     mergePolygonEntities,
     mergedPolygonStrokeWidth = 2,
-    mergedPolygonStrokeColor = defaultMergedStrokeColor,
+    mergedPolygonStrokeColor = DEFAULT_MERGED_STROKE_COLOR,
     timeColumn,
     tooltipTemplate,
   } = formData;
