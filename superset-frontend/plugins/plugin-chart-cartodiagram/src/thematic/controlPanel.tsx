@@ -382,7 +382,10 @@ const config: ControlPanelConfig = {
                 const currentColumns: string[] = state.controls.columns
                   ?.value as string[];
                 return {
-                  choices: (state.datasource?.columns as QueryColumn[])
+                  choices: (
+                    (state.datasource?.columns as QueryColumn[] | undefined) ??
+                    []
+                  )
                     .filter(
                       c => currentColumns.includes(c.column_name) && c.is_dttm,
                     )

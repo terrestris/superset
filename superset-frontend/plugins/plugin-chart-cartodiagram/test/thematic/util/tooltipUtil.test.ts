@@ -126,7 +126,7 @@ describe('tooltipUtil', () => {
       expect(props).toEqual({ name: 'Test', value: 42 });
     });
 
-    it('resolves the verbose names for feature properties', () => {
+    test('resolves the verbose names for feature properties', () => {
       const data = {
         name: 'Test',
         value: 42,
