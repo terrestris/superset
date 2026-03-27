@@ -22,7 +22,6 @@ import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
 } from '@superset-ui/chart-controls';
-
 import { selectedChartMutator } from '../util/controlPanelUtil';
 
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';

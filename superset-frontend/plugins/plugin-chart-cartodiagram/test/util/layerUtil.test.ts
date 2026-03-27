@@ -17,16 +17,96 @@
  * under the License.
  */
 
-import Style from 'ol/style/Style';
-import { WfsLayerConf } from '../../src/types';
+import { Icon, Style } from 'ol/style';
+import { Style as GeoStylerStyle } from 'geostyler-style';
+import Map from 'ol/Map';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import OlStyle from 'ol/style/Style';
+import Fill from 'ol/style/Fill';
+import Feature from 'ol/Feature';
+import { DataLayerConf, WfsLayerConf } from '../../src/types';
 import {
+  createDataLayer,
   createLayer,
+  createSelectionLayer,
   createWfsLayer,
   createWmsLayer,
   createXyzLayer,
+  getSelectedFeatures,
+  removeSelectionLayer,
+  setSelectionBackgroundOpacity,
 } from '../../src/util/layerUtil';
+import { LAYER_NAME_PROP, SELECTION_LAYER_NAME } from '../../src/constants';
 
 describe('layerUtil', () => {
+  const circleColor = '#123456';
+  const fillColor = '#ff0000';
+
+  const layerStyle: GeoStylerStyle = {
+    name: 'Default Style',
+    rules: [
+      {
+        name: 'Default Rule',
+        symbolizers: [
+          {
+            kind: 'Line',
+            color: '#000000',
+            width: 2,
+          },
+          {
+            kind: 'Mark',
+            wellKnownName: 'circle',
+            color: circleColor,
+          },
+          {
+            kind: 'Fill',
+            color: fillColor,
+          },
+        ],
+      },
+    ],
+  };
+
+  const wfsLayerConf: WfsLayerConf = {
+    title: 'osm:osm-fuel',
+    url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
+    type: 'WFS',
+    version: '2.0.2',
+    typeName: 'osm:osm-fuel',
+    style: layerStyle,
+  };
+
+  const dataLayerConf: DataLayerConf = {
+    title: 'osm:osm-fuel',
+    type: 'DATA',
+    style: layerStyle,
+  };
+
+  const map = new Map();
+  const dataLayerStyle = new OlStyle({
+    fill: new Fill({
+      color: '#aabbcc',
+    }),
+  });
+
+  const matchingFeature = new Feature();
+  matchingFeature.set('foo', 'bar');
+  const nonMatchingFeature = new Feature();
+  nonMatchingFeature.set('foo', 'baz');
+  const dataLayer = new VectorLayer({
+    source: new VectorSource({
+      features: [matchingFeature, nonMatchingFeature],
+    }),
+    style: dataLayerStyle,
+  });
+
+  const selectionLayer = createSelectionLayer([dataLayer], []);
+
+  beforeEach(() => {
+    map.setLayers([dataLayer, selectionLayer]);
+  });
+
   describe('createWmsLayer', () => {
     test('exists', () => {
       // function is trivial
@@ -36,41 +116,6 @@ describe('layerUtil', () => {
 
   describe('createWfsLayer', () => {
     test('properly applies style', async () => {
-      const colorToExpect = '#123456';
-      const fillColor = '#ff0000';
-
-      const wfsLayerConf: WfsLayerConf = {
-        title: 'osm:osm-fuel',
-        url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
-        type: 'WFS',
-        version: '2.0.2',
-        typeName: 'osm:osm-fuel',
-        style: {
-          name: 'Default Style',
-          rules: [
-            {
-              name: 'Default Rule',
-              symbolizers: [
-                {
-                  kind: 'Line',
-                  color: '#000000',
-                  width: 2,
-                },
-                {
-                  kind: 'Mark',
-                  wellKnownName: 'circle',
-                  color: colorToExpect,
-                },
-                {
-                  kind: 'Fill',
-                  color: fillColor,
-                },
-              ],
-            },
-          ],
-        },
-      };
-
       const wfsLayer = await createWfsLayer(wfsLayerConf);
 
       const style = wfsLayer!.getStyle();
@@ -95,9 +140,103 @@ describe('layerUtil', () => {
     });
   });
 
+  describe('createDataLayer', () => {
+    test('properly applies style', async () => {
+      const dataLayer = await createDataLayer(dataLayerConf);
+      const style = dataLayer!.getStyle();
+      expect(Array.isArray(style)).toBe(true);
+      if (!Array.isArray(style)) {
+        return;
+      }
+      const styleArray = style.filter(
+        (styleEntry): styleEntry is Style => styleEntry instanceof Style,
+      );
+      expect(styleArray).toHaveLength(3);
+
+      const iconSourcesAtLayer = styleArray
+        .map(styleEntry => styleEntry.getImage())
+        .filter((image): image is Icon => image instanceof Icon)
+        .map(icon => icon.getSrc())
+        .filter((src): src is string => typeof src === 'string')
+        .map(src => decodeURIComponent(src).toLowerCase());
+
+      expect(iconSourcesAtLayer.length).toBeGreaterThan(0);
+      expect(iconSourcesAtLayer.some(src => src.includes(circleColor))).toBe(
+        true,
+      );
+    });
+  });
+
   describe('createLayer', () => {
     test('exists', () => {
       expect(createLayer).toBeDefined();
+    });
+  });
+
+  describe('removeSelectionLayer', () => {
+    test('removes the selection layer from the map', () => {
+      expect(map.getLayers().getArray()).toHaveLength(2);
+      removeSelectionLayer(map);
+      const selectionLayers = map
+        .getLayers()
+        .getArray()
+        .filter(l => l.get(LAYER_NAME_PROP) === SELECTION_LAYER_NAME);
+      expect(map.getLayers().getArray()).toHaveLength(1);
+      expect(selectionLayers).toHaveLength(0);
+    });
+
+    test('does not remove other layers', () => {
+      expect(map.getLayers().getArray()).toHaveLength(2);
+      removeSelectionLayer(map);
+      expect(map.getLayers().getArray()).toHaveLength(1);
+      expect(map.getLayers().getArray()[0]).toEqual(dataLayer);
+    });
+  });
+
+  describe('getSelectedFeatures', () => {
+    test('returns the selected features from the data layers', () => {
+      const selectedFeatures = getSelectedFeatures(
+        [dataLayer],
+        {
+          selectedValues: ['bar'],
+        },
+        'foo',
+      );
+      expect(selectedFeatures).toHaveLength(1);
+      expect(selectedFeatures[0]).toEqual(matchingFeature);
+    });
+  });
+
+  describe('setSelectionBackgroundOopacity', () => {
+    test('sets the opacity for the layers', () => {
+      setSelectionBackgroundOpacity([dataLayer], 0.5);
+      const opacity = dataLayer.getOpacity();
+      expect(opacity).toEqual(0.5);
+    });
+
+    afterEach(() => {
+      dataLayer.setOpacity(1); // Reset opacity after each test
+    });
+  });
+
+  describe('createSelectionLayer', () => {
+    test('creates a selection layer', () => {
+      const feature1 = new Feature();
+      feature1.set('id', 1);
+      const feature2 = new Feature();
+      feature2.set('id', 2);
+      const features = [feature1, feature2];
+      const selectionLayer = createSelectionLayer([dataLayer], features);
+      expect(selectionLayer).toBeInstanceOf(VectorLayer);
+      expect(selectionLayer.getSource()!.getFeatures()).toEqual(features);
+      expect(selectionLayer.get(LAYER_NAME_PROP)).toEqual(SELECTION_LAYER_NAME);
+    });
+
+    test('applies the style of the first data layer', () => {
+      const features: Feature[] = [];
+      const selectionLayer = createSelectionLayer([dataLayer], features);
+      const style = selectionLayer.getStyle();
+      expect(style).toEqual(dataLayer.getStyle());
     });
   });
 });
