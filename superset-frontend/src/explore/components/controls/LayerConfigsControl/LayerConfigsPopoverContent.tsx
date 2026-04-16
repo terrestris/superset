@@ -216,6 +216,14 @@ export const LayerConfigsPopoverContent: FC<
     [appLocale],
   );
 
+  const geostylerComposition = useMemo(() => {
+    const appContainer = document.getElementById('app');
+    const { common } = JSON.parse(
+      appContainer?.getAttribute('data-bootstrap') || '{}',
+    );
+    return common.conf?.MAP_GEOSTYLER_COMPOSITION ?? {};
+  }, []);
+
   const serviceVersions = getServiceVersions();
 
   // This is needed to force mounting the form every time
@@ -417,9 +425,9 @@ export const LayerConfigsPopoverContent: FC<
       createGeoStylerContext(
         geostylerLocale,
         geostylerData,
-        includedGeometryTypes,
+        geostylerComposition,
       ),
-    [geostylerLocale, geostylerData, includedGeometryTypes],
+    [geostylerLocale, geostylerData, geostylerComposition],
   );
 
   useEffect(() => {

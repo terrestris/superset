@@ -1900,6 +1900,42 @@ MAP_DEFAULT_LAYERS = [
     },
 ]
 
+# Configuration for setting fields in the map styling components.
+# Here, it is possible to hide fields that are not relevant for your use case,
+# for example if you don't want to use the graphic stroke and fill options in
+# the LineEditor, you can set their visibility to False here.
+#
+# For details see:
+# https://github.com/geostyler/geostyler/blob/main/src/context/GeoStylerContext/GeoStylerContext.tsx#L36
+MAP_GEOSTYLER_COMPOSITION = {
+    "LineEditor": {
+        "perpendicularOffsetField": {
+            "visibility": False,
+        },
+        "graphicFillField": {
+            "visibility": False,
+        },
+        "graphicStrokeField": {
+            "visibility": False,
+        },
+    },
+    "Editor": {
+        "rasterEditor": {
+            "visibility": False,
+        },
+    },
+    "FillEditor": {
+        "opacityField": {
+            "visibility": False,
+        },
+    },
+    "WellKnownNameEditor": {
+        "opacityField": {
+            "visibility": False,
+        },
+    },
+}
+
 # Extra related query filters make it possible to limit which objects are shown
 # in the UI. For examples, to only show "admin" or users starting with the letter "b" in
 # the "Owners" dropdowns, you could add the following in your config:

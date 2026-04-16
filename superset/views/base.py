@@ -109,6 +109,7 @@ FRONTEND_CONF_KEYS = (
     "SQLLAB_QUERY_RESULT_TIMEOUT",
     "MAP_PROJECTIONS",
     "MAP_DEFAULT_LAYERS",
+    "MAP_GEOSTYLER_COMPOSITION",
 )
 
 logger = logging.getLogger(__name__)
