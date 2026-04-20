@@ -89,64 +89,18 @@ export const colTypesToGeoStylerData = (
  */
 export const createGeoStylerContext = (
   gsLocale: GeoStylerLocale,
-  data?: VectorData,
-  geomTypes?: GeoJsonGeometryTypes[],
+  data: VectorData | undefined,
+  composition: GeoStylerContextInterface['composition'],
 ) => {
   const context: GeoStylerContextInterface = {
     locale: gsLocale,
-    data,
-    composition: {
-      LineEditor: {
-        perpendicularOffsetField: {
-          visibility: false,
-        },
-        graphicFillField: {
-          visibility: false,
-        },
-        graphicStrokeField: {
-          visibility: false,
-        },
-      },
-      Editor: {
-        rasterEditor: {
-          visibility: false,
-        },
-      },
-      FillEditor: {
-        opacityField: {
-          visibility: false,
-        },
-      },
-      WellKnownNameEditor: {
-        opacityField: {
-          visibility: false,
-        },
-      },
-    },
+    composition: composition ?? {},
   };
 
-  if (!geomTypes?.includes('Polygon') && !geomTypes?.includes('MultiPolygon')) {
-    context.composition!.Editor!.fillEditor = {
-      visibility: false,
-    };
-    if (
-      !geomTypes?.includes('LineString') &&
-      !geomTypes?.includes('MultiLineString')
-    ) {
-      context.composition!.Editor!.lineEditor = {
-        visibility: false,
-      };
-    }
+  if (data) {
+    context.data = data;
   }
 
-  if (!geomTypes?.includes('Point') && !geomTypes?.includes('MultiPoint')) {
-    context.composition!.Editor!.iconEditor = {
-      visibility: false,
-    };
-    context.composition!.Editor!.markEditor = {
-      visibility: false,
-    };
-  }
   if (!data?.exampleFeatures.features.length) {
     context.composition!.Rules = {
       disableClassification: true,
