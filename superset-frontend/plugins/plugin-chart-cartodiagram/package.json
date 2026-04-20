@@ -46,7 +46,7 @@
     "antd": "^4.10.3",
     "geostyler-data": "^1.1.0",
     "geostyler-openlayers-parser": "*",
-    "geostyler-style": "^11.0.2",
+    "geostyler-style": "*",
     "geostyler-wfs-parser": "^3.0.1",
     "ol": "^7.1.0",
     "polished": "*",
