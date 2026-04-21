@@ -17,13 +17,13 @@
  * under the License.
  */
 import { QueryFormData } from '@superset-ui/core';
-import { TreeProps, TreeDataNode } from '@superset-ui/core/components/Tree';
 import { ControlComponentProps } from '@superset-ui/chart-controls';
 import { FeatureCollection, GeoJsonGeometryTypes } from 'geojson';
 import { Style } from 'geostyler-style';
 import { Data } from 'geostyler-data';
 
 export interface BaseLayerConf {
+  id?: string;
   title: string;
   type: string;
   attribution?: string;
@@ -55,16 +55,12 @@ export interface DataLayerConf extends BaseLayerConf {
   style?: Style;
 }
 
-export interface FlatLayerDataNode extends TreeDataNode {
-  layerConf: LayerConf;
-}
-
 export interface FlatLayerTreeProps {
-  layerConfigs: LayerConf[];
+  layerConfigs: LayerConfWithId[];
   onAddLayer?: () => void;
   onRemoveLayer?: (idx: number) => void;
-  onEditLayer?: (layerConf: LayerConf, idx: number) => void;
-  onMoveLayer?: (layerConfigs: LayerConf[]) => void;
+  onEditLayer?: (layerConf: LayerConfWithId, idx: number) => void;
+  onMoveLayer?: (dragIndex: number, hoverIndex: number) => void;
   draggable?: boolean;
   className?: string;
 }
@@ -75,9 +71,7 @@ export type LayerConf =
   | XyzLayerConf
   | DataLayerConf;
 
-export type DropInfoType<T extends TreeProps['onDrop']> = T extends Function
-  ? Parameters<T>[0]
-  : undefined;
+export type LayerConfWithId = LayerConf & { id: string };
 
 export interface EditItem {
   layerConf: LayerConf;

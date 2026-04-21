@@ -100,6 +100,7 @@ export interface OlChartMapProps extends CartodiagramPluginProps {
 }
 
 export interface BaseLayerConf {
+  id?: string;
   title: string;
   type: string;
   attribution?: string;

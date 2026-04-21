@@ -23,8 +23,14 @@ import { Popover } from '@superset-ui/core/components';
 import { getChartBuildQueryRegistry } from '@superset-ui/core/chart';
 import { FeatureCollection, GeoJsonGeometryTypes } from 'geojson';
 import { isEqual } from 'lodash';
+import { nanoid } from 'nanoid';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { EditItem, LayerConf, LayerConfigsControlProps } from './types';
+import {
+  EditItem,
+  LayerConf,
+  LayerConfigsControlProps,
+  LayerConfWithId,
+} from './types';
 import LayerConfigsPopoverContent from './LayerConfigsPopoverContent';
 import FlatLayerTree from './FlatLayerTree';
 
@@ -41,40 +47,51 @@ export const StyledFlatLayerTree = styled(FlatLayerTree)`
     & .add-layer-btn {
       display: flex;
       align-items: center;
-
-      margin: 4px;
+      justify-content: flex-start;
+      width: 100%;
+      height: ${theme.sizeUnit * 6}px;
+      margin-bottom: ${theme.sizeUnit}px;
+      padding-left: ${theme.sizeUnit}px;
+      padding-right: 0;
+      background-color: transparent;
+      border: dashed 1px ${theme.colorSplit};
+      border-radius: ${theme.borderRadius}px;
+      cursor: pointer;
 
       color: ${theme.colorTextSecondary};
       font-size: ${theme.fontSizeSM}px;
-      font-weight: ${theme.fontWeightNormal};
+      font-weight: inherit;
+
+      &:focus {
+        border-color: ${theme.colorSplit};
+      }
 
       &:hover {
-        background-color: ${theme.colorFillTertiary};
-        border-color: ${theme.colorBorderSecondary};
+        background-color: ${theme.colorFillSecondary};
+        border-color: ${theme.colorSplit};
       }
-    }
 
-    & .ant-tree .ant-tree-treenode {
-      display: block;
-    }
+      &:active {
+        background-color: ${theme.colorFillTertiary};
+        border-color: ${theme.colorSplit};
+      }
 
-    & .ant-tree-list-holder-inner {
-      display: block !important;
-    }
-
-    & .ant-tree-node-content-wrapper {
-      display: block;
-    }
-
-    & .ant-tree-node-content-wrapper:hover {
-      background-color: unset;
+      .anticon {
+        margin-right: ${theme.sizeUnit}px;
+      }
     }
   `}
 `;
 
+const ensureLayerId = (layerConf: LayerConf): LayerConfWithId =>
+  layerConf.id
+    ? { ...layerConf, id: layerConf.id }
+    : { ...layerConf, id: nanoid() };
+
 const getEmptyEditItem = (): EditItem => ({
   idx: NaN,
   layerConf: {
+    id: nanoid(),
     type: 'WMS',
     version: '1.3.0',
     title: '',
@@ -158,6 +175,11 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
     fetchChartData();
   }, [currentFormData, enableDataLayer, featureCollectionTransformer]);
 
+  const layerConfigs = useMemo<LayerConfWithId[]>(
+    () => (value ?? []).map(ensureLayerId),
+    [value],
+  );
+
   const onAddClick = () => {
     setEditItem(getEmptyEditItem());
     setPopoverVisible(true);
@@ -175,7 +197,7 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
   };
 
   const onRemoveClick = (idx: number) => {
-    const newValue = value ? [...value] : [];
+    const newValue = [...layerConfigs];
     newValue.splice(idx, 1);
     onChange(newValue);
   };
@@ -185,14 +207,14 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
   };
 
   const computeNewValue = (layerConf: LayerConf) => {
-    const newValue = value ? [...value] : [];
+    const newValue = [...layerConfigs];
     if (!editItem) {
       return undefined;
     }
     if (Number.isNaN(editItem.idx)) {
-      newValue.unshift(layerConf);
+      newValue.unshift(ensureLayerId(layerConf));
     } else if (editItem) {
-      newValue[editItem.idx] = layerConf;
+      newValue[editItem.idx] = ensureLayerId(layerConf);
     }
     return newValue;
   };
@@ -206,8 +228,17 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
     onChange(newValue);
   };
 
-  const onMoveLayer = (newConfigs: LayerConf[]) => {
-    onChange(newConfigs);
+  const onMoveLayer = (dragIndex: number, hoverIndex: number) => {
+    if (dragIndex === hoverIndex) {
+      return;
+    }
+    const newConfigs = [...layerConfigs];
+    const [draggedLayer] = newConfigs.splice(dragIndex, 1);
+    if (!draggedLayer) {
+      return;
+    }
+    newConfigs.splice(hoverIndex, 0, draggedLayer);
+    onChange(newConfigs.map(ensureLayerId));
   };
 
   const popoverTitle = editItem.layerConf.title
@@ -245,9 +276,12 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
         trigger="click"
         title={popoverTitle}
         placement="right"
-        overlayStyle={{
-          maxHeight: '700px',
-          overflowY: 'auto',
+        styles={{
+          root: {
+            maxWidth: '400px',
+            maxHeight: '700px',
+            overflowY: 'auto',
+          },
         }}
         content={
           <LayerConfigsPopoverContent
@@ -262,7 +296,7 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
         }
       >
         <StyledFlatLayerTree
-          layerConfigs={value ?? []}
+          layerConfigs={layerConfigs}
           onMoveLayer={onMoveLayer}
           onEditLayer={onEditClick}
           onRemoveLayer={onRemoveClick}
