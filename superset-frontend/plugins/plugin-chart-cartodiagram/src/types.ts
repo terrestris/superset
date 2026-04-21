@@ -97,6 +97,7 @@ export interface OlChartMapProps extends CartodiagramPluginProps {
 }
 
 export interface BaseLayerConf {
+  id?: string;
   title: string;
   url: string;
   type: string;
