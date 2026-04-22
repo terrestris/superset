@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { TreeProps, TreeDataNode } from '@superset-ui/core/components/Tree';
 import { ControlComponentProps } from '@superset-ui/chart-controls';
 import { Style } from 'geostyler-style';
 import { Data } from 'geostyler-data';
 
 export interface BaseLayerConf {
+  id?: string;
   title: string;
   url: string;
   type: string;
@@ -46,25 +46,18 @@ export interface WmsLayerConf extends BaseLayerConf {
   layersParam: string;
 }
 
-export interface FlatLayerDataNode extends TreeDataNode {
-  layerConf: LayerConf;
-}
-
 export interface FlatLayerTreeProps {
-  layerConfigs: LayerConf[];
+  layerConfigs: LayerConfWithId[];
   onAddLayer?: () => void;
   onRemoveLayer?: (idx: number) => void;
-  onEditLayer?: (layerConf: LayerConf, idx: number) => void;
-  onMoveLayer?: (layerConfigs: LayerConf[]) => void;
+  onEditLayer?: (layerConf: LayerConfWithId, idx: number) => void;
+  onMoveLayer?: (dragIndex: number, hoverIndex: number) => void;
   draggable?: boolean;
   className?: string;
 }
 
 export type LayerConf = WmsLayerConf | WfsLayerConf | XyzLayerConf;
-
-export type DropInfoType<T extends TreeProps['onDrop']> = T extends Function
-  ? Parameters<T>[0]
-  : undefined;
+export type LayerConfWithId = LayerConf & { id: string };
 
 export interface EditItem {
   layerConf: LayerConf;
