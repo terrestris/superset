@@ -588,12 +588,12 @@ export const OlChartMap = (props: OlChartMapProps) => {
         },
       );
 
-      if (hit) {
-        // eslint-disable-next-line no-param-reassign
-        evt.originalEvent.target.style.cursor = 'pointer';
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        evt.originalEvent.target.style.cursor = 'default';
+      if (evt.originalEvent.target instanceof HTMLElement) {
+        if (hit) {
+          evt.originalEvent.target.style.cursor = 'pointer';
+        } else {
+          evt.originalEvent.target.style.cursor = 'default';
+        }
       }
     });
 

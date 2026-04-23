@@ -24,7 +24,8 @@
  */
 import { CardStyle } from 'geostyler';
 import { FC } from 'react';
-import { ConfigProvider } from 'antd-v5';
+// eslint-disable-next-line no-restricted-imports
+import { ConfigProvider } from 'antd';
 import { GeoStylerWrapperProps } from './types';
 import 'geostyler/dist/index.css';
 

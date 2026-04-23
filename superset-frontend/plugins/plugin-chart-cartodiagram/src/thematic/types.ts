@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { SupersetTheme } from '@apache-superset/core/theme';
 import { ColumnMeta } from '@superset-ui/chart-controls';
 import {
   DataRecord,
   FilterState,
-  SupersetTheme,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 import { Map } from 'ol';

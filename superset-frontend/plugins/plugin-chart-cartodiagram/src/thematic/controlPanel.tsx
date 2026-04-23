@@ -20,9 +20,9 @@ import {
   QueryColumn,
   QueryFormData,
   QueryMode,
-  t,
   validateNonEmpty,
 } from '@superset-ui/core';
+import { t } from '@apache-superset/core/translation';
 import {
   ColumnMeta,
   ColumnOption,
@@ -48,8 +48,8 @@ const columnsControl: typeof sharedControls.groupby = {
   freeForm: true,
   allowAll: true,
   commaChoosesOption: false,
-  optionRenderer: c => <ColumnOption showType column={c} />,
-  valueRenderer: c => <ColumnOption column={c} />,
+  optionRenderer: c => <ColumnOption showType column={c as ColumnMeta} />,
+  valueRenderer: c => <ColumnOption column={c as ColumnMeta} />,
   valueKey: 'column_name',
   validators: [validateNonEmpty],
   queryMode: QueryMode.Raw,

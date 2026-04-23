@@ -21,7 +21,8 @@
  * Util for layer related operations.
  */
 
-import { FilterState, t } from '@superset-ui/core';
+import { FilterState } from '@superset-ui/core';
+import { t } from '@apache-superset/core/translation';
 import OlParser from 'geostyler-openlayers-parser';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';

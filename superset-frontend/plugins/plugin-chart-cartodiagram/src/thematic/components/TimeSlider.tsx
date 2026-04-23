@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataRecord, styled } from '@superset-ui/core';
+import { DataRecord } from '@superset-ui/core';
+import { styled } from '@apache-superset/core/theme';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Slider, Button } from 'antd';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';

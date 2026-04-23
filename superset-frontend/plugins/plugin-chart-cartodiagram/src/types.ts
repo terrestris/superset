@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ControlComponentProps } from '@superset-ui/chart-controls';
 import {
   DataRecord,
   TimeseriesDataRecord,
-  ControlComponentProps
 } from '@superset-ui/core';
 import { SupersetTheme } from '@apache-superset/core/theme';
 import { RenderFunction } from 'ol/layer/Layer';

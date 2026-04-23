@@ -17,7 +17,7 @@
  * under the License.
  */
 import { CloseOutlined } from '@ant-design/icons';
-import { t } from '@superset-ui/core';
+import { t } from '@apache-superset/core/translation';
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import Control from 'ol/control/Control.js';
 import { LegendRenderer } from 'geostyler-legend';

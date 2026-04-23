@@ -25,7 +25,6 @@ import {
   DataRecord,
   DataRecordValue,
   ensureIsArray,
-  GenericDataType,
   getColumnLabel,
   getTimeFormatter,
   normalizeTimestamp,
@@ -33,6 +32,7 @@ import {
   TimeFormatter,
   ValueFormatter,
 } from '@superset-ui/core';
+import { GenericDataType } from '@apache-superset/core/common';
 import { isObject } from 'lodash';
 import WKB from 'ol/format/WKB';
 import {
