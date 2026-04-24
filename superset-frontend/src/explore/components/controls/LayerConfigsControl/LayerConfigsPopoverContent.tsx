@@ -73,32 +73,9 @@ const LAYER_CONFIG_TABS = {
   GEOSTYLER: '2',
 };
 
-export const StyledButtonContainer = styled.div`
-  display: flex;
-  margin: 8px;
-`;
-
-export const StyledCloseButton = styled(Button)`
+export const StyledButton = styled(Button)`
   ${({ theme }) => css`
-    flex: 1;
-    margin-right: 4px;
-    line-height: 1.5715;
-    border-radius: ${theme.borderRadius}px;
-    background-color: ${theme.colorPrimaryBg};
-    color: ${theme.colorPrimaryText};
-    font-size: ${theme.fontSizeSM}px;
-    font-weight: ${theme.fontWeightStrong};
-    text-transform: uppercase;
-    min-width: ${theme.sizeUnit * 36};
-    min-height: ${theme.sizeUnit * 8};
-    box-shadow: none;
-    border-width: 0px;
-    border-style: none;
-    border-color: transparent;
-    &:hover {
-      background-color: ${theme.colorPrimaryBgHover};
-      color: ${theme.colorPrimaryText};
-    }
+    min-width: ${theme.sizeUnit * 36}px;
   `}
 `;
 
@@ -124,28 +101,29 @@ export const StyledGeoStyler = styled(GeoStylerWrapper)`
     .gs-symbolizer-editor {
       width: 300px;
     }
-  `}
-`;
+    overflow-y: auto;
+    max-height: 500px;
 
-export const StyledSaveButton = styled(Button)`
-  ${({ theme }) => css`
-    flex: 1;
-    margin-left: 4px;
-    line-height: 1.5715;
-    border-radius: ${theme.borderRadius}px;
-    background-color: ${theme.colorPrimary};
-    color: ${theme.colorTextLightSolid};
-    font-size: ${theme.fontSizeSM}px;
-    font-weight: ${theme.fontWeightStrong};
-    text-transform: uppercase;
-    min-width: ${theme.sizeUnit * 36};
-    min-height: ${theme.sizeUnit * 8};
-    box-shadow: none;
-    border-width: 0px;
-    border-style: none;
-    border-color: transparent;
-    &:hover {
-      background-color: ${theme.colorPrimaryText};
+    .ant-slider {
+      display: none;
+    }
+
+    .number-expression-input {
+      button.ant-btn {
+        visibility: unset;
+        display: none;
+      }
+
+      &:hover {
+        button.ant-btn {
+          visibility: unset;
+          display: inline-block;
+        }
+      }
+
+      .number-wrapper {
+        flex: 1;
+      }
     }
   `}
 `;
@@ -675,16 +653,17 @@ export const LayerConfigsPopoverContent: FC<
                     accept=".sld"
                   >
                     <Button
-                      size="small"
+                      buttonSize="small"
+                      buttonStyle="secondary"
                       icon={
                         feedback.success !== null ? (
                           feedback.success ? (
                             <CheckOutlined
-                              style={{ color: theme.colors.success.base }}
+                              style={{ color: theme.colorSuccess }}
                             />
                           ) : (
                             <CloseOutlined
-                              style={{ color: theme.colors.error.base }}
+                              style={{ color: theme.colorError }}
                             />
                           )
                         ) : (
@@ -708,14 +687,22 @@ export const LayerConfigsPopoverContent: FC<
             },
           ]}
         />
-        <StyledButtonContainer>
-          <StyledCloseButton type="default" onClick={onCloseClick}>
+        <div>
+          <StyledButton
+            buttonStyle="secondary"
+            buttonSize="small"
+            onClick={onCloseClick}
+          >
             {t('Close')}
-          </StyledCloseButton>
-          <StyledSaveButton type="primary" onClick={onSaveClick}>
+          </StyledButton>
+          <StyledButton
+            buttonStyle="primary"
+            buttonSize="small"
+            onClick={onSaveClick}
+          >
             {t('Save')}
-          </StyledSaveButton>
-        </StyledButtonContainer>
+          </StyledButton>
+        </div>
       </Form>
     </div>
   );

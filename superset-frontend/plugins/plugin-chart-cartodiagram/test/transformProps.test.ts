@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, supersetTheme } from '@superset-ui/core';
+import { ChartProps } from '@superset-ui/core';
+import { supersetTheme } from '@apache-superset/core/theme';
 import { LayerConf, MapViewConfigs } from '../src/types';
 import transformProps from '../src/thematic/transformProps';
 import { nonTimeSeriesChartData } from './testData';

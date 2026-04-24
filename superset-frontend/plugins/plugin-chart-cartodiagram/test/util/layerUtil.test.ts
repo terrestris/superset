@@ -67,15 +67,6 @@ describe('layerUtil', () => {
     ],
   };
 
-  const wfsLayerConf: WfsLayerConf = {
-    title: 'osm:osm-fuel',
-    url: 'https://ows-demo.terrestris.de/geoserver/osm/wfs',
-    type: 'WFS',
-    version: '2.0.2',
-    typeName: 'osm:osm-fuel',
-    style: layerStyle,
-  };
-
   const dataLayerConf: DataLayerConf = {
     title: 'osm:osm-fuel',
     type: 'DATA',
@@ -89,12 +80,10 @@ describe('layerUtil', () => {
     }),
   });
 
-  const matchingFeature = new Feature({
-    foo: 'bar',
-  });
-  const nonMatchingFeature = new Feature({
-    foo: 'baz',
-  });
+  const matchingFeature = new Feature();
+  matchingFeature.setProperties({ foo: 'bar' });
+  const nonMatchingFeature = new Feature();
+  nonMatchingFeature.setProperties({ foo: 'baz' });
   const dataLayer = new VectorLayer({
     source: new VectorSource({
       features: [matchingFeature, nonMatchingFeature],
@@ -238,7 +227,11 @@ describe('layerUtil', () => {
 
   describe('createSelectionLayer', () => {
     it('creates a selection layer', () => {
-      const features = [new Feature({ id: 1 }), new Feature({ id: 2 })];
+      const feat1 = new Feature();
+      feat1.setProperties({ id: 1 });
+      const feat2 = new Feature();
+      feat2.setProperties({ id: 2 });
+      const features = [feat1, feat2];
       const selectionLayer = createSelectionLayer([dataLayer], features);
       expect(selectionLayer).toBeInstanceOf(VectorLayer);
       expect(selectionLayer.getSource()!.getFeatures()).toEqual(features);

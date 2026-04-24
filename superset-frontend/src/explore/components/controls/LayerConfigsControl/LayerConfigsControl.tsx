@@ -43,6 +43,7 @@ export const StyledFlatLayerTree = styled(FlatLayerTree)`
     border-width: 1px;
     border-radius: ${theme.borderRadius}px;
     border-color: ${theme.colorBorderSecondary};
+    padding: ${theme.sizeUnit}px;
 
     & .add-layer-btn {
       display: flex;
@@ -57,6 +58,7 @@ export const StyledFlatLayerTree = styled(FlatLayerTree)`
       border: dashed 1px ${theme.colorSplit};
       border-radius: ${theme.borderRadius}px;
       cursor: pointer;
+      box-shadow: none;
 
       color: ${theme.colorTextSecondary};
       font-size: ${theme.fontSizeSM}px;

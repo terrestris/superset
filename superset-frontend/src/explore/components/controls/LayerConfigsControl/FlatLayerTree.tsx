@@ -21,7 +21,7 @@ import { t } from '@apache-superset/core/translation';
 import { css, styled } from '@apache-superset/core/theme';
 import { Button } from '@superset-ui/core/components';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
-import { useRef } from 'react';
+import { FC, useRef } from 'react';
 import { DragContainer } from '../OptionControls';
 import { FlatLayerTreeProps, LayerConfWithId } from './types';
 import LayerTreeItem from './LayerTreeItem';
@@ -94,6 +94,7 @@ export const StyledLayerTreeItem = styled(LayerTreeItem)`
       border: none;
       background-color: unset;
       color: ${theme.colorTextSecondary};
+      box-shadow: none;
     }
 
     & > button:hover {
@@ -112,14 +113,14 @@ interface DraggableLayerTreeItemProps {
   onMoveLayerByIndex: (dragIndex: number, hoverIndex: number) => void;
 }
 
-const DraggableLayerTreeItem = ({
+const DraggableLayerTreeItem: FC<DraggableLayerTreeItemProps> = ({
   layerConf,
   index,
   draggable = false,
   onEditLayer,
   onRemoveLayer,
   onMoveLayerByIndex,
-}: DraggableLayerTreeItemProps) => {
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag<DragItem, void, unknown>({
@@ -182,7 +183,7 @@ const DraggableLayerTreeItem = ({
   );
 };
 
-export const FlatLayerTree = ({
+export const FlatLayerTree: FC<FlatLayerTreeProps> = ({
   layerConfigs,
   onAddLayer = () => {},
   onRemoveLayer = () => {},
@@ -190,7 +191,7 @@ export const FlatLayerTree = ({
   onMoveLayer = () => {},
   draggable,
   className,
-}: FlatLayerTreeProps) => {
+}) => {
   const onMoveLayerByIndex = (dragIndex: number, hoverIndex: number) => {
     if (!draggable || dragIndex === hoverIndex) {
       return;

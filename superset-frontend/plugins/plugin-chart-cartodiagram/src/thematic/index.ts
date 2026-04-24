@@ -43,7 +43,7 @@ export default class ThematicMapPlugin extends ChartPlugin {
    * advanced visualizations that require either post processing operations
    * (pivoting, rolling aggregations, sorting etc) or submitting multiple queries.
    */
-  constructor(opts: ThematicMapPluginConstructorOpts) {
+  constructor(opts?: ThematicMapPluginConstructorOpts) {
     const metadata = new ChartMetadata({
       description: t('Create thematic maps.'),
       name: t('Thematic Map'),
