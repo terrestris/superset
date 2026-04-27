@@ -47,9 +47,9 @@ export default function buildQuery(formData: QueryFormData) {
   chartFormData.groupby = groupby;
 
   if (timeColumn) {
-    chartFormData.columns = [...(chartFormData.columns || []), timeColumn];
-
-    chartFormData.groupby = [...(chartFormData.groupby || []), timeColumn];
+    const columnsSet = new Set(chartFormData.columns || []);
+    columnsSet.add(timeColumn);
+    chartFormData.columns = Array.from(columnsSet);
   }
 
   // TODO: find way to import correct type "InclusiveLoaderResult"
