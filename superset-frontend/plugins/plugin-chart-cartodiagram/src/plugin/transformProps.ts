@@ -46,10 +46,6 @@ export default function transformProps(chartProps: ChartProps) {
 
   const { data } = queriesData[0];
 
-  if (timeColumn && showTimeslider === undefined) {
-    setControlValue('show_timeslider', true);
-  }
-
   const selectedChart = parseSelectedChart(selectedChartString);
   const transformPropsRegistry = getChartTransformPropsRegistry();
   const chartTransformer = transformPropsRegistry.get(selectedChart.viz_type);

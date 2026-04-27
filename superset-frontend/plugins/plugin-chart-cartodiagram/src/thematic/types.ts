@@ -18,14 +18,12 @@
  */
 import { ColumnMeta } from '@superset-ui/chart-controls';
 import {
-  DataRecord,
   FilterState,
   SupersetTheme,
   TimeseriesDataRecord,
 } from '@superset-ui/core';
 import { Map } from 'ol';
 import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
-import { SliderSingleProps } from 'antd/lib/slider';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { LayerConf, MapMaxExtentConfigs, MapViewConfigs } from '../types';
@@ -83,12 +81,6 @@ export interface OlChartMapProps extends ThematicMapPluginProps {
 export type ColTypeMapping = {
   [key: string]: string;
 };
-
-export interface TimeSliderProps extends SliderSingleProps {
-  data: DataRecord[];
-  timeColumn: string;
-  timesliderTooltipFormat: TimesliderTooltipFormat;
-}
 
 export type FeatureTooltipProps = {
   className?: string;

@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { createRef, useState } from 'react';
-import { styled, useTheme } from '@superset-ui/core';
+import { createRef, useEffect, useMemo, useState } from 'react';
+import { DataRecord, styled, useTheme } from '@superset-ui/core';
 import OlMap from 'ol/Map';
 import {
   CartodiagramPluginProps,
@@ -28,6 +28,7 @@ import OlChartMap from './components/OlChartMap';
 
 import TimeSlider from './components/TimeSlider';
 import { TIMESLIDER_HEIGHT } from './constants';
+import { dataRecordsToMarks, getFirstMark } from './util/timesliderUtil';
 
 import 'ol/ol.css';
 
@@ -68,7 +69,33 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   );
   const [olMap] = useState(new OlMap({}));
 
-  const [timeSliderValue, setTimeSliderValue] = useState<number | undefined>();
+  const initialTimeSliderValue = useMemo(() => {
+    if (!showTimeslider || !timeColumn) {
+      return undefined;
+    }
+
+    const marks = dataRecordsToMarks(data as DataRecord[], timeColumn);
+    return getFirstMark(marks);
+  }, [data, showTimeslider, timeColumn]);
+
+  const [timeSliderValue, setTimeSliderValue] = useState<number | undefined>(
+    initialTimeSliderValue,
+  );
+
+  useEffect(() => {
+    if (!showTimeslider || !timeColumn) {
+      setTimeSliderValue(undefined);
+      return;
+    }
+
+    const marks = dataRecordsToMarks(data as DataRecord[], timeColumn);
+    const markValues = Object.keys(marks).map(Number);
+    const currentValueIsValid =
+      timeSliderValue !== undefined && markValues.includes(timeSliderValue);
+    if (!currentValueIsValid) {
+      setTimeSliderValue(getFirstMark(marks));
+    }
+  }, [data, showTimeslider, timeColumn, timeSliderValue]);
 
   const mapHeight = showTimeslider ? height - TIMESLIDER_HEIGHT * 2 : height;
 

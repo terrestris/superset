@@ -21,7 +21,7 @@ import { styled, useTheme } from '@superset-ui/core';
 import OlMap from 'ol/Map';
 import { ThematicMapPluginProps, ThematicMapPluginStylesProps } from './types';
 import OlChartMap from './components/OlChartMap';
-import TimeSlider from './components/TimeSlider';
+import TimeSlider from '../components/TimeSlider';
 import { TIMESLIDER_HEIGHT } from '../constants';
 
 import 'ol/ol.css';
