@@ -21,7 +21,7 @@ import { t } from '@apache-superset/core/translation';
 import { css, styled } from '@apache-superset/core/theme';
 import { Button } from '@superset-ui/core/components';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
-import { FC, useRef } from 'react';
+import { FC, forwardRef, useRef } from 'react';
 import { DragContainer } from '../OptionControls';
 import { FlatLayerTreeProps, LayerConfWithId } from './types';
 import LayerTreeItem from './LayerTreeItem';
@@ -183,46 +183,54 @@ const DraggableLayerTreeItem: FC<DraggableLayerTreeItemProps> = ({
   );
 };
 
-export const FlatLayerTree: FC<FlatLayerTreeProps> = ({
-  layerConfigs,
-  onAddLayer = () => {},
-  onRemoveLayer = () => {},
-  onEditLayer = () => {},
-  onMoveLayer = () => {},
-  draggable,
-  className,
-}) => {
-  const onMoveLayerByIndex = (dragIndex: number, hoverIndex: number) => {
-    if (!draggable || dragIndex === hoverIndex) {
-      return;
-    }
-    onMoveLayer(dragIndex, hoverIndex);
-  };
+export const FlatLayerTree: FC<FlatLayerTreeProps> = forwardRef<
+  HTMLDivElement,
+  FlatLayerTreeProps
+>(
+  (
+    {
+      layerConfigs,
+      onAddLayer = () => {},
+      onRemoveLayer = () => {},
+      onEditLayer = () => {},
+      onMoveLayer = () => {},
+      draggable,
+      className,
+    },
+    ref,
+  ) => {
+    const onMoveLayerByIndex = (dragIndex: number, hoverIndex: number) => {
+      if (!draggable || dragIndex === hoverIndex) {
+        return;
+      }
+      onMoveLayer(dragIndex, hoverIndex);
+    };
 
-  const addLayerLabel = t('Click to add new layer');
+    const addLayerLabel = t('Click to add new layer');
 
-  return (
-    <div className={className}>
-      <Button
-        className="add-layer-btn"
-        onClick={onAddLayer}
-        icon={<Icons.PlusOutlined iconSize="m" />}
-      >
-        {addLayerLabel}
-      </Button>
-      {layerConfigs.map((layerConf, idx) => (
-        <DraggableLayerTreeItem
-          key={layerConf.id}
-          layerConf={layerConf}
-          index={idx}
-          draggable={draggable}
-          onEditLayer={onEditLayer}
-          onRemoveLayer={onRemoveLayer}
-          onMoveLayerByIndex={onMoveLayerByIndex}
-        />
-      ))}
-    </div>
-  );
-};
+    return (
+      <div className={className} ref={ref}>
+        <Button
+          className="add-layer-btn"
+          onClick={onAddLayer}
+          icon={<Icons.PlusOutlined iconSize="m" />}
+        >
+          {addLayerLabel}
+        </Button>
+        {layerConfigs.map((layerConf, idx) => (
+          <DraggableLayerTreeItem
+            key={layerConf.id}
+            layerConf={layerConf}
+            index={idx}
+            draggable={draggable}
+            onEditLayer={onEditLayer}
+            onRemoveLayer={onRemoveLayer}
+            onMoveLayerByIndex={onMoveLayerByIndex}
+          />
+        ))}
+      </div>
+    );
+  },
+);
 
 export default FlatLayerTree;
