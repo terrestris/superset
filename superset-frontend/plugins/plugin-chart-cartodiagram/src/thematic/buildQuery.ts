@@ -41,6 +41,8 @@ export default function buildQuery(formData: QueryFormData) {
   const columnsSet = new Set(formDataCopy.columns || []);
   columnsSet.add(formData.cross_filter_column);
   formDataCopy.columns = Array.from(columnsSet);
+  // needed to prevent the default behavior of building a query with groupby
+  formDataCopy.query_mode = 'raw';
 
   return buildQueryContext(formDataCopy);
 }
