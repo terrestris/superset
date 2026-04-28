@@ -18,7 +18,7 @@
  */
 import { DataRecord } from '@superset-ui/core';
 import { styled } from '@apache-superset/core/theme';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Slider, Button } from 'antd';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 
@@ -91,10 +91,13 @@ export const TimeSlider: FC<TimeSliderProps> = props => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const formatter = useCallback(
-    (value: number) => {
+    (value?: number) => {
+      if (value === undefined) {
+        return '';
+      }
       const date = new Date(value);
       const formattedDate = formatDate(date, timesliderTooltipFormat);
-      return <div>{formattedDate}</div>;
+      return (<div>{formattedDate}</div>) as ReactNode;
     },
     [timesliderTooltipFormat],
   );
@@ -148,7 +151,9 @@ export const TimeSlider: FC<TimeSliderProps> = props => {
           max={maxVal}
           marks={marks}
           step={null}
-          tipFormatter={formatter}
+          tooltip={{
+            formatter,
+          }}
           value={currentValue}
           onChange={handleSliderChange}
           {...sliderProps}
