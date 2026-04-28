@@ -371,7 +371,7 @@ const config: ControlPanelConfig = {
               clearable: false,
               mapStateToProps: state => {
                 const currentColumns: string[] = state.controls.columns
-                  ?.value as string[];
+                  ?.value as string[] ?? [];
                 return {
                   choices: (state.datasource?.columns as QueryColumn[])
                     .filter(

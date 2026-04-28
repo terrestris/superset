@@ -29,6 +29,7 @@ import {
   getHoverFeature,
   clearTooltip,
 } from '../util/tooltipUtil';
+import { createPortal } from 'react-dom';
 
 export const FeatureTooltip = (props: FeatureTooltipProps) => {
   const {
@@ -117,7 +118,10 @@ export const FeatureTooltip = (props: FeatureTooltipProps) => {
     columns,
   ]);
 
-  return <div ref={tooltipRef} className={className} />;
+  return createPortal(
+    <div ref={tooltipRef} className={className} />,
+    document.body,
+  );
 };
 
 // eslint-disable-next-line theme-colors/no-literal-colors
