@@ -86,7 +86,7 @@ describe('ThematicMapPlugin transformProps', () => {
     datasource,
   });
 
-  it('should transform chart props for viz', () => {
+  test('should transform chart props for viz', () => {
     const transformedProps = transformProps(chartProps);
     expect(transformedProps).toEqual(
       expect.objectContaining({
