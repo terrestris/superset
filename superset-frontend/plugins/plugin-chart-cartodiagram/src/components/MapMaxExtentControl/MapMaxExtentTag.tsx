@@ -33,12 +33,12 @@ export const MapMaxExtentTag: FC<MapMaxExtentTagProps> = ({
   return (
     <Tag className={className}>
       {upperRightName}:{' '}
-      {value.fixedMaxX && value.fixedMaxY
+      {value.fixedMaxX !== undefined && value.fixedMaxY !== undefined
         ? `${value.fixedMaxY.toFixed(6)} | ${value.fixedMaxX.toFixed(6)}`
         : unsetName}
       <br />
       {lowerLeftName}:{' '}
-      {value.fixedMinX && value.fixedMinY
+      {value.fixedMinX !== undefined && value.fixedMinY !== undefined
         ? `${value.fixedMinY.toFixed(6)} | ${value.fixedMinX.toFixed(6)}`
         : unsetName}
     </Tag>

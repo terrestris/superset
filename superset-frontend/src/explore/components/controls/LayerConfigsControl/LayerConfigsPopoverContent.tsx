@@ -524,7 +524,7 @@ export const LayerConfigsPopoverContent: FC<
     { value: 'XYZ', label: t('XYZ') },
   ];
   if (enableDataLayer) {
-    layerTypeOptions.push({ value: 'DATA', label: 'DATA' });
+    layerTypeOptions.push({ value: 'DATA', label: t('DATA') });
   }
 
   return (

@@ -213,7 +213,7 @@ describe('layerUtil', () => {
     });
   });
 
-  describe('setSelectionBackgroundOopacity', () => {
+  describe('setSelectionBackgroundOpacity', () => {
     test('sets the opacity for the layers', () => {
       setSelectionBackgroundOpacity([dataLayer], 0.5);
       const opacity = dataLayer.getOpacity();
