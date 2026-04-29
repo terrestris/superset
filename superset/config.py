@@ -2854,8 +2854,14 @@ ENVIRONMENT_TAG_CONFIG = {
 # e.g.
 #
 # {
-#     'EPSG:25832': '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs',
-#     'EPSG:25833': '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs',
+#   'EPSG:25832': (
+#       '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m '
+#       '+no_defs +type=crs'
+#   ),
+#   'EPSG:25833': (
+#       '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m '
+#       '+no_defs +type=crs'
+#   ),
 # }
 #
 MAP_PROJECTIONS = {}
@@ -2870,7 +2876,12 @@ MAP_DEFAULT_LAYERS = [
         "url": "https://ows.terrestris.de/osm-gray/service",
         "layersParam": "OSM-WMS",
         "title": "OpenStreetMap",
-        "attribution": "© Map data from <a href=\"openstreetmap.org/copyright\">OpenStreetMap</a>. Service provided by <a href=\"https://www.terrestris.de\">terrestris GmbH & Co. KG</a>",
+        "attribution": (
+            "© Map data from "
+            "<a href=\"openstreetmap.org/copyright\">OpenStreetMap</a>. "
+            "Service provided by <a href=\"https://www.terrestris.de\">"
+            "terrestris GmbH & Co. KG</a>"
+        ),
     },
 ]
 
