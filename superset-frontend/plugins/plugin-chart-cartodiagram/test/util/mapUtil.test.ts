@@ -29,7 +29,7 @@ import {
 } from '../../src/util/mapUtil';
 
 describe('mapUtil', () => {
-  describe('fitMapToCharts', () => {
+  describe('fitMapToData', () => {
     test('changes the center of the map', () => {
       const chartConfig: ChartConfig = {
         type: 'FeatureCollection',
