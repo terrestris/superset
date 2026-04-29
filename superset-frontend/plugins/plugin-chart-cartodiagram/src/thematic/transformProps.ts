@@ -17,10 +17,7 @@
  * under the License.
  */
 import { ChartProps } from '@superset-ui/core';
-import {
-  DEFAULT_MASK_COLOR,
-  DEFAULT_MERGED_STROKE_COLOR,
-} from '../constants';
+import { DEFAULT_MASK_COLOR, DEFAULT_MERGED_STROKE_COLOR } from '../constants';
 
 export default function transformProps(chartProps: ChartProps) {
   /**

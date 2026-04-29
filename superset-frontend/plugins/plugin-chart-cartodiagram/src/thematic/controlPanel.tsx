@@ -31,7 +31,12 @@ import {
   sharedControls,
 } from '@superset-ui/chart-controls';
 import { ColTypeMapping } from './types';
-import { GeometryFormat, TimesliderTooltipFormat } from '../constants';
+import {
+  DEFAULT_MASK_COLOR,
+  DEFAULT_MERGED_STROKE_COLOR,
+  GeometryFormat,
+  TimesliderTooltipFormat,
+} from '../constants';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 import MapMaxExtentViewControl from '../components/MapMaxExtentControl/MapMaxExtentViewControl';
 import {
@@ -39,10 +44,6 @@ import {
   dataToFeatureCollection,
 } from '../util/dataUtil';
 import { MapViewConfigs } from '../types';
-import {
-  DEFAULT_MASK_COLOR,
-  DEFAULT_MERGED_STROKE_COLOR,
-} from '../constants';
 
 const columnsControl: typeof sharedControls.groupby = {
   ...sharedControls.groupby,

@@ -147,10 +147,10 @@ export const areFeaturesPolygonal = (features: Feature[]) =>
  * This is intended for display-oriented aggregation of adjacent polygons, for
  * example when only the outer perimeter of a filtered administrative area
  * should remain visible.
- * 
- * We could use a geometry processing library like JSTS or turf for this, 
+ *
+ * We could use a geometry processing library like JSTS or turf for this,
  * but this custom avoid heavy union operations and avoid to add a dependency to the project.
- * 
+ *
  * @param features The polygon features to merge
  * @returns The merged polygon features, or the original features if merging is
  * not applicable
