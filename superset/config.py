@@ -3466,8 +3466,8 @@ MAP_DEFAULT_LAYERS = [
         "title": "OpenStreetMap",
         "attribution": (
             "© Map data from "
-            "<a href=\"openstreetmap.org/copyright\">OpenStreetMap</a>. "
-            "Service provided by <a href=\"https://www.terrestris.de\">"
+            '<a href="openstreetmap.org/copyright">OpenStreetMap</a>. '
+            'Service provided by <a href="https://www.terrestris.de">'
             "terrestris GmbH & Co. KG</a>"
         ),
     },
@@ -3508,6 +3508,7 @@ MAP_GEOSTYLER_COMPOSITION = {
         },
     },
 }
+
 
 # Extra related query filters make it possible to limit which objects are shown
 # in the UI. For example, to only show "admin" or users starting with the letter "b"
