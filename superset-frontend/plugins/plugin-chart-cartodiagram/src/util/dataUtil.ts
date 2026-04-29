@@ -33,13 +33,18 @@ export const geojsonDataToFeatureCollection = (
       if (!geometry) {
         return undefined;
       }
-      const feature: Feature = {
-        type: 'Feature',
-        geometry: JSON.parse(geometry as string),
-        properties: restProps,
-      };
-
-      return feature;
+      try {
+        const parsedGeom = JSON.parse(geometry as string);
+        const feature: Feature = {
+          type: 'Feature',
+          geometry: parsedGeom,
+          properties: restProps,
+        };
+        return feature;
+      } catch (error) {
+        console.error('Error parsing geometry:', error);
+        return undefined;
+      }
     })
     .filter((f: Feature | undefined) => f !== undefined);
 
