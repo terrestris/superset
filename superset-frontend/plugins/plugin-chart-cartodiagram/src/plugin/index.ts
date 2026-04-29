@@ -29,7 +29,8 @@ import example2 from '../images/example2.png';
 import example2Dark from '../images/example2-dark.png';
 import { CartodiagramPluginConstructorOpts } from '../types';
 import { getLayerConfig } from '../util/controlPanelUtil';
-import { getMapDefaultLayers } from '../util/bootstrapDataUtil';
+import { getMapDefaultLayers, getMapProjections } from '../util/bootstrapDataUtil';
+import { registerMapProjections } from '../util/mapUtil';
 
 export default class CartodiagramPlugin extends ChartPlugin {
   constructor(opts?: CartodiagramPluginConstructorOpts) {
@@ -70,6 +71,9 @@ export default class CartodiagramPlugin extends ChartPlugin {
         layerConfig.config.default = opts.defaultLayers;
       }
     }
+
+    const mapProjections = getMapProjections();
+    registerMapProjections(mapProjections);
 
     super({
       buildQuery,
