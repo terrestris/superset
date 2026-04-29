@@ -161,7 +161,7 @@ describe('layerUtil', () => {
   });
 
   describe('createDataLayer', () => {
-    it('properly applies style', async () => {
+    test('properly applies style', async () => {
       const dataLayer = await createDataLayer(dataLayerConf);
       const style = dataLayer!.getStyle();
       // @ts-ignore
@@ -180,7 +180,7 @@ describe('layerUtil', () => {
   });
 
   describe('removeSelectionLayer', () => {
-    it('removes the selection layer from the map', () => {
+    test('removes the selection layer from the map', () => {
       expect(map.getLayers().getArray()).toHaveLength(2);
       removeSelectionLayer(map);
       const selectionLayers = map
@@ -191,7 +191,7 @@ describe('layerUtil', () => {
       expect(selectionLayers).toHaveLength(0);
     });
 
-    it('does not remove other layers', () => {
+    test('does not remove other layers', () => {
       expect(map.getLayers().getArray()).toHaveLength(2);
       removeSelectionLayer(map);
       expect(map.getLayers().getArray()).toHaveLength(1);
@@ -200,7 +200,7 @@ describe('layerUtil', () => {
   });
 
   describe('getSelectedFeatures', () => {
-    it('returns the selected features from the data layers', () => {
+    test('returns the selected features from the data layers', () => {
       const selectedFeatures = getSelectedFeatures(
         [dataLayer],
         {
@@ -214,7 +214,7 @@ describe('layerUtil', () => {
   });
 
   describe('setSelectionBackgroundOopacity', () => {
-    it('sets the opacity for the layers', () => {
+    test('sets the opacity for the layers', () => {
       setSelectionBackgroundOpacity([dataLayer], 0.5);
       const opacity = dataLayer.getOpacity();
       expect(opacity).toEqual(0.5);
@@ -226,7 +226,7 @@ describe('layerUtil', () => {
   });
 
   describe('createSelectionLayer', () => {
-    it('creates a selection layer', () => {
+    test('creates a selection layer', () => {
       const feat1 = new Feature();
       feat1.setProperties({ id: 1 });
       const feat2 = new Feature();
@@ -238,7 +238,7 @@ describe('layerUtil', () => {
       expect(selectionLayer.get(LAYER_NAME_PROP)).toEqual(SELECTION_LAYER_NAME);
     });
 
-    it('applies the style of the first data layer', () => {
+    test('applies the style of the first data layer', () => {
       const features: Feature[] = [];
       const selectionLayer = createSelectionLayer([dataLayer], features);
       const style = selectionLayer.getStyle();

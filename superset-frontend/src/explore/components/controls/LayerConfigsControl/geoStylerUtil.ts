@@ -22,6 +22,7 @@ import { GeoStylerContextInterface, GeoStylerLocale, locale } from 'geostyler';
 
 import { Style, Symbolizer } from 'geostyler-style';
 import { ColTypeMapping } from './types';
+import { SupersetTheme } from '@apache-superset/core/theme';
 
 /**
  * Map Superset column type to GeoStyler column type.
@@ -139,25 +140,22 @@ export const getDefaultStyle = (
   geomTypes: GeoJsonGeometryTypes[] = [],
   styleName: string,
   ruleName: string,
+  theme: SupersetTheme,
 ) => {
   const symbolizers: Symbolizer[] = [];
   if (geomTypes.includes('Polygon') || geomTypes.includes('MultiPolygon')) {
     symbolizers.push({
       kind: 'Fill',
-      // eslint-disable-next-line theme-colors/no-literal-colors
-      color: '#000000',
+      color: theme.colorTextBase,
     });
   }
   if (
-    geomTypes.includes('Polygon') ||
-    geomTypes.includes('MultiPolygon') ||
     geomTypes.includes('LineString') ||
     geomTypes.includes('MultiLineString')
   ) {
     symbolizers.push({
       kind: 'Line',
-      // eslint-disable-next-line theme-colors/no-literal-colors
-      color: '#000000',
+      color: theme.colorTextBase,
       width: 2,
     });
   }
@@ -165,8 +163,7 @@ export const getDefaultStyle = (
     symbolizers.push({
       kind: 'Mark',
       wellKnownName: 'circle',
-      // eslint-disable-next-line theme-colors/no-literal-colors
-      color: '#000000',
+      color: theme.colorTextBase,
     });
   }
   const style: Style = {

@@ -273,7 +273,12 @@ export const LayerConfigsPopoverContent: FC<
       setCurrentLayerConf({
         ...currentLayerConf,
         type: value,
-        style: getDefaultStyle(includedGeometryTypes, styleName, ruleName),
+        style: getDefaultStyle(
+          includedGeometryTypes,
+          styleName,
+          ruleName,
+          theme,
+        ),
       } as DataLayerConf);
     }
   };

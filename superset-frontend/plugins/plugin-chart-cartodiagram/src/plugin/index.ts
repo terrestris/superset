@@ -65,7 +65,7 @@ export default class CartodiagramPlugin extends ChartPlugin {
       if (opts?.defaultLayers) {
         // eslint-disable-next-line no-console
         console.error(
-          'Warning: [ThematicMapPlugin] Setting defaultLayers via MainPreset.js is deprecated. Please use MAP_DEFAULT_LAYERS in your config file instead.',
+          'Warning: [CartodiagramPlugin] Setting defaultLayers via MainPreset.js is deprecated. Please use MAP_DEFAULT_LAYERS in your config file instead.',
         );
         layerConfig.config.default = opts.defaultLayers;
       }
