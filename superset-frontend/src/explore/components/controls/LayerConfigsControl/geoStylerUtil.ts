@@ -105,7 +105,8 @@ export const createGeoStylerContext = (
   if (!context.composition!.Rules) {
     context.composition!.Rules = {};
   }
-  context.composition!.Rules.disableClassification = !data?.exampleFeatures.features.length;
+  context.composition!.Rules.disableClassification =
+    !data?.exampleFeatures.features.length;
 
   return context;
 };

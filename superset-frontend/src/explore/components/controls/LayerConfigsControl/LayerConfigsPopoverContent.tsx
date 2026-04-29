@@ -643,50 +643,53 @@ export const LayerConfigsPopoverContent: FC<
             {
               key: LAYER_CONFIG_TABS.GEOSTYLER,
               label: styleTabLabel,
-              disabled: !isWfsLayerConf(currentLayerConf) && !isDataLayerConf(currentLayerConf),
-              children: (isWfsLayerConf(currentLayerConf) || isDataLayerConf(currentLayerConf)) && (
+              disabled:
+                !isWfsLayerConf(currentLayerConf) &&
+                !isDataLayerConf(currentLayerConf),
+              children: (isWfsLayerConf(currentLayerConf) ||
+                isDataLayerConf(currentLayerConf)) && (
                 <>
-                 <StyledUploadButtonContainer>
-                  <div>
-                    <StyledFeedbackMessage success={!!feedback.success}>
-                      {feedback.message}
-                    </StyledFeedbackMessage>
-                  </div>
-                  <Upload
-                    beforeUpload={beforeUpload}
-                    showUploadList={false}
-                    accept=".sld"
-                  >
-                    <Button
-                      buttonSize="small"
-                      buttonStyle="secondary"
-                      icon={
-                        feedback.success !== null ? (
-                          feedback.success ? (
-                            <CheckOutlined
-                              style={{ color: theme.colorSuccess }}
-                            />
-                          ) : (
-                            <CloseOutlined
-                              style={{ color: theme.colorError }}
-                            />
-                          )
-                        ) : (
-                          <UploadOutlined />
-                        )
-                      }
-                      style={{ float: 'right' }}
+                  <StyledUploadButtonContainer>
+                    <div>
+                      <StyledFeedbackMessage success={!!feedback.success}>
+                        {feedback.message}
+                      </StyledFeedbackMessage>
+                    </div>
+                    <Upload
+                      beforeUpload={beforeUpload}
+                      showUploadList={false}
+                      accept=".sld"
                     >
-                      {t('Import SLD')}
-                    </Button>
-                  </Upload>
-                </StyledUploadButtonContainer>
-                <GeoStylerContext.Provider value={geoStylerContext}>
-                  <StyledGeoStyler
-                    style={currentLayerConf.style}
-                    onStyleChange={onStyleChange}
-                  />
-                </GeoStylerContext.Provider>
+                      <Button
+                        buttonSize="small"
+                        buttonStyle="secondary"
+                        icon={
+                          feedback.success !== null ? (
+                            feedback.success ? (
+                              <CheckOutlined
+                                style={{ color: theme.colorSuccess }}
+                              />
+                            ) : (
+                              <CloseOutlined
+                                style={{ color: theme.colorError }}
+                              />
+                            )
+                          ) : (
+                            <UploadOutlined />
+                          )
+                        }
+                        style={{ float: 'right' }}
+                      >
+                        {t('Import SLD')}
+                      </Button>
+                    </Upload>
+                  </StyledUploadButtonContainer>
+                  <GeoStylerContext.Provider value={geoStylerContext}>
+                    <StyledGeoStyler
+                      style={currentLayerConf.style}
+                      onStyleChange={onStyleChange}
+                    />
+                  </GeoStylerContext.Provider>
                 </>
               ),
             },
