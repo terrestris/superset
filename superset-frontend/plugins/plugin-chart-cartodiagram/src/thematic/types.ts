@@ -71,11 +71,11 @@ interface ThematicMapPluginCustomizeProps {
   showLegend: boolean;
   showTooltip: boolean;
   showAreaMask: boolean;
+  hideData: boolean;
   areaMaskOpacity: number;
   areaMaskColor: RgbaColor;
-  mergePolygonEntities: boolean;
-  mergedPolygonStrokeWidth: number;
-  mergedPolygonStrokeColor: RgbaColor;
+  areaBoundaryStrokeWidth: number;
+  areaBoundaryStrokeColor: RgbaColor;
 }
 
 export type ThematicMapPluginProps = ThematicMapPluginStylesProps &

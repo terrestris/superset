@@ -90,11 +90,11 @@ export const OlChartMap = (props: OlChartMapProps) => {
     showLegend,
     showTooltip,
     showAreaMask,
+    hideData,
     areaMaskOpacity,
     areaMaskColor,
-    mergePolygonEntities,
-    mergedPolygonStrokeWidth,
-    mergedPolygonStrokeColor,
+    areaBoundaryStrokeWidth,
+    areaBoundaryStrokeColor,
   } = props;
 
   const [currentMapView, setCurrentMapView] = useState<MapViewConfigs>(mapView);
@@ -430,17 +430,23 @@ export const OlChartMap = (props: OlChartMapProps) => {
     }) as OlFeature[];
   }, [filteredData, filteredFeatures, geomFormat]);
 
+  const visibleFeaturesArePolygonal = useMemo(
+    () => areFeaturesPolygonal(visibleFeatures),
+    [visibleFeatures],
+  );
+
   const mergedVisibleFeatures = useMemo(() => {
-    if (!mergePolygonEntities || !areFeaturesPolygonal(visibleFeatures)) {
+    if (!showAreaMask || !visibleFeaturesArePolygonal) {
       return undefined;
     }
     return mergePolygonFeatures(visibleFeatures) as OlFeature[];
-  }, [mergePolygonEntities, visibleFeatures]);
+  }, [showAreaMask, visibleFeatures, visibleFeaturesArePolygonal]);
 
-  const usesMergedPresentation =
-    mergePolygonEntities &&
-    areFeaturesPolygonal(visibleFeatures) &&
+  const showsAreaBoundary =
+    showAreaMask &&
+    visibleFeaturesArePolygonal &&
     Boolean(mergedVisibleFeatures?.length);
+  const hidesDataLayer = showsAreaBoundary && hideData;
 
   /**
    * Update layers
@@ -490,7 +496,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     if (
       !currentDataLayers ||
       currentDataLayers.length === 0 ||
-      !usesMergedPresentation ||
+      !showsAreaBoundary ||
       !mergedVisibleFeatures
     ) {
       return undefined;
@@ -498,8 +504,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
 
     const presentationLayer = createPresentationLayer(
       mergedVisibleFeatures,
-      mergedPolygonStrokeColor,
-      mergedPolygonStrokeWidth,
+      areaBoundaryStrokeColor,
+      areaBoundaryStrokeWidth,
     );
     olMap.addLayer(presentationLayer);
 
@@ -508,22 +514,22 @@ export const OlChartMap = (props: OlChartMapProps) => {
     };
   }, [
     currentDataLayers,
-    mergedPolygonStrokeColor,
-    mergedPolygonStrokeWidth,
+    areaBoundaryStrokeColor,
+    areaBoundaryStrokeWidth,
     mergedVisibleFeatures,
     olMap,
-    usesMergedPresentation,
+    showsAreaBoundary,
   ]);
 
   useEffect(() => {
     removeManagedLayer(olMap, MASK_LAYER_NAME);
 
-    if (!showAreaMask || !areFeaturesPolygonal(visibleFeatures)) {
+    if (!showAreaMask || !visibleFeaturesArePolygonal) {
       return undefined;
     }
 
     const focusFeatures =
-      usesMergedPresentation && mergedVisibleFeatures
+      showsAreaBoundary && mergedVisibleFeatures
         ? mergedVisibleFeatures
         : visibleFeatures;
     const projectionExtent = olMap.getView().getProjection().getExtent();
@@ -552,8 +558,9 @@ export const OlChartMap = (props: OlChartMapProps) => {
     areaMaskColor,
     olMap,
     showAreaMask,
-    usesMergedPresentation,
+    showsAreaBoundary,
     visibleFeatures,
+    visibleFeaturesArePolygonal,
   ]);
 
   useEffect(() => {
@@ -568,10 +575,10 @@ export const OlChartMap = (props: OlChartMapProps) => {
       filterState,
       crossFilterColumn,
     );
-    const baseOpacity = usesMergedPresentation ? 0.01 : FULL_OPACITY;
+    const baseOpacity = hidesDataLayer ? 0.01 : FULL_OPACITY;
 
     if (filterState.value !== null && filterState.value !== undefined) {
-      if (!usesMergedPresentation) {
+      if (!hidesDataLayer) {
         const selectionLayer = createSelectionLayer(
           currentDataLayers,
           selectedFeatures,
@@ -580,7 +587,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
       }
       setSelectionBackgroundOpacity(
         currentDataLayers,
-        usesMergedPresentation ? 0.01 : SELECTION_BACKGROUND_OPACITY,
+        hidesDataLayer ? 0.01 : SELECTION_BACKGROUND_OPACITY,
       );
     } else {
       setSelectionBackgroundOpacity(currentDataLayers, baseOpacity);
@@ -589,8 +596,8 @@ export const OlChartMap = (props: OlChartMapProps) => {
     crossFilterColumn,
     currentDataLayers,
     filterState,
+    hidesDataLayer,
     olMap,
-    usesMergedPresentation,
   ]);
 
   useEffect(() => {

@@ -106,11 +106,78 @@ const getCoordinateKey = (coord: number[]) =>
     .map(value => Number(value.toFixed(EDGE_COMPARISON_PRECISION)))
     .join(',');
 
-const getRingSignedArea = (ring: number[][]) =>
-  ring.slice(0, -1).reduce((area, coord, idx) => {
-    const next = ring[idx + 1];
-    return area + coord[0] * next[1] - next[0] * coord[1];
-  }, 0);
+const getRingSignedArea = (ring: number[][]) => {
+  let area = 0;
+  for (let i = 0; i < ring.length - 1; i += 1) {
+    const coord = ring[i];
+    const next = ring[i + 1];
+    area += coord[0] * next[1] - next[0] * coord[1];
+  }
+  return area;
+};
+
+// Use absolute area when comparing rings: orientation only tells whether the
+// ring is clockwise/counter-clockwise, not whether it is the main boundary.
+const getRingArea = (ring: number[][]) => Math.abs(getRingSignedArea(ring));
+
+// Compute a representative point for a ring. We use it for containment checks
+// instead of a vertex, because vertices can lie exactly on another boundary.
+const getRingCentroid = (ring: number[][]) => {
+  let area = 0;
+  let x = 0;
+  let y = 0;
+  for (let i = 0; i < ring.length - 1; i += 1) {
+    const coord = ring[i];
+    const next = ring[i + 1];
+    const cross = coord[0] * next[1] - next[0] * coord[1];
+    area += cross;
+    x += (coord[0] + next[0]) * cross;
+    y += (coord[1] + next[1]) * cross;
+  }
+  if (area === 0) {
+    return ring[0];
+  }
+  return [x / (3 * area), y / (3 * area)];
+};
+
+// Ray-casting point-in-polygon test used to detect rings that are fully inside
+// another merged boundary ring.
+const isCoordinateInRing = (coordinate: number[], ring: number[][]) => {
+  const [x, y] = coordinate;
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    const intersects =
+      yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+  return inside;
+};
+
+// The edge-stitching merge can create small closed loops from unmatched
+// internal borders. Drop rings contained in a larger ring so those artifacts do
+// not become mask holes or visible boundary islands.
+const removeContainedRings = (rings: number[][][]) => {
+  const ringMetadata = rings.map(ring => ({
+    ring,
+    area: getRingArea(ring),
+    centroid: getRingCentroid(ring),
+  }));
+
+  return ringMetadata
+    .filter(({ area, centroid }, ringIndex) =>
+      ringMetadata.every(
+        (other, otherRingIndex) =>
+          otherRingIndex === ringIndex ||
+          other.area <= area ||
+          !isCoordinateInRing(centroid, other.ring),
+      ),
+    )
+    .map(({ ring }) => ring);
+};
 
 const getPolygonOuterRings = (features: Feature[]) =>
   features.flatMap(feature => {
@@ -208,7 +275,7 @@ export const mergePolygonFeatures = (features: Feature[]) => {
   });
 
   const usedEdges = new Set<string>();
-  const mergedFeatures: Feature[] = [];
+  const mergedRings: number[][][] = [];
 
   boundaryEdges.forEach(edge => {
     if (usedEdges.has(edge.id)) {
@@ -257,9 +324,13 @@ export const mergePolygonFeatures = (features: Feature[]) => {
 
     const closedRing = closeRing(ring);
     if (closedRing.length >= 4) {
-      mergedFeatures.push(new Feature(new OlPolygon([closedRing])));
+      mergedRings.push(closedRing);
     }
   });
+
+  const mergedFeatures = removeContainedRings(mergedRings).map(
+    ring => new Feature(new OlPolygon([ring])),
+  );
 
   return mergedFeatures.length > 0 ? mergedFeatures : features;
 };
