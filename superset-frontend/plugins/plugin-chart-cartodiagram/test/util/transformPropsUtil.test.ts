@@ -67,6 +67,7 @@ describe('transformPropsUtil', () => {
       const result = getWkbColumns(columns);
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual(2);
+      expect(result[1]).toEqual(3);
     });
 
     test('returns empty array when no WKB column is included', () => {
@@ -94,6 +95,7 @@ describe('transformPropsUtil', () => {
       const result = getWktColumns(columns);
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual(2);
+      expect(result[1]).toEqual(3);
     });
 
     test('returns empty array when no WKT column is included', () => {
