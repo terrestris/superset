@@ -187,7 +187,6 @@ export const createDataLayer = async (dataLayerConf: DataLayerConf) => {
  * Create a layer instance with the provided configuration.
  *
  * @param layerConf The layer configuration
- * @param featureCollection The featureCollection for the dataLayer
  *
  * @returns The created layer
  */

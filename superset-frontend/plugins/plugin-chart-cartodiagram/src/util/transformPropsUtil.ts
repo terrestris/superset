@@ -105,6 +105,19 @@ export const getWktColumns = (columns: string[]) =>
     return [...prev, idx];
   }, []);
 
+const getGeomColumns = (geomFormat: GeometryFormat, columns: string[]) => {
+  let geomColumns: number[];
+
+  if (geomFormat === GeometryFormat.GEOJSON) {
+    geomColumns = getGeojsonColumns(columns);
+  } else if (geomFormat === GeometryFormat.WKB) {
+    geomColumns = getWkbColumns(columns);
+  } else {
+    geomColumns = getWktColumns(columns);
+  }
+  return geomColumns;
+};
+
 /**
  * Create a column name ignoring provided indices.
  *
@@ -146,15 +159,7 @@ export const groupByLocationGenericX = (
           return;
         }
 
-        let geomColumns: number[];
-
-        if (geomFormat === GeometryFormat.GEOJSON) {
-          geomColumns = getGeojsonColumns(labelMap);
-        } else if (geomFormat === GeometryFormat.WKB) {
-          geomColumns = getWkbColumns(labelMap);
-        } else {
-          geomColumns = getWktColumns(labelMap);
-        }
+        const geomColumns = getGeomColumns(geomFormat, labelMap);
 
         if (geomColumns.length > 1) {
           // TODO what should we do, if there is more than one geom column?
@@ -240,15 +245,7 @@ export const stripGeomFromColnamesAndTypes = (
     }
 
     const parts = colname.split(COLUMN_SEPARATOR);
-    let geomColumns: number[];
-
-    if (geomFormat === GeometryFormat.GEOJSON) {
-      geomColumns = getGeojsonColumns(parts);
-    } else if (geomFormat === GeometryFormat.WKB) {
-      geomColumns = getWkbColumns(parts);
-    } else {
-      geomColumns = getWktColumns(parts);
-    }
+    const geomColumns = getGeomColumns(geomFormat, parts);
     const filter = geomColumns.length ? [geomColumns[0]] : [];
 
     const newColname = createColumnName(parts, filter);

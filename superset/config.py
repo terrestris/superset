@@ -2432,7 +2432,7 @@ MAP_DEFAULT_LAYERS = [
         "title": "OpenStreetMap",
         "attribution": (
             "© Map data from "
-            '<a href="openstreetmap.org/copyright">OpenStreetMap</a>. '
+            '<a href="https://openstreetmap.org/copyright">OpenStreetMap</a>. '
             'Service provided by <a href="https://www.terrestris.de">'
             "terrestris GmbH & Co. KG</a>"
         ),
