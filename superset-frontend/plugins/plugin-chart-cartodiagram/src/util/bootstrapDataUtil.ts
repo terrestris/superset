@@ -17,16 +17,34 @@
  * under the License.
  */
 
+import { MapBootstrapData } from '../types';
+
+let cachedBootstrapData: MapBootstrapData | null = null;
+
+const DEFAULT_BOOTSTRAP_DATA: MapBootstrapData = {
+  common: {
+    conf: {
+      MAP_PROJECTIONS: {},
+      MAP_DEFAULT_LAYERS: [],
+    },
+  },
+};
+
 /**
  * Based on superset-frontend/src/utils/getBootstrapData.ts. Replicated
  * in order to circumvent creating circular dependencies.
  */
-
-export const getBootstrapData = () => {
-  const appContainer = document.getElementById('app');
-  const dataBootstrap = appContainer?.getAttribute('data-bootstrap');
-  return dataBootstrap ? JSON.parse(dataBootstrap) : {};
-};
+export default function getBootstrapData() {
+  if (cachedBootstrapData === null) {
+    const appContainer = document.getElementById('app');
+    const dataBootstrap = appContainer?.getAttribute('data-bootstrap');
+    cachedBootstrapData = dataBootstrap
+      ? JSON.parse(dataBootstrap)
+      : null;
+  }
+  // Add a fallback to ensure the returned value is always of type BootstrapData
+  return cachedBootstrapData ?? DEFAULT_BOOTSTRAP_DATA;
+}
 
 export const getMapProjections = () => {
   const bootstrapData = getBootstrapData();
