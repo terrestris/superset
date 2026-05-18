@@ -35,6 +35,10 @@ export enum GeometryFormat {
 export const NULL_STRING = '<NULL>';
 
 export const SELECTION_LAYER_NAME = 'thematic-selection-layer';
+export const PRESENTATION_LAYER_NAME = 'thematic-presentation-layer';
+export const MASK_LAYER_NAME = 'thematic-mask-layer';
 export const LAYER_NAME_PROP = 'layerName';
 export const SELECTION_BACKGROUND_OPACITY = 0.5;
 export const FULL_OPACITY = 1;
+export const DEFAULT_MASK_COLOR = { r: 128, g: 128, b: 128, a: 1 };
+export const DEFAULT_MERGED_STROKE_COLOR = { r: 0, g: 0, b: 0, a: 1 };
