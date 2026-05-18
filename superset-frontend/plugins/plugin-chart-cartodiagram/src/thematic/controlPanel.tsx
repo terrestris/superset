@@ -31,7 +31,12 @@ import {
   sharedControls,
 } from '@superset-ui/chart-controls';
 import { ColTypeMapping } from './types';
-import { GeometryFormat, TimesliderTooltipFormat } from '../constants';
+import {
+  DEFAULT_MASK_COLOR,
+  DEFAULT_MERGED_STROKE_COLOR,
+  GeometryFormat,
+  TimesliderTooltipFormat,
+} from '../constants';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 import MapMaxExtentViewControl from '../components/MapMaxExtentControl/MapMaxExtentViewControl';
 import {
@@ -316,6 +321,98 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: true,
               description: t('Whether to display the tooltip'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'show_area_mask',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Area Mask'),
+              renderTrigger: true,
+              default: false,
+              description: t(
+                'Fade the area outside the currently displayed polygon perimeter.',
+              ),
+            },
+          },
+        ],
+        [
+          {
+            name: 'hide_data',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Hide Data'),
+              renderTrigger: true,
+              default: false,
+              description: t(
+                'Hide the original data polygons when the area mask is displayed.',
+              ),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_mask_color',
+            config: {
+              type: 'ColorPickerControl',
+              label: t('Area Mask Color'),
+              renderTrigger: true,
+              default: DEFAULT_MASK_COLOR,
+              description: t('Fill color used for the area mask overlay.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_mask_opacity',
+            config: {
+              type: 'SliderControl',
+              label: t('Area Mask Opacity'),
+              renderTrigger: true,
+              default: 75,
+              min: 0,
+              max: 100,
+              step: 5,
+              description: t('Opacity of the area mask overlay.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_boundary_stroke_width',
+            config: {
+              type: 'SliderControl',
+              label: t('Stroke Width'),
+              renderTrigger: true,
+              default: 2,
+              min: 1,
+              max: 10,
+              step: 1,
+              description: t('Stroke width used for the area boundary.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'area_boundary_stroke_color',
+            config: {
+              type: 'ColorPickerControl',
+              label: t('Stroke Color'),
+              renderTrigger: true,
+              default: DEFAULT_MERGED_STROKE_COLOR,
+              description: t('Stroke color used for the area boundary.'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_area_mask?.value),
             },
           },
         ],
