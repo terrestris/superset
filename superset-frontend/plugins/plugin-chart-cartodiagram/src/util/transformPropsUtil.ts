@@ -32,6 +32,7 @@ import {
   normalizeTimestamp,
   NumberFormatter,
   TimeFormatter,
+  TimeseriesChartDataResponseResult,
   ValueFormatter,
 } from '@superset-ui/core';
 import { GenericDataType } from '@apache-superset/core/common';
@@ -306,7 +307,7 @@ export const stripGeomColumnFromLabelMap = (
  * @returns query data without geom column.
  */
 export const stripGeomColumnFromQueryData = (
-  queryData: any,
+  queryData: TimeseriesChartDataResponseResult,
   geomColumn: string,
   geomFormat: GeometryFormat,
 ) => {
@@ -510,7 +511,7 @@ export const getChartConfigs = (
     dataByLocation = groupByLocation(data, geomColumn);
   }
   const strippedQueryData = stripGeomColumnFromQueryData(
-    queryData,
+    queryData as TimeseriesChartDataResponseResult,
     geomColumn,
     geomFormat,
   );

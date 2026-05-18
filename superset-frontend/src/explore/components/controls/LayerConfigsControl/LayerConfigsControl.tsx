@@ -153,25 +153,29 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
     ) as any;
     const chartQuery = chartQueryBuilder(currentFormData);
     const fetchChartData = async () => {
-      const body = JSON.stringify(chartQuery);
-      const response = await fetch('/api/v1/chart/data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
-      if (!response.ok) {
-        return;
-      }
-      const responseJson = await response.json();
-      let { data } = responseJson.result[0];
+      try {
+        const body = JSON.stringify(chartQuery);
+        const response = await fetch('/api/v1/chart/data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
+        });
+        if (!response.ok) {
+          return;
+        }
+        const responseJson = await response.json();
+        let { data } = responseJson.result[0];
 
-      if (featureCollectionTransformer) {
-        data = featureCollectionTransformer(data, currentFormData);
-      }
+        if (featureCollectionTransformer) {
+          data = featureCollectionTransformer(data, currentFormData);
+        }
 
-      setChartData(data);
+        setChartData(data);
+      } catch (err) {
+        console.error('Error fetching chart data for LayerConfigsControl', err);
+      }
     };
 
     fetchChartData();
