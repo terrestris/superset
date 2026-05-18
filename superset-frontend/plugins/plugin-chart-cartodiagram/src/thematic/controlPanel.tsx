@@ -333,7 +333,7 @@ const config: ControlPanelConfig = {
               renderTrigger: true,
               default: false,
               description: t(
-                'Fade the area outside the currently displayed polygon perimeter.',
+                'Fade the area outside of the currently displayed polygon perimeter.',
               ),
             },
           },
@@ -343,11 +343,11 @@ const config: ControlPanelConfig = {
             name: 'hide_data',
             config: {
               type: 'CheckboxControl',
-              label: t('Hide Data'),
+              label: t('Hide Data in Area Mask'),
               renderTrigger: true,
               default: false,
               description: t(
-                'Hide the original data polygons when the area mask is displayed.',
+                'Hide the original data when the area mask is displayed.',
               ),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.show_area_mask?.value),
@@ -390,13 +390,13 @@ const config: ControlPanelConfig = {
             name: 'area_boundary_stroke_width',
             config: {
               type: 'SliderControl',
-              label: t('Stroke Width'),
+              label: t('Area Mask Stroke Width'),
               renderTrigger: true,
               default: 2,
               min: 1,
               max: 10,
               step: 1,
-              description: t('Stroke width used for the area boundary.'),
+              description: t('Stroke width used for the area mask.'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.show_area_mask?.value),
             },
@@ -407,10 +407,10 @@ const config: ControlPanelConfig = {
             name: 'area_boundary_stroke_color',
             config: {
               type: 'ColorPickerControl',
-              label: t('Stroke Color'),
+              label: t('Area Mask Stroke Color'),
               renderTrigger: true,
               default: DEFAULT_MERGED_STROKE_COLOR,
-              description: t('Stroke color used for the area boundary.'),
+              description: t('Stroke color used for the area mask.'),
               visibility: ({ controls }: ControlPanelsContainerProps) =>
                 Boolean(controls?.show_area_mask?.value),
             },
