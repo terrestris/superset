@@ -17,6 +17,7 @@
  * under the License.
  */
 import { ChartProps } from '@superset-ui/core';
+import { DEFAULT_MASK_COLOR, DEFAULT_MERGED_STROKE_COLOR } from '../constants';
 
 export default function transformProps(chartProps: ChartProps) {
   /**
@@ -74,6 +75,13 @@ export default function transformProps(chartProps: ChartProps) {
     showTimeslider,
     showLegend,
     showTooltip,
+    showAreaMask,
+    hideData = false,
+    areaMaskOpacity = 75,
+    areaMaskColor = DEFAULT_MASK_COLOR,
+    areaBoundaryStrokeWidth = formData.mergedPolygonStrokeWidth || 2,
+    areaBoundaryStrokeColor = formData.mergedPolygonStrokeColor ||
+      DEFAULT_MERGED_STROKE_COLOR,
     timeColumn,
     tooltipTemplate,
   } = formData;
@@ -108,6 +116,12 @@ export default function transformProps(chartProps: ChartProps) {
     showTimeslider,
     showLegend,
     showTooltip,
+    showAreaMask,
+    hideData,
+    areaMaskOpacity,
+    areaMaskColor,
+    areaBoundaryStrokeWidth,
+    areaBoundaryStrokeColor,
     theme,
     timeColumn,
     tooltipTemplate,
