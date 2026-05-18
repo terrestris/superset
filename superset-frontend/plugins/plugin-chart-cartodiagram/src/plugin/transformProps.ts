@@ -44,14 +44,22 @@ export default function transformProps(chartProps: ChartProps) {
   const transformPropsRegistry = getChartTransformPropsRegistry();
   const chartTransformer = transformPropsRegistry.get(selectedChart.viz_type);
 
-  const chartConfigs = getChartConfigs(
-    selectedChart,
-    geomColumn,
-    geomFormat,
-    chartProps,
-    chartTransformer,
-    sliceId,
-  );
+  let chartConfigs;
+  try {
+    chartConfigs = getChartConfigs(
+      selectedChart,
+      geomColumn,
+      geomFormat,
+      chartProps,
+      chartTransformer,
+      sliceId,
+    );
+  } catch {
+    chartConfigs = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+  }
 
   return {
     width,
