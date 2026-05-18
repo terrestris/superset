@@ -32,6 +32,7 @@ import { FitOptions } from 'ol/View';
 import { getExtentFromFeatures } from './geometryUtil';
 import { ChartConfig, MapProjections } from '../types';
 import { GeometryFormat } from '../constants';
+import { ReadOptions } from 'ol/format/Feature';
 
 // default map extent of world if no features are found
 // TODO: move to generic config file or plugin configuration
@@ -108,7 +109,7 @@ export const wkbToGeoJSON = (wkb: string) => {
 
 export const wktToGeoJSON = (wkt: string) => {
   const format = new WKT();
-  const wktOpts: any = {
+  const wktOpts: ReadOptions = {
     featureProjection: 'EPSG:3857',
     dataProjection: 'EPSG:4326', // default to WGS84
   };
@@ -138,8 +139,8 @@ export const dataRecordsToOlFeatures = (
   const format: WKB | WKT =
     geomFormat === GeometryFormat.WKT ? new WKT() : new WKB();
   const features: Feature[] = [];
-  const defaultOpts: any = { featureProjection: 'EPSG:3857' };
-  const defaultWktOpts: any = {
+  const defaultOpts: ReadOptions = { featureProjection: 'EPSG:3857' };
+  const defaultWktOpts: ReadOptions = {
     featureProjection: 'EPSG:3857',
     dataProjection: 'EPSG:4326',
   };

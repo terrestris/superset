@@ -250,3 +250,12 @@ export type ChartWrapperProps = {
 export type MapProjections = {
   [key: string]: string;
 };
+
+export type MapBootstrapData = {
+  common: {
+    conf: {
+      MAP_PROJECTIONS: MapProjections;
+      MAP_DEFAULT_LAYERS: LayerConf[];
+    };
+  };
+};

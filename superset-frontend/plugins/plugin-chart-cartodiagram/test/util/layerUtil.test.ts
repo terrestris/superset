@@ -164,10 +164,10 @@ describe('layerUtil', () => {
     test('properly applies style', async () => {
       const dataLayer = await createDataLayer(dataLayerConf);
       const style = dataLayer!.getStyle();
-      // @ts-ignore
+      // @ts-expect-error upgrade `ol` package for better type of StyleLike type.
       expect(style!.length).toEqual(3);
 
-      // @ts-ignore upgrade `ol` package for better type of StyleLike type.
+      // @ts-expect-error upgrade `ol` package for better type of StyleLike type.
       const colorAtLayer = style![2].getFill().getColor();
       expect(colorAtLayer).toEqual(fillColor);
     });
