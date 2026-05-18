@@ -32,6 +32,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import XyzSource from 'ol/source/XYZ';
 import GeoJSON from 'ol/format/GeoJSON';
+import { Fill, Stroke, Style } from 'ol/style';
 import {
   WmsLayerConf,
   WfsLayerConf,
@@ -46,7 +47,12 @@ import {
   isXyzLayerConf,
 } from '../typeguards';
 import { isVersionBelow } from './serviceUtil';
-import { LAYER_NAME_PROP, SELECTION_LAYER_NAME } from '../constants';
+import {
+  LAYER_NAME_PROP,
+  MASK_LAYER_NAME,
+  PRESENTATION_LAYER_NAME,
+  SELECTION_LAYER_NAME,
+} from '../constants';
 
 /**
  * Create a WMS layer.
@@ -206,15 +212,30 @@ export const createLayer = async (layerConf: LayerConf) => {
   return layer;
 };
 
-export const removeSelectionLayer = (olMap: Map) => {
-  const selectionLayer = olMap
+/**
+ * Remove a managed helper layer from the map by its internal layer name.
+ *
+ * @param olMap The OpenLayers map
+ * @param layerName The internal layer name to remove
+ */
+export const removeManagedLayer = (olMap: Map, layerName: string) => {
+  const layer = olMap
     .getLayers()
     .getArray()
-    .filter(l => l.get(LAYER_NAME_PROP) === SELECTION_LAYER_NAME)
+    .filter(l => l.get(LAYER_NAME_PROP) === layerName)
     .pop();
-  if (selectionLayer) {
-    olMap.removeLayer(selectionLayer);
+  if (layer) {
+    olMap.removeLayer(layer);
   }
+};
+
+/**
+ * Remove the dedicated selection layer from the map.
+ *
+ * @param olMap The OpenLayers map
+ */
+export const removeSelectionLayer = (olMap: Map) => {
+  removeManagedLayer(olMap, SELECTION_LAYER_NAME);
 };
 
 export const getSelectedFeatures = (
@@ -249,22 +270,95 @@ export const setSelectionBackgroundOpacity = (
   });
 };
 
+/**
+ * Create a layer used to highlight the currently selected features.
+ *
+ * The layer reuses the style of the first data layer so the highlighted
+ * features keep the same visual appearance as the original data.
+ *
+ * @param dataLayers The current data layers
+ * @param features The selected features to display
+ * @returns The created selection layer
+ */
 export const createSelectionLayer = (
   dataLayers: VectorLayer<VectorSource>[],
   features: Feature[],
 ) => {
+  const layerStyle = dataLayers[0]?.getStyle();
   const selectionLayer = new VectorLayer({
     source: new VectorSource({
       features,
     }),
+    style: layerStyle,
   });
   selectionLayer.set(LAYER_NAME_PROP, SELECTION_LAYER_NAME);
-  // TODO how can we handle multiple data layers?
-  const layerStyle = dataLayers[0].getStyle();
-  if (layerStyle) {
-    selectionLayer.setStyle(layerStyle);
-  }
   return selectionLayer;
+};
+
+/**
+ * Create a presentation layer for derived polygon rendering.
+ *
+ * This is used for display-only geometries, for example merged polygon
+ * perimeters, while interactions continue to rely on the original data layer.
+ *
+ * @param features The features to render in the presentation layer
+ * @param strokeColor The stroke color used for the merged perimeter
+ * @param strokeWidth The stroke width used for the merged perimeter
+ * @returns The created presentation layer
+ */
+export const createPresentationLayer = (
+  features: Feature[],
+  strokeColor?: { r: number; g: number; b: number; a: number },
+  strokeWidth = 2,
+) => {
+  const safeStrokeColor = strokeColor || { r: 0, g: 0, b: 0, a: 1 };
+  const presentationLayer = new VectorLayer({
+    source: new VectorSource({
+      features,
+    }),
+    style: new Style({
+      // Keep only the merged perimeter visible on the presentation layer.
+      // eslint-disable-next-line theme-colors/no-literal-colors
+      fill: new Fill({ color: 'rgba(255, 255, 255, 0)' }),
+      // eslint-disable-next-line theme-colors/no-literal-colors
+      stroke: new Stroke({
+        color: `rgba(${safeStrokeColor.r}, ${safeStrokeColor.g}, ${safeStrokeColor.b}, ${safeStrokeColor.a})`,
+        width: strokeWidth,
+      }),
+    }),
+  });
+  presentationLayer.set(LAYER_NAME_PROP, PRESENTATION_LAYER_NAME);
+  return presentationLayer;
+};
+
+/**
+ * Create a layer that visually masks the area outside a focused perimeter.
+ *
+ * @param maskFeature The polygon feature describing the mask geometry
+ * @param color The fill color of the mask
+ * @param opacity The fill opacity of the mask, in the range 0..1
+ * @returns The created mask layer
+ */
+export const createMaskLayer = (
+  maskFeature: Feature,
+  color?: { r: number; g: number; b: number; a: number },
+  opacity = 0.65,
+) => {
+  const safeColor = color || { r: 255, g: 255, b: 255, a: 1 };
+  const maskLayer = new VectorLayer({
+    source: new VectorSource({
+      features: [maskFeature],
+    }),
+    style: new Style({
+      // Keep the active area visible and softly fade the outside.
+      // eslint-disable-next-line theme-colors/no-literal-colors
+      fill: new Fill({
+        color: `rgba(${safeColor.r}, ${safeColor.g}, ${safeColor.b}, ${opacity})`,
+      }),
+    }),
+  });
+  maskLayer.set(LAYER_NAME_PROP, MASK_LAYER_NAME);
+  return maskLayer;
 };
 
 export const getDefaultStyle = () => ({
