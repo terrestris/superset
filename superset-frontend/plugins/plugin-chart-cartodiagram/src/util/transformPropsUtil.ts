@@ -281,14 +281,7 @@ export const stripGeomColumnFromLabelMap = (
     if (key === geomColumn) {
       return;
     }
-    let geomColumns: number[];
-    if (geomFormat === GeometryFormat.GEOJSON) {
-      geomColumns = getGeojsonColumns(value);
-    } else if (geomFormat === GeometryFormat.WKB) {
-      geomColumns = getWkbColumns(value);
-    } else {
-      geomColumns = getWktColumns(value);
-    }
+    const geomColumns = getGeomColumns(geomFormat, value);
     const filter = geomColumns.length ? [geomColumns[0]] : [];
     const columnName = createColumnName(value, filter);
     const restItems = value.filter((v, idx) => !geomColumns.includes(idx));
