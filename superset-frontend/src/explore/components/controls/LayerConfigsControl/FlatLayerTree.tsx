@@ -183,10 +183,7 @@ const DraggableLayerTreeItem: FC<DraggableLayerTreeItemProps> = ({
   );
 };
 
-export const FlatLayerTree: FC<FlatLayerTreeProps> = forwardRef<
-  HTMLDivElement,
-  FlatLayerTreeProps
->(
+export const FlatLayerTree = forwardRef<HTMLDivElement, FlatLayerTreeProps>(
   (
     {
       layerConfigs,
