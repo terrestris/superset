@@ -52,14 +52,7 @@ const StyledTimeSlider = styled(TimeSlider)`
 `;
 
 export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
-  const {
-    height,
-    width,
-    showTimeslider,
-    timeColumn,
-    timesliderTooltipFormat,
-    data,
-  } = props;
+  const { height, width, timeColumn, timesliderTooltipFormat, data } = props;
   const theme = useTheme();
 
   const rootElem = createRef<HTMLDivElement>();
@@ -69,21 +62,23 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   );
   const [olMap] = useState(new OlMap({}));
 
+  const showTimeSlider = Boolean(timeColumn);
+
   const initialTimeSliderValue = useMemo(() => {
-    if (!showTimeslider || !timeColumn) {
+    if (!showTimeSlider || !timeColumn) {
       return undefined;
     }
 
     const marks = dataRecordsToMarks(data as DataRecord[], timeColumn);
     return getFirstMark(marks);
-  }, [data, showTimeslider, timeColumn]);
+  }, [data, showTimeSlider, timeColumn]);
 
   const [timeSliderValue, setTimeSliderValue] = useState<number | undefined>(
     initialTimeSliderValue,
   );
 
   useEffect(() => {
-    if (!showTimeslider || !timeColumn) {
+    if (!showTimeSlider || !timeColumn) {
       setTimeSliderValue(undefined);
       return;
     }
@@ -95,9 +90,9 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
     if (!currentValueIsValid) {
       setTimeSliderValue(getFirstMark(marks));
     }
-  }, [data, showTimeslider, timeColumn, timeSliderValue]);
+  }, [data, showTimeSlider, timeColumn, timeSliderValue]);
 
-  const mapHeight = showTimeslider ? height - TIMESLIDER_HEIGHT * 2 : height;
+  const mapHeight = showTimeSlider ? height - TIMESLIDER_HEIGHT * 2 : height;
 
   const onSliderChange = (value: number) => {
     setTimeSliderValue(value);
@@ -108,11 +103,11 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
       <OlChartMap
         mapId={mapId}
         olMap={olMap}
-        timeFilter={showTimeslider ? timeSliderValue : undefined}
+        timeFilter={showTimeSlider ? timeSliderValue : undefined}
         {...props}
         height={mapHeight}
       />
-      {showTimeslider && timeColumn && (
+      {showTimeSlider && timeColumn && (
         <StyledTimeSlider
           data={data}
           defaultValue={timeSliderValue}

@@ -311,18 +311,6 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         [
           {
-            name: 'show_timeslider',
-            config: {
-              type: 'CheckboxControl',
-              description: t('Whether to show the timeslider'),
-              label: t('Show timeslider'),
-              renderTrigger: true,
-              default: false,
-            },
-          },
-        ],
-        [
-          {
             name: 'timeslider_tooltip_format',
             config: {
               type: 'SelectControl',
@@ -330,7 +318,7 @@ const config: ControlPanelConfig = {
               description: t('Format for the tooltip of the timeslider.'),
               renderTrigger: true,
               visibility: ({ controls }) =>
-                Boolean(controls?.show_timeslider?.value),
+                Boolean(controls?.time_column?.value),
               clearable: false,
               default: TimesliderTooltipFormat.DATETIME,
               choices: [
