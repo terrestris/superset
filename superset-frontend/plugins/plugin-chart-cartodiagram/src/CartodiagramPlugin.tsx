@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { createRef, useState } from 'react';
-import { styled, useTheme } from '@superset-ui/core';
+import { createRef, useEffect, useMemo, useState } from 'react';
+import { DataRecord, styled, useTheme } from '@superset-ui/core';
 import OlMap from 'ol/Map';
 import {
   CartodiagramPluginProps,
@@ -25,6 +25,10 @@ import {
 } from './types';
 
 import OlChartMap from './components/OlChartMap';
+
+import TimeSlider from './components/TimeSlider';
+import { TIMESLIDER_HEIGHT } from './constants';
+import { dataRecordsToMarks, getFirstMark } from './util/timesliderUtil';
 
 import 'ol/ol.css';
 
@@ -40,8 +44,15 @@ const Styles = styled.div<CartodiagramPluginStylesProps>`
   width: ${({ width }) => width}px;
 `;
 
+const StyledTimeSlider = styled(TimeSlider)`
+  height: ${TIMESLIDER_HEIGHT}px;
+  width: 90%;
+  margin-left: 30px;
+  margin-right: 0;
+`;
+
 export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
-  const { height, width } = props;
+  const { height, width, timeColumn, timesliderTooltipFormat, data } = props;
   const theme = useTheme();
 
   const rootElem = createRef<HTMLDivElement>();
@@ -51,9 +62,60 @@ export default function CartodiagramPlugin(props: CartodiagramPluginProps) {
   );
   const [olMap] = useState(new OlMap({}));
 
+  const showTimeSlider = Boolean(timeColumn);
+
+  const initialTimeSliderValue = useMemo(() => {
+    if (!showTimeSlider || !timeColumn) {
+      return undefined;
+    }
+
+    const marks = dataRecordsToMarks(data as DataRecord[], timeColumn);
+    return getFirstMark(marks);
+  }, [data, showTimeSlider, timeColumn]);
+
+  const [timeSliderValue, setTimeSliderValue] = useState<number | undefined>(
+    initialTimeSliderValue,
+  );
+
+  useEffect(() => {
+    if (!showTimeSlider || !timeColumn) {
+      setTimeSliderValue(undefined);
+      return;
+    }
+
+    const marks = dataRecordsToMarks(data as DataRecord[], timeColumn);
+    const markValues = Object.keys(marks).map(Number);
+    const currentValueIsValid =
+      timeSliderValue !== undefined && markValues.includes(timeSliderValue);
+    if (!currentValueIsValid) {
+      setTimeSliderValue(getFirstMark(marks));
+    }
+  }, [data, showTimeSlider, timeColumn, timeSliderValue]);
+
+  const mapHeight = showTimeSlider ? height - TIMESLIDER_HEIGHT * 2 : height;
+
+  const onSliderChange = (value: number) => {
+    setTimeSliderValue(value);
+  };
+
   return (
     <Styles ref={rootElem} height={height} width={width} theme={theme}>
-      <OlChartMap mapId={mapId} olMap={olMap} {...props} />
+      <OlChartMap
+        mapId={mapId}
+        olMap={olMap}
+        timeFilter={showTimeSlider ? timeSliderValue : undefined}
+        {...props}
+        height={mapHeight}
+      />
+      {showTimeSlider && timeColumn && (
+        <StyledTimeSlider
+          data={data}
+          defaultValue={timeSliderValue}
+          onChange={onSliderChange}
+          timeColumn={timeColumn}
+          timesliderTooltipFormat={timesliderTooltipFormat}
+        />
+      )}
     </Styles>
   );
 }

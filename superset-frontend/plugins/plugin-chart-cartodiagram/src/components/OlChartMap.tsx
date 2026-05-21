@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import Point from 'ol/geom/Point';
@@ -45,6 +45,35 @@ import {
 /** The name to reference the chart layer */
 const CHART_LAYER_NAME = 'openlayers-chart-layer';
 
+const getFilteredChartConfigs = (
+  chartConfigs: ChartConfig,
+  timeColumn: OlChartMapProps['timeColumn'],
+  timeFilter: OlChartMapProps['timeFilter'],
+): ChartConfig => {
+  if (!timeColumn) {
+    return chartConfigs;
+  }
+  if (timeFilter === undefined) {
+    return {
+      ...chartConfigs,
+      features: [],
+    };
+  }
+
+  return {
+    ...chartConfigs,
+    features: chartConfigs.features.filter(feature => {
+      const timeValue = feature.properties?.timestamp;
+      if (timeValue == null) {
+        return false;
+      }
+      const normalizedTimeValue = Number(timeValue);
+      const normalizedTimeFilter = Number(timeFilter);
+      return normalizedTimeValue === normalizedTimeFilter;
+    }),
+  };
+};
+
 export const OlChartMap = (props: OlChartMapProps) => {
   const {
     height,
@@ -64,12 +93,18 @@ export const OlChartMap = (props: OlChartMapProps) => {
     chartBackgroundBorderRadius,
     setControlValue,
     theme,
+    timeColumn,
+    timeFilter,
   } = props;
 
   const locale = useSelector((state: any) => state?.common?.locale);
-
+  const filteredChartConfigs = useMemo<ChartConfig>(
+    () => getFilteredChartConfigs(chartConfigs, timeColumn, timeFilter),
+    [chartConfigs, timeColumn, timeFilter],
+  );
   const [currentChartConfigs, setCurrentChartConfigs] =
-    useState<ChartConfig>(chartConfigs);
+    useState<ChartConfig>(filteredChartConfigs);
+
   const [currentMapView, setCurrentMapView] = useState<MapViewConfigs>(mapView);
   const [currentMapMaxExtent, setCurrentMapMaxExtent] =
     useState<MapMaxExtentConfigs>(mapMaxExtent);
@@ -92,19 +127,19 @@ export const OlChartMap = (props: OlChartMapProps) => {
    * The prop chartConfigs will always be created on the fly,
    * therefore the shallow comparison of the effect hooks will
    * always trigger. In this hook, we make a 'deep comparison'
-   * between the incoming prop and the state. Only if the objects
-   * differ will we set the state to the new object. All other
-   * effect hooks that depend on chartConfigs should now depend
-   * on currentChartConfigs instead.
+   * between the filtered incoming prop and the state. Only if
+   * the objects differ will we set the state to the new object.
+   * All other effect hooks that depend on chartConfigs should
+   * now depend on currentChartConfigs instead.
    */
   useEffect(() => {
     setCurrentChartConfigs(oldCurrentChartConfigs => {
-      if (isChartConfigEqual(chartConfigs, oldCurrentChartConfigs)) {
+      if (isChartConfigEqual(filteredChartConfigs, oldCurrentChartConfigs)) {
         return oldCurrentChartConfigs;
       }
-      return chartConfigs;
+      return filteredChartConfigs;
     });
-  }, [chartConfigs]);
+  }, [filteredChartConfigs]);
 
   /**
    * The prop mapView will always be created on the fly,

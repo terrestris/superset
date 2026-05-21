@@ -62,7 +62,7 @@ export const simplifyConfig = (config: ChartConfig) => {
       type: f.type,
       geometry: f.geometry,
       properties: Object.keys(f.properties)
-        .filter(k => k !== 'refs')
+        .filter(k => !['refs', '__reactFiber$', '__reactProps$'].includes(k))
         .reduce((prev, cur) => ({ ...prev, [cur]: f.properties[cur] }), {}),
     })),
   };
