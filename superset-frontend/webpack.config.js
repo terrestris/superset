@@ -507,15 +507,6 @@ const config = {
         use: [createSwcLoader('typescript', true)],
       },
       {
-        test: /\.js$/,
-        include: /node_modules\/geostyler/,
-        resolve: {
-          // Currently, GeoStyler uses imports without file extension
-          // on ESM modules, which is not supported by webpack.
-          fullySpecified: false,
-        },
-      },
-      {
         test: /\.jsx?$/,
         // include source code for plugins, but exclude node_modules and test files within them
         exclude: [
