@@ -490,7 +490,7 @@ const config = {
         },
       },
       {
-        test: /node_modules\/(geostyler-style|geostyler-qgis-parser)\/.*\.js$/,
+        test: /node_modules\/(geostyler|geostyler-style|geostyler-qgis-parser|geostyler-openlayers-parser|geostyler-mapbox-parser|geostyler-sld-parser|geostyler-legend)\/.*\.js$/,
         resolve: {
           fullySpecified: false,
         },
