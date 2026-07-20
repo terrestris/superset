@@ -19,10 +19,9 @@
 import { ControlHeader } from '@superset-ui/chart-controls';
 import { t } from '@apache-superset/core/translation';
 import { css, styled } from '@apache-superset/core/theme';
-import { Button, Radio } from 'antd';
+import { Button, Radio, RadioChangeEvent } from '@superset-ui/core/components';
 import { FC } from 'react';
 import { mix } from 'polished';
-import { RadioChangeEvent } from 'antd/lib/radio';
 import {
   MapMaxExtentConfigs,
   MapMaxExtentConfigsControlProps,
@@ -40,8 +39,8 @@ export const StyledMaxExtentButton = styled(Button)`
     font-size: ${theme.fontSizeSM}px;
     font-weight: ${theme.fontWeightStrong};
     text-transform: uppercase;
-    min-width: ${theme.sizeUnit * 36};
-    min-height: ${theme.padding};
+    min-width: ${theme.sizeUnit * 36}px;
+    min-height: ${theme.padding}px;
     box-shadow: none;
     border-width: 0px;
     border-style: none;

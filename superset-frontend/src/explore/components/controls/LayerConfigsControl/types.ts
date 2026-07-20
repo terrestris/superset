@@ -66,10 +66,7 @@ export interface FlatLayerTreeProps {
 }
 
 export type LayerConf =
-  | WmsLayerConf
-  | WfsLayerConf
-  | XyzLayerConf
-  | DataLayerConf;
+  WmsLayerConf | WfsLayerConf | XyzLayerConf | DataLayerConf;
 
 export type LayerConfWithId = LayerConf & { id: string };
 

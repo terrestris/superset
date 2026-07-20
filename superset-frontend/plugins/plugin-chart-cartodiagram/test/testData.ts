@@ -28,7 +28,7 @@ export const wkbGeom2 = '0101000020E61000000000000000001C400000000000004A40';
 export const wktGeom1 = 'POINT(7 52)';
 export const wktGeom2 = 'POINT(7 53)';
 
-export const nonTimeSeriesChartData: any = [
+export const nonTimeSeriesChartData = [
   {
     geom: geom1,
     my_value: 'apple',
@@ -81,7 +81,7 @@ export const nonTimeSeriesChartData: any = [
   },
 ];
 
-export const nonTimeSeriesWkbChartData: any = [
+export const nonTimeSeriesWkbChartData = [
   {
     geom: wkbGeom1,
     my_value: 'apple',
@@ -134,7 +134,7 @@ export const nonTimeSeriesWkbChartData: any = [
   },
 ];
 
-export const nonTimeSeriesWktChartData: any = [
+export const nonTimeSeriesWktChartData = [
   {
     geom: wktGeom1,
     my_value: 'apple',
