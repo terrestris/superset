@@ -419,7 +419,7 @@ export const reserveLabelColors = (
   // get needed control values from underlying chart config
   const { colorScheme = '', groupby = [], dateFormat } = formData;
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
-  const groupbyLabels = groupby.map(getColumnLabel);
+  const groupbyLabels = (groupby ?? []).map(getColumnLabel);
   Object.keys(dataByLocation).forEach(location => {
     const coltypeMapping = getColtypesMapping({
       ...strippedQueryData,
