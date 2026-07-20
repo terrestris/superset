@@ -163,7 +163,6 @@ export const createWfsLayer = async (wfsLayerConf: WfsLayerConf) => {
  * Create a DATA layer.
  *
  * @param dataLayerConf The layer configuration
- * @param featureCollection The featureCollection for the layer source
  *
  * @returns The created DATA layer
  */

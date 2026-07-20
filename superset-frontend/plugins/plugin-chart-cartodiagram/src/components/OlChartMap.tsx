@@ -137,7 +137,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
    * that might be changed from outside of the component, i.e the
    * fixed properties and the mode. Only if these values differ will
    * we set the state to the new object. All other effect hooks that
-   * depend on mapView should now depend on currentMapMaxExtent instead.
+   * depend on mapView should depend on currentMapMaxExtent instead.
    */
   useEffect(() => {
     setCurrentMapMaxExtent(oldCurrentMapExtentView => {
@@ -248,9 +248,10 @@ export const OlChartMap = (props: OlChartMapProps) => {
         });
         olMap.setView(newView);
 
-        const [minx, miny, maxx, maxy] = newView.calculateExtent(
-          olMap.getSize(),
-        );
+        const size = olMap.getSize();
+        if (!size) return;
+
+        const [minx, miny, maxx, maxy] = newView.calculateExtent(size);
 
         const [minX, minY, maxX, maxY] = transformExtent(
           [minx, miny, maxx, maxy],
@@ -353,9 +354,9 @@ export const OlChartMap = (props: OlChartMapProps) => {
       const center = targetView.getCenter();
       const zoom = targetView.getZoom();
 
-      const [minx, miny, maxx, maxy] = targetView.calculateExtent(
-        olMap.getSize(),
-      );
+      const size = olMap.getSize();
+      if (!size) return;
+      const [minx, miny, maxx, maxy] = targetView.calculateExtent(size);
       const [minX, minY, maxX, maxY] = transformExtent(
         [minx, miny, maxx, maxy],
         'EPSG:3857',
