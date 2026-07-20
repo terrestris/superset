@@ -18,7 +18,7 @@
  */
 
 import { t } from '@apache-superset/core/translation';
-import { Tag } from 'antd';
+import { Tag } from '@superset-ui/core/components';
 import { FC } from 'react';
 import { MapMaxExtentTagProps } from '../../types';
 

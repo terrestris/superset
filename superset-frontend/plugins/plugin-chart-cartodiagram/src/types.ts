@@ -130,10 +130,7 @@ export interface DataLayerConf extends BaseLayerConf {
 }
 
 export type LayerConf =
-  | WmsLayerConf
-  | WfsLayerConf
-  | XyzLayerConf
-  | DataLayerConf;
+  WmsLayerConf | WfsLayerConf | XyzLayerConf | DataLayerConf;
 
 export type EventHandlers = Record<string, { (props: any): void }>;
 
