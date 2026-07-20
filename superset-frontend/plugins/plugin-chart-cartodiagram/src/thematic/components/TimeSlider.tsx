@@ -18,7 +18,15 @@
  */
 import { DataRecord } from '@superset-ui/core';
 import { styled } from '@apache-superset/core/theme';
-import { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Slider, Button } from 'antd';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 

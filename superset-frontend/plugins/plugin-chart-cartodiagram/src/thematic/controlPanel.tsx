@@ -467,8 +467,8 @@ const config: ControlPanelConfig = {
                 Boolean(controls?.show_timeslider?.value),
               clearable: false,
               mapStateToProps: state => {
-                const currentColumns: string[] = state.controls.columns
-                  ?.value as string[] ?? [];
+                const currentColumns: string[] =
+                  (state.controls.columns?.value as string[]) ?? [];
                 return {
                   choices: (state.datasource?.columns as QueryColumn[])
                     .filter(
