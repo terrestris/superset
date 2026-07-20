@@ -145,8 +145,9 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
 
   useEffect(() => {
     if (!currentFormData || !enableDataLayer) {
-      return;
+      return undefined;
     }
+    const controller = new AbortController();
     const buildQueryRegistry = getChartBuildQueryRegistry();
     const chartQueryBuilder = buildQueryRegistry.get(
       currentFormData.viz_type,
@@ -161,6 +162,7 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
             'Content-Type': 'application/json',
           },
           body,
+          signal: controller.signal,
         });
         if (!response.ok) {
           return;
@@ -174,11 +176,17 @@ export const LayerConfigsControl: FC<LayerConfigsControlProps> = ({
 
         setChartData(data);
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         console.error('Error fetching chart data for LayerConfigsControl', err);
       }
     };
 
     fetchChartData();
+    return () => {
+      controller.abort();
+    };
   }, [currentFormData, enableDataLayer, featureCollectionTransformer]);
 
   const layerConfigs = useMemo<LayerConfWithId[]>(
