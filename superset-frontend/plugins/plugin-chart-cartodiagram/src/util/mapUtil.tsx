@@ -97,31 +97,27 @@ const extractSridFromWkt = (wkt: string) => {
   return extract;
 };
 
-export const wkbToGeoJSON = (wkb: string) => {
-  const format = new WKB();
-  const feature = format.readFeature(wkb, {
-    featureProjection: 'EPSG:3857',
-  });
+const featureToGeoJSON = (
+  format: WKB | WKT,
+  geom: string,
+  readOptions: ReadOptions,
+) => {
+  const feature = format.readFeature(geom, readOptions);
   return new GeoJSON().writeFeatureObject(feature, {
     featureProjection: 'EPSG:3857',
   });
 };
 
+export const wkbToGeoJSON = (wkb: string) =>
+  featureToGeoJSON(new WKB(), wkb, { featureProjection: 'EPSG:3857' });
+
 export const wktToGeoJSON = (wkt: string) => {
-  const format = new WKT();
-  const wktOpts: ReadOptions = {
-    featureProjection: 'EPSG:3857',
-    dataProjection: 'EPSG:4326', // default to WGS84
-  };
   const extract = extractSridFromWkt(wkt);
-  const cleanedWkt = extract.geom;
-  if (extract.srid) {
-    wktOpts.dataProjection = extract.srid;
-  }
-  const feature = format.readFeature(cleanedWkt, wktOpts);
-  return new GeoJSON().writeFeatureObject(feature, {
+  const readOptions: ReadOptions = {
     featureProjection: 'EPSG:3857',
-  });
+    dataProjection: extract.srid ?? 'EPSG:4326',
+  };
+  return featureToGeoJSON(new WKT(), extract.geom, readOptions);
 };
 
 /**
