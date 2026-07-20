@@ -28,7 +28,7 @@ import { css, styled, useTheme } from '@apache-superset/core/theme';
 import { Button } from '@superset-ui/core/components/Button';
 import { Form } from '@superset-ui/core/components/Form';
 import Tabs from '@superset-ui/core/components/Tabs';
-import { Upload } from 'antd';
+import { Upload } from '@superset-ui/core/components/Upload';
 import { VectorData } from 'geostyler-data';
 import { Style as GsStyle } from 'geostyler-style';
 import {
