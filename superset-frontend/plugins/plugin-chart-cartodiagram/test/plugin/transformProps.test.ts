@@ -24,6 +24,8 @@ import transformProps from '../../src/plugin/transformProps';
 import {
   groupedTimeseriesChartData,
   groupedTimeseriesLabelMap,
+  nonTimeSeriesWkbChartData,
+  nonTimeSeriesWktChartData,
 } from '../testData';
 
 describe('CartodiagramPlugin transformProps', () => {
@@ -158,5 +160,61 @@ describe('CartodiagramPlugin transformProps', () => {
         chartBackgroundBorderRadius: formData.chartBackgroundBorderRadius,
       }),
     );
+  });
+
+  test('should produce a FeatureCollection with 2 features for WKB geometry', () => {
+    const wkbSelectedChart = {
+      id: 1,
+      viz_type: 'pie',
+      slice_name: 'foo',
+      params: JSON.stringify({ groupby: [] }),
+    };
+    const wkbChartProps = new ChartProps({
+      formData: {
+        ...formData,
+        geomFormat: GeometryFormat.WKB,
+        selectedChart: JSON.stringify(wkbSelectedChart),
+      },
+      width: 800,
+      height: 600,
+      queriesData: [{ data: nonTimeSeriesWkbChartData }],
+      theme: supersetTheme,
+    });
+    const transformedProps = transformProps(wkbChartProps);
+    expect(transformedProps.chartConfigs).toEqual(
+      expect.objectContaining({ type: 'FeatureCollection' }),
+    );
+    expect(transformedProps.chartConfigs.features).toHaveLength(2);
+    expect(
+      transformedProps.chartConfigs.features[0].geometry.coordinates,
+    ).toHaveLength(2);
+  });
+
+  test('should produce a FeatureCollection with 2 features for WKT geometry', () => {
+    const wktSelectedChart = {
+      id: 1,
+      viz_type: 'pie',
+      slice_name: 'foo',
+      params: JSON.stringify({ groupby: [] }),
+    };
+    const wktChartProps = new ChartProps({
+      formData: {
+        ...formData,
+        geomFormat: GeometryFormat.WKT,
+        selectedChart: JSON.stringify(wktSelectedChart),
+      },
+      width: 800,
+      height: 600,
+      queriesData: [{ data: nonTimeSeriesWktChartData }],
+      theme: supersetTheme,
+    });
+    const transformedProps = transformProps(wktChartProps);
+    expect(transformedProps.chartConfigs).toEqual(
+      expect.objectContaining({ type: 'FeatureCollection' }),
+    );
+    expect(transformedProps.chartConfigs.features).toHaveLength(2);
+    expect(
+      transformedProps.chartConfigs.features[0].geometry.coordinates,
+    ).toHaveLength(2);
   });
 });
