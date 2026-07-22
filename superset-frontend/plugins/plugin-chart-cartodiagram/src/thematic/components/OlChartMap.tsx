@@ -25,6 +25,8 @@ import Point from 'ol/geom/Point';
 import { View, Feature as OlFeature } from 'ol';
 import BaseEvent from 'ol/events/Event';
 import { unByKey } from 'ol/Observable';
+import Draw, { DrawEvent } from 'ol/interaction/Draw';
+import OlPolygon from 'ol/geom/Polygon';
 import { toLonLat, transformExtent } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -44,6 +46,7 @@ import {
   removeSelectionLayer,
   setSelectionBackgroundOpacity,
 } from '../../util/layerUtil';
+import { getFeaturesInLasso, LASSO_DRAW_STYLE } from '../../util/lassoUtil';
 import { LayerConf, MapMaxExtentConfigs, MapViewConfigs } from '../../types';
 import { OlChartMapProps } from '../types';
 import { isDataLayerConf } from '../../typeguards';
@@ -56,6 +59,7 @@ import {
   SELECTION_BACKGROUND_OPACITY,
 } from '../../constants';
 import { Legend } from './Legend';
+import { SelectionControls } from './SelectionControls';
 import {
   areFeaturesPolygonal,
   createMaskFeature,
@@ -102,6 +106,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     useState<VectorLayer<VectorSource>[]>();
   const [currentMapMaxExtent, setCurrentMapMaxExtent] =
     useState<MapMaxExtentConfigs>(mapMaxExtent);
+  const [lassoActive, setLassoActive] = useState(false);
 
   // The processed data, either list of data records or a feature collection,
   // depending on geomFormat. Use this throughout the component instead of data.
@@ -718,8 +723,88 @@ export const OlChartMap = (props: OlChartMapProps) => {
     }
   }, [olMap, currentMapView.mode, mapExtentPadding]);
 
+  /**
+   * Freehand lasso selection tool.
+   *
+   * When lassoActive is true, a Draw interaction is added to the map. After
+   * the user finishes drawing, all data-layer features that intersect the
+   * drawn polygon are collected and used to activate (or narrow) the
+   * cross-filter. The interaction is removed as soon as drawing completes
+   * (one-shot behaviour).
+   */
+  useEffect(() => {
+    if (!lassoActive || !emitCrossFilters) {
+      return undefined;
+    }
+
+    const draw = new Draw({
+      type: 'Polygon',
+      freehand: true,
+      style: LASSO_DRAW_STYLE,
+    });
+
+    draw.on('drawend', (evt: DrawEvent) => {
+      const lassoPolygon = evt.feature.getGeometry() as OlPolygon;
+      if (!lassoPolygon || !currentDataLayers) {
+        setLassoActive(false);
+        return;
+      }
+
+      const featuresInLasso = getFeaturesInLasso(
+        currentDataLayers,
+        lassoPolygon,
+      );
+
+      const vals = uniq(
+        featuresInLasso
+          .map(f => f.get(crossFilterColumn))
+          .filter(val => val !== undefined && val !== null),
+      );
+
+      // With an existing selection: do nothing if the lasso missed every
+      // already-selected feature (prevents accidental deselection).
+      if (!vals.length) {
+        setLassoActive(false);
+        return;
+      }
+
+      if (vals.length) {
+        setDataMask({
+          extraFormData: {
+            filters: [{ col: crossFilterColumn, op: 'IN', val: vals }],
+          },
+          filterState: {
+            label: vals.join(', '),
+            value: [vals],
+            selectedValues: vals,
+          },
+        });
+      }
+
+      setLassoActive(false);
+    });
+
+    olMap.addInteraction(draw);
+
+    return () => {
+      olMap.removeInteraction(draw);
+    };
+  }, [
+    olMap,
+    lassoActive,
+    emitCrossFilters,
+    currentDataLayers,
+    crossFilterColumn,
+    setDataMask,
+  ]);
+
   useEffect(() => {
     const evtKey = olMap.on('pointermove', evt => {
+      // While lasso mode is active, let the Draw interaction manage the cursor.
+      if (lassoActive) {
+        return;
+      }
+
       const pixel = olMap.getEventPixel(evt.originalEvent);
 
       const hit = olMap.forEachFeatureAtPixel(
@@ -746,7 +831,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
     return () => {
       unByKey(evtKey);
     };
-  }, [olMap, currentDataLayers]);
+  }, [olMap, currentDataLayers, lassoActive]);
 
   useEffect(() => {
     if (!emitCrossFilters) {
@@ -754,13 +839,19 @@ export const OlChartMap = (props: OlChartMapProps) => {
     }
 
     const evtKey = olMap.on('singleclick', evt => {
+      // The Draw interaction handles pointer events during lasso drawing;
+      // suppress click-based selection while lasso mode is active.
+      if (lassoActive) {
+        return;
+      }
+
       const pixel = olMap.getEventPixel(evt.originalEvent);
       const clickedFeatures: OlFeature[] = [];
 
       olMap.forEachFeatureAtPixel(
         pixel,
-        (feat: OlFeature) => {
-          clickedFeatures.push(feat);
+        feat => {
+          clickedFeatures.push(feat as OlFeature);
         },
         {
           layerFilter: layer =>
@@ -784,7 +875,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
         return;
       }
 
-      // We reset the filter if a filtered feature is clicked again.
+      // No active selection: standard XOR toggle (click same feature → clear).
       const resetFilter = !xor(filterState.selectedValues || [], vals).length;
 
       setDataMask({
@@ -813,6 +904,7 @@ export const OlChartMap = (props: OlChartMapProps) => {
   }, [
     olMap,
     currentDataLayers,
+    lassoActive,
     setDataMask,
     crossFilterColumn,
     emitCrossFilters,
@@ -838,6 +930,24 @@ export const OlChartMap = (props: OlChartMapProps) => {
         />
       )}
       {showLegend && <Legend olMap={olMap} layerConfigs={layerConfigs} />}
+      <SelectionControls
+        olMap={olMap}
+        active={lassoActive}
+        disabled={!emitCrossFilters}
+        hasSelection={Boolean(filterState.value)}
+        onToggle={() => setLassoActive(current => !current)}
+        onClear={() => {
+          setLassoActive(false);
+          setDataMask({
+            extraFormData: { filters: [] },
+            filterState: {
+              label: null,
+              value: null,
+              selectedValues: null,
+            },
+          });
+        }}
+      />
     </div>
   );
 };
