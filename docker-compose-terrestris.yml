@@ -1,0 +1,66 @@
+include:
+  - 'docker-compose.yml'
+
+x-superset-volumes: &superset-volumes
+  # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
+  - ./docker:/app/docker
+  - ./superset:/app/superset
+  - ./superset-core:/app/superset-core
+  - ./superset-frontend:/app/superset-frontend
+  - superset_home:/app/superset_home
+  - ./tests:/app/tests
+  - superset_data:/app/data
+  - ../superset_wfs_dialect:/app/superset_wfs_dialect
+
+services:
+
+  geo-db:
+    image: postgis/postgis:17-3.5-alpine
+    environment:
+      POSTGRES_USER: geo
+      POSTGRES_PASSWORD: geo
+    volumes:
+      - ./docker/geo_db/data:/var/lib/postgresql/data
+      - ./docker/geo_db/init_data:/docker-entrypoint-initdb.d
+
+  superset:
+    extends:
+      file: docker-compose.yml
+      service: superset
+    command: ["/app/docker/docker-bootstrap.terrestris.sh", "app"]
+    cap_add:
+      - SYS_PTRACE
+    ports:
+      # debug port
+      - 5678:5678
+    volumes: *superset-volumes
+
+  superset-init:
+    extends:
+      file: docker-compose.yml
+      service: superset-init
+    volumes: *superset-volumes
+
+  superset-node:
+    extends:
+      file: docker-compose.yml
+      service: superset-node
+    volumes: *superset-volumes
+
+  superset-worker:
+    extends:
+      file: docker-compose.yml
+      service: superset-worker
+    volumes: *superset-volumes
+
+  superset-worker-beat:
+    extends:
+      file: docker-compose.yml
+      service: superset-worker-beat
+    volumes: *superset-volumes
+
+  superset-tests-worker:
+    extends:
+      file: docker-compose.yml
+      service: superset-tests-worker
+    volumes: *superset-volumes

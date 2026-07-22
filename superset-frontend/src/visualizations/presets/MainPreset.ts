@@ -40,8 +40,6 @@ import {
   CompareChartPlugin,
   TimePivotChartPlugin,
 } from '@superset-ui/legacy-preset-chart-nvd3';
-import { DeckGLChartPreset } from '@superset-ui/preset-chart-deckgl';
-import ScatterMapChartPlugin from '@superset-ui/plugin-chart-point-cluster-map';
 import {
   CartodiagramPlugin,
   ThematicMapPlugin,
@@ -111,7 +109,7 @@ export default class MainPreset extends Preset {
 
     super({
       name: 'Legacy charts',
-      presets: [new DeckGLChartPreset()],
+      presets: [],
       plugins: [
         new BigNumberChartPlugin().configure({ key: VizType.BigNumber }),
         new BigNumberTotalChartPlugin().configure({
