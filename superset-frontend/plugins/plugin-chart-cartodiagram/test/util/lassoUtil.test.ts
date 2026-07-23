@@ -90,3 +90,32 @@ test('ignores features whose geometry is null', () => {
 
   expect(result).toHaveLength(0);
 });
+
+test('includes features whose point is exactly on the lasso boundary', () => {
+  const onEdge = makePointFeature(0, 5, { region: 'A' });
+  const layer = makeLayer([onEdge]);
+
+  const result = getFeaturesInLasso([layer], squareLasso);
+
+  expect(result).toHaveLength(1);
+  expect(result[0]).toBe(onEdge);
+});
+
+test('excludes features that pass the bbox pre-filter but are outside the precise lasso geometry', () => {
+  const triangleLasso = new Polygon([
+    [
+      [0, 0],
+      [10, 0],
+      [5, 10],
+      [0, 0],
+    ],
+  ]);
+  const outsideTriangle = makePointFeature(8, 8, { region: 'A' });
+  const insideTriangle = makePointFeature(5, 2, { region: 'B' });
+  const layer = makeLayer([outsideTriangle, insideTriangle]);
+
+  const result = getFeaturesInLasso([layer], triangleLasso);
+
+  expect(result).toHaveLength(1);
+  expect(result[0]).toBe(insideTriangle);
+});

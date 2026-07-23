@@ -19,6 +19,7 @@
 
 import { Style } from 'geostyler-style';
 import Map from 'ol/Map';
+import LayerGroup from 'ol/layer/Group';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import OlStyle from 'ol/style/Style';
@@ -94,7 +95,7 @@ describe('layerUtil', () => {
     style: dataLayerStyle,
   });
 
-  const selectionLayer = createSelectionLayer([dataLayer], []);
+  const selectionLayer = createSelectionLayer([dataLayer], [[]]);
 
   beforeEach(() => {
     map.setLayers([dataLayer, selectionLayer]);
@@ -210,7 +211,7 @@ describe('layerUtil', () => {
         'foo',
       );
       expect(selectedFeatures).toHaveLength(1);
-      expect(selectedFeatures[0]).toEqual(matchingFeature);
+      expect(selectedFeatures[0]).toEqual([matchingFeature]);
     });
   });
 
@@ -227,23 +228,42 @@ describe('layerUtil', () => {
   });
 
   describe('createSelectionLayer', () => {
-    test('creates a selection layer', () => {
+    test('creates a layer group with one sub-layer per data layer', () => {
       const feat1 = new Feature();
       feat1.setProperties({ id: 1 });
       const feat2 = new Feature();
       feat2.setProperties({ id: 2 });
-      const features = [feat1, feat2];
+      const features = [[feat1, feat2]];
       const selectionLayer = createSelectionLayer([dataLayer], features);
-      expect(selectionLayer).toBeInstanceOf(VectorLayer);
-      expect(selectionLayer.getSource()!.getFeatures()).toEqual(features);
+      expect(selectionLayer).toBeInstanceOf(LayerGroup);
+      const subLayers = selectionLayer
+        .getLayers()
+        .getArray() as VectorLayer<VectorSource>[];
+      expect(subLayers).toHaveLength(1);
+      expect(subLayers[0].getSource()!.getFeatures()).toEqual([feat1, feat2]);
       expect(selectionLayer.get(LAYER_NAME_PROP)).toEqual(SELECTION_LAYER_NAME);
     });
 
-    test('applies the style of the first data layer', () => {
-      const features: Feature[] = [];
+    test('creates one sub-layer per data layer', () => {
+      const dataLayer2 = new VectorLayer({
+        source: new VectorSource(),
+      });
+      const selectionLayer = createSelectionLayer(
+        [dataLayer, dataLayer2],
+        [[], []],
+      );
+      expect(selectionLayer).toBeInstanceOf(LayerGroup);
+      const subLayers = selectionLayer.getLayers().getArray();
+      expect(subLayers).toHaveLength(2);
+    });
+
+    test('applies the style of each data layer to its corresponding sub-layer', () => {
+      const features: Feature[][] = [[]];
       const selectionLayer = createSelectionLayer([dataLayer], features);
-      const style = selectionLayer.getStyle();
-      expect(style).toEqual(dataLayer.getStyle());
+      const subLayers = selectionLayer
+        .getLayers()
+        .getArray() as VectorLayer<VectorSource>[];
+      expect(subLayers[0].getStyle()).toEqual(dataLayer.getStyle());
     });
   });
 });
