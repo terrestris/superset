@@ -29,6 +29,7 @@ import Map from 'ol/Map';
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { bbox as bboxStrategy } from 'ol/loadingstrategy';
+import LayerGroup from 'ol/layer/Group';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import XyzSource from 'ol/source/XYZ';
@@ -242,13 +243,13 @@ export const getSelectedFeatures = (
   filterState: FilterState,
   crossFilterColumn: string,
 ) => {
-  let selectedFeatures: Feature[] = [];
+  let selectedFeatures: Feature[][] = [];
   if (
     filterState.selectedValues !== null &&
     filterState.selectedValues !== undefined &&
     dataLayers
   ) {
-    selectedFeatures = dataLayers.flatMap(dataLayer =>
+    selectedFeatures = dataLayers.map(dataLayer =>
       dataLayer
         .getSource()!
         .getFeatures()
@@ -272,7 +273,7 @@ export const setSelectionBackgroundOpacity = (
 /**
  * Create a layer used to highlight the currently selected features.
  *
- * The layer reuses the style of the first data layer so the highlighted
+ * The layer reuses the style of the data layers so the highlighted
  * features keep the same visual appearance as the original data.
  *
  * @param dataLayers The current data layers
@@ -281,17 +282,22 @@ export const setSelectionBackgroundOpacity = (
  */
 export const createSelectionLayer = (
   dataLayers: VectorLayer<VectorSource>[],
-  features: Feature[],
+  features: Feature[][],
 ) => {
-  const layerStyle = dataLayers[0]?.getStyle();
-  const selectionLayer = new VectorLayer({
-    source: new VectorSource({
-      features,
-    }),
-    style: layerStyle,
+  const selectionLayers = dataLayers.map((dataLayer, idx) => {
+    const layerStyle = dataLayer.getStyle();
+    return new VectorLayer({
+      source: new VectorSource({
+        features: features[idx],
+      }),
+      style: layerStyle,
+    });
+  }).reverse();
+  const layerGroup = new LayerGroup({
+    layers: selectionLayers,
   });
-  selectionLayer.set(LAYER_NAME_PROP, SELECTION_LAYER_NAME);
-  return selectionLayer;
+  layerGroup.set(LAYER_NAME_PROP, SELECTION_LAYER_NAME);
+  return layerGroup;
 };
 
 /**

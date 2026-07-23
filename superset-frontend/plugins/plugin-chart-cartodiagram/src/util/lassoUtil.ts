@@ -22,22 +22,38 @@
  */
 
 import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import LineString from 'ol/geom/LineString';
+import LinearRing from 'ol/geom/LinearRing';
+import MultiPoint from 'ol/geom/MultiPoint';
+import MultiLineString from 'ol/geom/MultiLineString';
+import MultiPolygon from 'ol/geom/MultiPolygon';
+import GeometryCollection from 'ol/geom/GeometryCollection';
 import Polygon from 'ol/geom/Polygon';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import type { FlatStyleLike } from 'ol/style/flat';
+import OL3Parser from 'jsts/org/locationtech/jts/io/OL3Parser';
+import RelateOp from 'jsts/org/locationtech/jts/operation/relate/RelateOp';
+import { GeometryFactory, PrecisionModel } from 'jsts/org/locationtech/jts/geom';
+import { intersects } from 'ol/extent';
+
+const precisionModel = new PrecisionModel();
+const geometryFactory = new GeometryFactory(precisionModel, 3857);
+const parser = new OL3Parser(geometryFactory, undefined);
+parser.inject(
+  Point,
+  LineString,
+  LinearRing,
+  Polygon,
+  MultiPoint,
+  MultiLineString,
+  MultiPolygon,
+  GeometryCollection,
+);
 
 /**
  * Flat style applied to the freehand lasso sketch while the user is drawing.
- *
- * Three stacked render passes produce a look consistent with Superset's antd
- * primary blue (#1677ff):
- *   1. A barely-visible fill so the enclosed area is perceptible.
- *   2. A wide semi-transparent white stroke that acts as a halo, keeping the
- *      outline readable on both light and dark basemaps.
- *   3. A narrow primary-blue dashed stroke on top — the classic
- *      "selection in progress" feel.
- *   4. A small filled circle for the anchor / start-point indicator.
  */
 /* eslint-disable theme-colors/no-literal-colors */
 export const LASSO_DRAW_STYLE: FlatStyleLike = [
@@ -72,26 +88,15 @@ export const LASSO_DRAW_STYLE: FlatStyleLike = [
  * Returns features from the given data layers whose geometry intersects the
  * provided lasso polygon.
  *
- * When `existingSelectedValues` is supplied (i.e. a cross-filter selection is
- * already active), the result is further restricted to features whose
- * `crossFilterColumn` value is already in that set — implementing a
- * sub-selection / narrowing behaviour. When no prior selection exists,
- * every feature that intersects the lasso polygon is returned.
- *
- * The intersection test uses `Polygon.intersectsExtent`, which is exact for
- * point features (their extent collapses to a single coordinate) and a
- * conservative bounding-box approximation for polygon features.
- *
  * @param dataLayers The vector layers to search for features
  * @param lassoPolygon The freehand polygon drawn by the user
- * @param crossFilterColumn The feature property used for cross-filtering
- * @param existingSelectedValues Currently active filter values; `undefined`
- *   means no prior selection is active
  */
 export const getFeaturesInLasso = (
   dataLayers: VectorLayer<VectorSource>[],
   lassoPolygon: Polygon,
 ): Feature[] => {
+  const lassoExtent = lassoPolygon.getExtent();
+  const jstsLasso = parser.read(lassoPolygon);
   const featuresInLasso = dataLayers.flatMap(layer =>
     layer
       .getSource()!
@@ -99,7 +104,11 @@ export const getFeaturesInLasso = (
       .filter(feature => {
         const geom = feature.getGeometry();
         if (!geom) return false;
-        return lassoPolygon.intersectsExtent(geom.getExtent());
+        return intersects(lassoExtent, geom.getExtent());
+      })
+      .filter(feature => {
+        const jstsGeom = parser.read(feature.getGeometry());
+        return RelateOp.relate(jstsGeom, jstsLasso).isIntersects();
       }),
   );
 
