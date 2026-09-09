@@ -32,6 +32,7 @@ import {
   EchartsTimeseriesStepChartPlugin,
   EchartsMixedTimeseriesChartPlugin,
   EchartsGaugeChartPlugin,
+  EchartsPolarChartPlugin,
   EchartsRadarChartPlugin,
   EchartsTreeChartPlugin,
   BigNumberChartPlugin,
@@ -56,6 +57,7 @@ test('@superset-ui/plugin-chart-echarts exists', () => {
   expect(EchartsTimeseriesStepChartPlugin).toBeDefined();
   expect(EchartsMixedTimeseriesChartPlugin).toBeDefined();
   expect(EchartsGaugeChartPlugin).toBeDefined();
+  expect(EchartsPolarChartPlugin).toBeDefined();
   expect(EchartsRadarChartPlugin).toBeDefined();
   expect(EchartsTreeChartPlugin).toBeDefined();
   expect(BigNumberChartPlugin).toBeDefined();
@@ -106,6 +108,9 @@ test('@superset-ui/plugin-chart-echarts-parsemethod-validation', () => {
     }),
     new EchartsGaugeChartPlugin().configure({
       key: VizType.Gauge,
+    }),
+    new EchartsPolarChartPlugin().configure({
+      key: VizType.Polar,
     }),
     new EchartsRadarChartPlugin().configure({
       key: VizType.Radar,

@@ -1,0 +1,55 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+cache_timeout: null
+certification_details: null
+certified_by: null
+dataset_uuid: 3f6d9a4c-2b71-4c8e-9a0f-6d1c5e7b8a92
+description: null
+params:
+  adhoc_filters:
+  - clause: WHERE
+    comparator: No filter
+    expressionType: SIMPLE
+    operator: TEMPORAL_RANGE
+    subject: measured_at
+  angleAxisType: value
+  angleLabelFormat: compass
+  clockwise: true
+  color_scheme: supersetColors
+  dashboards: []
+  date_format: smart_date
+  entity: wind_direction
+  extra_form_data: {}
+  legendMargin: ''
+  legendOrientation: right
+  legendType: scroll
+  metric: avg_pm10
+  number_format: SMART_NUMBER
+  row_limit: 1000
+  series: wind_speed_band
+  seriesType: bar
+  show_labels: false
+  show_legend: true
+  sort_by_metric: false
+  stack: true
+  startAngle: 90
+  viz_type: polar_chart
+query_context: null
+slice_name: Polar
+uuid: 7c2b41f9-5a3d-4e88-b6c1-0d9f2a4e5b73
+version: 1.0.0
+viz_type: polar_chart

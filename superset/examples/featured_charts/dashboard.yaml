@@ -370,6 +370,20 @@ position:
     - GRID_ID
     - ROW-Jq9auQfs6-
     type: CHART
+  CHART-rXn4pMbeQv:
+    children: []
+    id: CHART-rXn4pMbeQv
+    meta:
+      chartId: 103
+      height: 50
+      sliceName: Polar
+      uuid: 7c2b41f9-5a3d-4e88-b6c1-0d9f2a4e5b73
+      width: 4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-FHBKXbZT5Z
+    type: CHART
   CHART-t5t_tQe43g:
     children: []
     id: CHART-t5t_tQe43g
@@ -425,6 +439,7 @@ position:
   ROW-FHBKXbZT5Z:
     children:
     - CHART-KE7lk61Tbt
+    - CHART-rXn4pMbeQv
     id: ROW-FHBKXbZT5Z
     meta:
       background: BACKGROUND_TRANSPARENT

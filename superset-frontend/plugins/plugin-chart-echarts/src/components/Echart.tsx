@@ -61,6 +61,7 @@ import {
   AriaComponent,
   MarkAreaComponent,
   MarkLineComponent,
+  PolarComponent,
 } from 'echarts/components';
 import { LabelLayout } from 'echarts/features';
 import { EchartsHandler, EchartsProps, EchartsStylesProps } from '../types';
@@ -108,6 +109,7 @@ use([
   MarkAreaComponent,
   MarkLineComponent,
   LegendComponent,
+  PolarComponent,
   ToolboxComponent,
   TooltipComponent,
   TitleComponent,

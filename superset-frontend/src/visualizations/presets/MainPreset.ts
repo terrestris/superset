@@ -59,6 +59,7 @@ import {
   EchartsGraphChartPlugin,
   EchartsGaugeChartPlugin,
   EchartsHistogramChartPlugin,
+  EchartsPolarChartPlugin,
   EchartsRadarChartPlugin,
   EchartsFunnelChartPlugin,
   EchartsSankeyChartPlugin,
@@ -128,6 +129,7 @@ export default class MainPreset extends Preset {
         new EchartsGanttChartPlugin().configure({ key: VizType.Gantt }),
         new EchartsGaugeChartPlugin().configure({ key: VizType.Gauge }),
         new EchartsGraphChartPlugin().configure({ key: VizType.Graph }),
+        new EchartsPolarChartPlugin().configure({ key: VizType.Polar }),
         new EchartsRadarChartPlugin().configure({ key: VizType.Radar }),
         new EchartsMixedTimeseriesChartPlugin().configure({
           key: VizType.MixedTimeseries,
