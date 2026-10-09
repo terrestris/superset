@@ -18,6 +18,15 @@
  */
 import { CartodiagramPlugin } from '../src';
 
+// Browser-only GeoStyler dependencies are unnecessary for plugin metadata tests.
+jest.mock('geostyler-wfs-parser', () => jest.fn());
+jest.mock('geostyler-sld-parser', () => jest.fn());
+jest.mock('geostyler', () => ({
+  GeoStylerContext: jest.requireActual('react').createContext({}),
+  CardStyle: () => null,
+  locale: { en_US: {} },
+}));
+
 /**
  * The example tests in this file act as a starting point, and
  * we encourage you to build more. These tests check that the

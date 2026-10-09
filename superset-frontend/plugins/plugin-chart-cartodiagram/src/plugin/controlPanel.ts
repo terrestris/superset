@@ -27,6 +27,7 @@ import { selectedChartMutator } from '../util/controlPanelUtil';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
 import { MapViewConfigs } from '../types';
 import { GeometryFormat } from '../constants';
+import LayerConfigsControl from '../components/LayerConfigsControl/LayerConfigsControl';
 import MapMaxExtentViewControl from '../components/MapMaxExtentControl/MapMaxExtentViewControl';
 
 const config: ControlPanelConfig = {
@@ -214,7 +215,7 @@ const config: ControlPanelConfig = {
             // name is referenced in 'index.ts' for setting default value
             name: 'layer_configs',
             config: {
-              type: 'LayerConfigsControl',
+              type: LayerConfigsControl,
               renderTrigger: true,
               label: t('Layers'),
               default: [],

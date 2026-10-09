@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { WfsLayerConf } from '../types';
+
 /**
  * Get the available versions of WFS and WMS.
  *
@@ -57,3 +59,7 @@ export const isVersionBelow = (
 
   return versionIdx < belowIdx;
 };
+
+/** Check whether a WFS configuration can be requested. */
+export const hasAllRequiredWfsParams = (layerConf: WfsLayerConf) =>
+  layerConf.url && layerConf.version && layerConf.typeName;

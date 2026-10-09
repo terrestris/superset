@@ -43,17 +43,24 @@
     "@superset-ui/chart-controls": "*",
     "@superset-ui/core": "*",
     "@types/react-redux": "*",
+    "geostyler": "*",
+    "geostyler-data": "*",
     "geostyler-openlayers-parser": "*",
+    "geostyler-sld-parser": "*",
     "geostyler-style": "*",
+    "geostyler-wfs-parser": "*",
     "handlebars": "*",
     "lodash": "*",
+    "nanoid": "*",
     "ol": "*",
     "polished": "*",
     "react": "^17.0.2",
+    "react-dnd": "*",
     "react-dom": "^17.0.2",
     "react-redux": "*"
   },
   "devDependencies": {
+    "@testing-library/user-event": "^12.8.3",
     "@types/proj4": "^2.5.5"
   }
 }

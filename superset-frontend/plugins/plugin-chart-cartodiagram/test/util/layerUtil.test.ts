@@ -25,7 +25,7 @@ import VectorSource from 'ol/source/Vector';
 import OlStyle from 'ol/style/Style';
 import Fill from 'ol/style/Fill';
 import Feature from 'ol/Feature';
-import { DataLayerConf, WfsLayerConf } from '../../src/types';
+import { DataLayerConf, WfsLayerConf, WmsLayerConf } from '../../src/types';
 import {
   createDataLayer,
   createLayer,
@@ -37,10 +37,7 @@ import {
   removeSelectionLayer,
   setSelectionBackgroundOpacity,
 } from '../../src/util/layerUtil';
-import {
-  LAYER_NAME_PROP,
-  SELECTION_LAYER_NAME,
-} from '../../src/constants';
+import { LAYER_NAME_PROP, SELECTION_LAYER_NAME } from '../../src/constants';
 
 describe('layerUtil', () => {
   const circleColor = '#123456';
@@ -102,10 +99,24 @@ describe('layerUtil', () => {
   });
 
   describe('createWmsLayer', () => {
-    test('exists', () => {
-      // function is trivial
-      expect(createWmsLayer).toBeDefined();
-    });
+    test.each([undefined, '', 'binary', ',binary'])(
+      'sends WMS styles %s to GetMap',
+      stylesParam => {
+        const conf: WmsLayerConf = {
+          type: 'WMS',
+          title: 'Land',
+          url: 'https://example.org/wms',
+          version: '1.3.0',
+          layersParam: 'land,roads',
+          stylesParam,
+        };
+        expect(createWmsLayer(conf).getSource()?.getParams()).toMatchObject({
+          LAYERS: 'land,roads',
+          VERSION: '1.3.0',
+          STYLES: stylesParam ?? '',
+        });
+      },
+    );
   });
 
   describe('createWfsLayer', () => {

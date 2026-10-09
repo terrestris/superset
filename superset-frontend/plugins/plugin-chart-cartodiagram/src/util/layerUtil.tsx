@@ -64,12 +64,13 @@ import {
  * @returns The created WMS layer
  */
 export const createWmsLayer = (wmsLayerConf: WmsLayerConf) => {
-  const { url, layersParam, version, attribution } = wmsLayerConf;
+  const { url, layersParam, stylesParam, version, attribution } = wmsLayerConf;
   return new TileLayer({
     source: new TileWMS({
       url,
       params: {
         LAYERS: layersParam,
+        STYLES: stylesParam ?? '',
         VERSION: version,
       },
       attributions: attribution,
@@ -284,15 +285,17 @@ export const createSelectionLayer = (
   dataLayers: VectorLayer<VectorSource>[],
   features: Feature[][],
 ) => {
-  const selectionLayers = dataLayers.map((dataLayer, idx) => {
-    const layerStyle = dataLayer.getStyle();
-    return new VectorLayer({
-      source: new VectorSource({
-        features: features[idx],
-      }),
-      style: layerStyle,
-    });
-  }).reverse();
+  const selectionLayers = dataLayers
+    .map((dataLayer, idx) => {
+      const layerStyle = dataLayer.getStyle();
+      return new VectorLayer({
+        source: new VectorSource({
+          features: features[idx],
+        }),
+        style: layerStyle,
+      });
+    })
+    .reverse();
   const layerGroup = new LayerGroup({
     layers: selectionLayers,
   });

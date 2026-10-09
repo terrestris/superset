@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { WmsCapabilitiesResult } from './util/wmsCapabilitiesUtil';
 import { ControlComponentProps } from '@superset-ui/chart-controls';
-import { DataRecord, TimeseriesDataRecord } from '@superset-ui/core';
+import { DataRecord, JsonValue, TimeseriesDataRecord } from '@superset-ui/core';
 import { SupersetTheme } from '@apache-superset/core/theme';
 import { RenderFunction } from 'ol/layer/Layer';
 import { Extent } from 'ol/extent';
@@ -122,6 +123,19 @@ export interface WmsLayerConf extends BaseLayerConf {
   url: string;
   version: string;
   layersParam: string;
+  /** Comma-separated WMS style names, in the same order as layersParam. */
+  stylesParam?: string;
+}
+
+/** Props passed by the plugin layer control to the WMS style editor. */
+export interface WmsStyleEditorProps {
+  /** Reuse the capabilities already loaded by the layer selector. */
+  capabilities?: WmsCapabilitiesResult;
+  layerConf: LayerConf;
+  onChange: (properties: Record<string, JsonValue>) => void;
+  onAvailabilityChange: (available: boolean) => void;
+  /** Report discovery errors to the Layer tab while Style remains disabled. */
+  onErrorChange?: (error: boolean) => void;
 }
 
 export interface DataLayerConf extends BaseLayerConf {
@@ -130,7 +144,10 @@ export interface DataLayerConf extends BaseLayerConf {
 }
 
 export type LayerConf =
-  WmsLayerConf | WfsLayerConf | XyzLayerConf | DataLayerConf;
+  | WmsLayerConf
+  | WfsLayerConf
+  | XyzLayerConf
+  | DataLayerConf;
 
 export type EventHandlers = Record<string, { (props: any): void }>;
 

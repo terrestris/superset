@@ -38,6 +38,7 @@ import {
   TimesliderTooltipFormat,
 } from '../constants';
 import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL } from '../util/zoomUtil';
+import LayerConfigsControl from '../components/LayerConfigsControl/LayerConfigsControl';
 import MapMaxExtentViewControl from '../components/MapMaxExtentControl/MapMaxExtentViewControl';
 import {
   geojsonDataToFeatureCollection,
@@ -247,7 +248,7 @@ const config: ControlPanelConfig = {
             // name is referenced in 'index.ts' for setting default value
             name: 'layer_configs',
             config: {
-              type: 'LayerConfigsControl',
+              type: LayerConfigsControl,
               renderTrigger: true,
               label: t('Layers'),
               default: [],
@@ -284,7 +285,7 @@ const config: ControlPanelConfig = {
               mapStateToProps: state => ({
                 formData: state.form_data,
                 colTypeMapping: (
-                  state.datasource?.columns as QueryColumn[]
+                  (state.datasource?.columns as QueryColumn[]) ?? []
                 ).reduce((prev: ColTypeMapping, cur: QueryColumn) => {
                   const reduced = { ...prev };
                   if (
@@ -470,7 +471,7 @@ const config: ControlPanelConfig = {
                 const currentColumns: string[] =
                   (state.controls.columns?.value as string[]) ?? [];
                 return {
-                  choices: (state.datasource?.columns as QueryColumn[])
+                  choices: ((state.datasource?.columns as QueryColumn[]) ?? [])
                     .filter(
                       c => currentColumns.includes(c.column_name) && c.is_dttm,
                     )
